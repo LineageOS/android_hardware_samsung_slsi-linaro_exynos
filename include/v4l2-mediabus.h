@@ -19,7 +19,7 @@
 #ifndef __LINUX_V4L2_MEDIABUS_H
 #define __LINUX_V4L2_MEDIABUS_H
 #include <linux/types.h>
-#include "videodev2.h"
+#include <linux/videodev2.h>
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 enum v4l2_mbus_pixelcode {
  V4L2_MBUS_FMT_FIXED = 0x0001,
