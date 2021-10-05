@@ -16,13 +16,30 @@
  */
 #define LOG_TAG "android.hardware.graphics.allocator@4.0-service"
 
-#include <android/hardware/graphics/allocator/4.0/IAllocator.h>
+#include <hidl/HidlTransportSupport.h>
+#include <hidl/Status.h>
+#include <utils/StrongPointer.h>
 
-#include <hidl/LegacySupport.h>
+#include "4.x/GrallocAllocator.h"
 
-using android::hardware::defaultPassthroughServiceImplementation;
-using android::hardware::graphics::allocator::V4_0::IAllocator;
+using android::hardware::configureRpcThreadpool;
+using android::hardware::joinRpcThreadpool;
+using android::hardware::setMinSchedulerPolicy;
+using arm::allocator::GrallocAllocator;
 
 int main() {
-    return defaultPassthroughServiceImplementation<IAllocator>(/*maxThreads*/ 4);
+    android::sp<GrallocAllocator> service = new GrallocAllocator();
+    configureRpcThreadpool(4, true /* callerWillJoin */);
+
+    if (!setMinSchedulerPolicy(service, SCHED_NORMAL, -20)) {
+        ALOGW("Cannot bump allocator priority");
+    }
+
+    if (service->registerAsService() != android::OK) {
+        ALOGE("Cannot register allocator service");
+        return -EINVAL;
+    }
+
+    joinRpcThreadpool();
+    return 0;
 }

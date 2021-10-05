@@ -33,6 +33,8 @@ using android::hardware::hidl_string;
 
 GrallocAllocator::GrallocAllocator()
 {
+	MALI_GRALLOC_LOGV("Arm Module IAllocator %d.%d, pid = %d ppid = %d", GRALLOC_VERSION_MAJOR,
+	                  (HIDL_ALLOCATOR_VERSION_SCALED - (GRALLOC_VERSION_MAJOR * 100)) / 10, getpid(), getppid());
 }
 
 GrallocAllocator::~GrallocAllocator()
@@ -54,11 +56,3 @@ Return<void> GrallocAllocator::allocate(const BufferDescriptor &descriptor, uint
 
 } // namespace allocator
 } // namespace arm
-
-extern "C" IAllocator *HIDL_FETCH_IAllocator(const char * /* name */)
-{
-	MALI_GRALLOC_LOGV("Arm Module IAllocator %d.%d, pid = %d ppid = %d", GRALLOC_VERSION_MAJOR,
-	                  (HIDL_ALLOCATOR_VERSION_SCALED - (GRALLOC_VERSION_MAJOR * 100)) / 10, getpid(), getppid());
-
-	return new arm::allocator::GrallocAllocator();
-}
