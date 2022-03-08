@@ -119,6 +119,13 @@ struct private_handle_t;
 #ifdef __cplusplus
 struct private_handle_t : public native_handle
 {
+private:
+	/* Having a default constructor makes sure that we zero out the padding
+	 * which prevents data leak. */
+	private_handle_t() = default;
+
+public:
+
 #else
 struct private_handle_t
 {
@@ -249,20 +256,21 @@ struct private_handle_t
 		int _fds[5], int _fd_count,
 		int _req_format, uint64_t _alloc_format,
 		int _width, int _height, int _stride,
-		uint32_t _layer_count, plane_info_t _plane_info[MAX_PLANES])
-	    : flags(_flags)
-	    , fd_count(_fd_count)
-	    , width(_width)
-	    , height(_height)
-	    , req_format(_req_format)
-	    , producer_usage(_producer_usage)
-	    , consumer_usage(_consumer_usage)
-	    , stride(_stride)
-	    , alloc_format(_alloc_format)
-	    , layer_count(_layer_count)
-	    , allocating_pid(getpid())
-	    , ref_count(1)
+		uint64_t _layer_count, plane_info_t _plane_info[MAX_PLANES])
+	    : private_handle_t()
 	{
+		flags = _flags;
+		fd_count = _fd_count;
+		width = _width;
+		height = _height;
+		req_format = _req_format;
+		producer_usage = _producer_usage;
+		consumer_usage = _consumer_usage;
+		stride = _stride;
+		alloc_format = _alloc_format;
+		layer_count = _layer_count;
+		allocating_pid = getpid();
+		ref_count = 1;
 		version = sizeof(native_handle);
 		set_numfds(fd_count);
 		memcpy(plane_info, _plane_info, sizeof(plane_info_t) * MAX_PLANES);
