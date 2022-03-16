@@ -22,7 +22,6 @@
 #include "allocator/mali_gralloc_ion.h"
 #include "allocator/mali_gralloc_shared_memory.h"
 #include "mali_gralloc_bufferallocation.h"
-#include "mali_gralloc_debug.h"
 
 static pthread_mutex_t s_map_lock = PTHREAD_MUTEX_INITIALIZER;
 

@@ -16,6 +16,9 @@
 
 #pragma once
 
+
+#include <gralloc_priv.h>
+
 #define PLANE_SIZE(w, h)      ((w) * (h))
 #define S2B_PLANE_SIZE(w, h)  (GRALLOC_ALIGN((w) / 4, 16) * (GRALLOC_ALIGN(h, 16)))
 

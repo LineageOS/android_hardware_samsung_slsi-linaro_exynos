@@ -105,7 +105,6 @@ arm_gralloc_core_cc_defaults {
         "mali_gralloc_bufferallocation.cpp",
         "mali_gralloc_formats.cpp",
         "mali_gralloc_reference.cpp",
-        "mali_gralloc_debug.cpp",
         "format_info.cpp",
         "ip_info/format_manager.cpp",
         "ip_info/cpu_format_manager.cpp",

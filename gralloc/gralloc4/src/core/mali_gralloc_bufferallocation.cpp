@@ -31,7 +31,6 @@
 #include "allocator/mali_gralloc_shared_memory.h"
 #include "mali_gralloc_buffer.h"
 #include "mali_gralloc_bufferdescriptor.h"
-#include "mali_gralloc_debug.h"
 #include "mali_gralloc_log.h"
 #include "format_info.h"
 #include <exynos_format.h>
