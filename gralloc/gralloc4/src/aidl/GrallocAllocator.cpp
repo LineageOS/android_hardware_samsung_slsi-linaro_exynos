@@ -4,6 +4,7 @@
 #include <aidlcommonsupport/NativeHandle.h>
 #include <android/binder_ibinder.h>
 #include <android/binder_status.h>
+#include <cutils/android_filesystem_config.h>
 #include <hidl/HidlSupport.h>
 
 #include "allocator/mali_gralloc_ion.h"
@@ -20,6 +21,10 @@ using HidlError = android::hardware::graphics::mapper::V4_0::Error;
 
 unsigned long callingPid() {
     return static_cast<unsigned long>(AIBinder_getCallingPid());
+}
+
+unsigned long callingUid() {
+    return static_cast<unsigned long>(AIBinder_getCallingUid());
 }
 
 GrallocAllocator::GrallocAllocator() {}
@@ -83,6 +88,24 @@ ndk::ScopedAStatus GrallocAllocator::allocate(const std::vector<uint8_t>& descri
     }
 
     return ndk::ScopedAStatus::ok();
+}
+
+binder_status_t GrallocAllocator::dump(int fd, const char** /* args */, uint32_t numArgs) {
+    if (callingUid() != AID_ROOT) {
+        const std::string permission_denied = "Permission Denied\n";
+        write(fd, permission_denied.c_str(), permission_denied.size());
+        return STATUS_PERMISSION_DENIED;
+    }
+
+    if (numArgs != 0) {
+        const std::string argument_error = "No argument expected\n";
+        write(fd, argument_error.c_str(), argument_error.size());
+        return STATUS_BAD_VALUE;
+    }
+
+    const std::string dump_info = arm::allocator::common::dump();
+    write(fd, dump_info.c_str(), dump_info.size());
+    return STATUS_OK;
 }
 
 } // namespace arm::allocator

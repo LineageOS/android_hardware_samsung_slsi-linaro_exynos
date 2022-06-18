@@ -20,6 +20,8 @@ public:
 
     virtual ndk::ScopedAStatus allocate(const std::vector<uint8_t>& descriptor, int32_t count,
                                         AidlAllocator::AllocationResult* result) override;
+
+    virtual binder_status_t dump(int fd, const char** args, uint32_t numArgs) override;
 };
 
 } // namespace allocator
