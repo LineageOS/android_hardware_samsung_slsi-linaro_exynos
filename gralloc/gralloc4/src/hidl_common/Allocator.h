@@ -54,6 +54,8 @@ using android::hardware::hidl_vec;
 void allocate(const buffer_descriptor_t &bufferDescriptor, uint32_t count, IAllocator::allocate_cb hidl_cb,
               std::function<int(const buffer_descriptor_t *, buffer_handle_t *)> fb_allocator = nullptr);
 
+const std::string dump();
+
 } // namespace common
 } // namespace allocator
 } // namespace arm
