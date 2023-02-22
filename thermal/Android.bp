@@ -15,6 +15,7 @@
 cc_binary {
 	name: "android.hardware.thermal@2.0-service.exynos",
 	relative_install_path: "hw",
+	vintf_fragments: ["android.hardware.thermal@2.0-service.exynos.xml"],
 	init_rc: ["android.hardware.thermal@2.0-service.exynos.rc"],
 	srcs: ["service.cpp", "Thermal.cpp", "thermal_exynos.cpp"],
 	cflags: ["-Wall", "-Werror"],
