@@ -55,6 +55,7 @@ arm_gralloc_allocator_cc_defaults {
     name: "arm_gralloc_allocator_defaults",
     defaults: [
         "arm_gralloc_defaults",
+        "android.hardware.graphics.common-ndk_shared",
     ],
     soong_config_variables: {
         gralloc_use_ion_dma_heap: {
@@ -98,6 +99,7 @@ arm_gralloc_allocator_cc_defaults {
         "libsync",
         "libutils",
         "libnativewindow",
+        "android.hardware.graphics.common@1.2",
     ],
     header_libs: [
         "libnativebase_headers",

@@ -60,6 +60,7 @@ arm_gralloc_core_cc_defaults {
     name: "arm_gralloc_core_defaults",
     defaults: [
         "arm_gralloc_defaults",
+        "android.hardware.graphics.common-ndk_shared",
     ],
     cflags: [
         /* Minimum buffer dimensions in pixels when buffer will use AFBC */

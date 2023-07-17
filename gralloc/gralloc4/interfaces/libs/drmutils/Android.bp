@@ -17,6 +17,7 @@
 
 cc_library_static {
     name: "libgralloc_drmutils",
+    defaults: ["android.hardware.graphics.common-ndk_shared"],
     cflags: [
         "-Wall",
         "-Werror",

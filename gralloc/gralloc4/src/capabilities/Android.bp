@@ -70,6 +70,7 @@ arm_gralloc_capabilities_cc_defaults {
     name: "arm_gralloc_capabilities_defaults",
     defaults: [
         "arm_gralloc_defaults",
+        "android.hardware.graphics.common-ndk_shared",
     ],
     soong_config_variables: {
         mali_gpu_support_afbc_basic: {
