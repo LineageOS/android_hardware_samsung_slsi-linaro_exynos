@@ -27,8 +27,6 @@
 #include "core/mali_gralloc_bufferdescriptor.h"
 #include "gralloc_helper.h"
 
-#include "4.x/gralloc_mapper_hidl_header.h"
-
 #include "SharedMetadata_struct.h"
 
 namespace arm
