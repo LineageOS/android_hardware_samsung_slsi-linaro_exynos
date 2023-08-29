@@ -50,9 +50,9 @@ public:
 
 	Return<void> importBuffer(const hidl_handle &rawHandle, importBuffer_cb hidl_cb) override;
 
-	Return<Error> freeBuffer(void *buffer) override;
+	Return<hidl::Error> freeBuffer(void *buffer) override;
 
-	Return<Error> validateBufferSize(void *buffer, const IMapper::BufferDescriptorInfo &descriptorInfo,
+	Return<hidl::Error> validateBufferSize(void *buffer, const IMapper::BufferDescriptorInfo &descriptorInfo,
 	                                 uint32_t stride) override;
 
 	Return<void> getTransportSize(void *buffer, getTransportSize_cb _hidl_cb) override;
@@ -64,13 +64,13 @@ public:
 
 	Return<void> flushLockedBuffer(void *buffer, flushLockedBuffer_cb hidl_cb) override;
 
-	Return<Error> rereadLockedBuffer(void *buffer) override;
+	Return<hidl::Error> rereadLockedBuffer(void *buffer) override;
 
 	Return<void> isSupported(const IMapper::BufferDescriptorInfo &description, isSupported_cb hidl_cb) override;
 
 	Return<void> get(void *buffer, const MetadataType &metadataType, IMapper::get_cb hidl_cb) override;
 
-	Return<Error> set(void *buffer, const MetadataType &metadataType, const hidl_vec<uint8_t> &metadata) override;
+	Return<hidl::Error> set(void *buffer, const MetadataType &metadataType, const hidl_vec<uint8_t> &metadata) override;
 
 	Return<void> getFromBufferDescriptorInfo(BufferDescriptorInfo const &description, MetadataType const &metadataType,
 	                                         getFromBufferDescriptorInfo_cb hidl_cb) override;
