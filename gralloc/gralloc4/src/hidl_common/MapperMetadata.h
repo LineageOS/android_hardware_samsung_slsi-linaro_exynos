@@ -23,12 +23,15 @@
 #include "mali_gralloc_log.h"
 #include "core/mali_gralloc_bufferdescriptor.h"
 #include "mali_gralloc_buffer.h"
+#include "mali_gralloc_error.h"
+#include <cstring>
 
-#include "4.x/gralloc_mapper_hidl_header.h"
+#include "hidl_common/hidl_common.h"
+#include <algorithm>
+#include <iterator>
 
 #include <aidl/arm/graphics/Compression.h>
 #include <aidl/arm/graphics/ArmMetadataType.h>
-
 
 namespace arm
 {
@@ -44,8 +47,116 @@ const static ExtendableType Compression_AFBC{ GRALLOC_ARM_COMPRESSION_TYPE_NAME,
                                                   static_cast<int64_t>(aidl::arm::graphics::Compression::AFBC) };
 
 #define GRALLOC_ARM_METADATA_TYPE_NAME "arm.graphics.ArmMetadataType"
-const static IMapper::MetadataType ArmMetadataType_PLANE_FDS{ GRALLOC_ARM_METADATA_TYPE_NAME,
-                                                  static_cast<int64_t>(aidl::arm::graphics::ArmMetadataType::PLANE_FDS) };
+
+
+class MetadataType {
+ public:
+	std::string name;
+	uint64_t value;
+#ifdef GRALLOC_MAPPER_4
+	MetadataType(const IMapper::MetadataType &meta) {
+		name = meta.name;
+		value = meta.value;
+	}
+	operator IMapper::MetadataType() const {
+		IMapper::MetadataType meta;
+		meta.name = name;
+		meta.value = value;
+		return meta;
+	}
+#endif
+	MetadataType() {}
+	MetadataType(std::string strname, uint64_t val) {
+		name = strname;
+		value = val;
+	}
+	MetadataType(StandardMetadataType meta) : MetadataType(GRALLOC4_STANDARD_METADATA_TYPE, static_cast<uint64_t>(meta)) {}
+};
+
+const static MetadataType ArmMetadataType_PLANE_FDS = MetadataType(GRALLOC_ARM_METADATA_TYPE_NAME, static_cast<int64_t>(aidl::arm::graphics::ArmMetadataType::PLANE_FDS));
+
+constexpr int RES_SIZE = 32;
+
+struct MetadataTypeDescription {
+	MetadataType metadataType;
+	const char* description;
+	bool isGettable;
+	bool isSettable;
+#ifdef GRALLOC_MAPPER_4
+	MetadataTypeDescription(const IMapper::MetadataTypeDescription &desc) {
+		metadataType = desc.metadataType;
+		description = (desc.description).c_str();
+		isGettable = desc.isGettable;
+		isSettable = desc.isSettable;
+	}
+	operator IMapper::MetadataTypeDescription() const {
+		IMapper::MetadataTypeDescription desc;
+		desc.metadataType = static_cast<IMapper::MetadataType>(metadataType);
+		desc.description = description;
+		desc.isGettable = isGettable;
+		desc.isSettable = isSettable;
+		return desc;
+	}
+#endif
+	MetadataTypeDescription(MetadataType meta, const char* desc, bool gettable, bool settable) {
+		metadataType = meta;
+		description = desc;
+		isGettable = gettable;
+		isSettable = settable;
+	}
+};
+
+struct MetadataDump {
+	MetadataType metadataType;
+	std::vector<uint8_t> metadata;
+#ifdef GRALLOC_MAPPER_4
+	MetadataDump(const IMapper::MetadataDump &meta) {
+		metadataType = MetadataType(meta.metadataType);
+		metadata = static_cast<std::vector<uint8_t> >(metadata);
+	}
+	operator IMapper::MetadataDump() const {
+		IMapper::MetadataDump dump;
+		dump.metadataType = static_cast<IMapper::MetadataType>(metadataType);
+		dump.metadata = hidl_vec(metadata);
+		return dump;
+	}
+#endif
+	MetadataDump() {}
+	MetadataDump(MetadataType metaType, std::vector<uint8_t> &meta) {
+		metadataType = metaType;
+		metadata = meta;
+	}
+};
+
+struct BufferDump {
+	std::vector<MetadataDump> metadataDump;
+#ifdef GRALLOC_MAPPER_4
+	BufferDump(const IMapper::BufferDump &dump) {
+		for (auto meta : dump.metadataDump)
+			metadataDump.push_back(MetadataDump(meta));
+	}
+	operator IMapper::BufferDump() const {
+		IMapper::BufferDump bufferdump;
+		std::vector<IMapper::MetadataDump> metaDump;
+		for (auto meta : metadataDump) {
+			metaDump.push_back(static_cast<IMapper::MetadataDump>(meta));
+		}
+		bufferdump.metadataDump = metaDump;
+		return bufferdump;
+	}
+#endif
+	BufferDump(std::vector<MetadataDump> &meta) { metadataDump = meta; }
+	BufferDump() {}
+};
+
+
+int get_num_planes(const private_handle_t *hnd);
+
+static std::vector<std::vector<PlaneLayoutComponent>> plane_layout_components_from_handle(const private_handle_t *hnd);
+
+android::status_t get_plane_layouts(const private_handle_t *handle, std::vector<PlaneLayout> *layouts);
+
+bool isStandardMetadataType(const MetadataType &metadataType);
 
 /**
  * Retrieves a Buffer's metadata value.
@@ -57,7 +168,7 @@ const static IMapper::MetadataType ArmMetadataType_PLANE_FDS{ GRALLOC_ARM_METADA
  *                                 UNSUPPORTED on error when reading or unsupported metadata type.
  *                          metadata: Vector of bytes representing the metadata value.
  */
-void get_metadata(const private_handle_t *handle, const IMapper::MetadataType &metadataType, IMapper::get_cb hidl_cb);
+Error get_metadata(const private_handle_t *handle, const MetadataType &metadataType, std::vector<uint8_t> &outVec);
 
 /**
  * Sets a Buffer's metadata value.
@@ -69,8 +180,7 @@ void get_metadata(const private_handle_t *handle, const IMapper::MetadataType &m
  * @return Error::NONE on success.
  *         Error::UNSUPPORTED on error when writing or unsupported metadata type.
  */
-Error set_metadata(const private_handle_t *handle, const IMapper::MetadataType &metadataType,
-                   const hidl_vec<uint8_t> &metadata);
+Error set_metadata(const private_handle_t *handle, const MetadataType &metadataType, const frameworks_vec<uint8_t> &metadata);
 
 /**
  * Query basic metadata information about a buffer form its descriptor before allocation.
@@ -82,9 +192,9 @@ Error set_metadata(const private_handle_t *handle, const IMapper::MetadataType &
  *                                 UNSUPPORTED on unsupported metadata type.
  *                          metadata: Vector of bytes representing the metadata value.
  */
-void getFromBufferDescriptorInfo(IMapper::BufferDescriptorInfo const &description,
-                                 IMapper::MetadataType const &metadataType,
-                                 IMapper::getFromBufferDescriptorInfo_cb hidl_cb);
+#ifdef GRALLOC_MAPPER_4
+Error getFromBufferDescriptorInfo(IMapper::BufferDescriptorInfo const &description, MetadataType const &metadataType, std::vector<uint8_t> &outVec);
+#endif
 
 } // namespace common
 } // namespace mapper
