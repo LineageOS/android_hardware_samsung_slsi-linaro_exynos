@@ -24,9 +24,9 @@ bool RegisteredHandlePool::add(buffer_handle_t bufferHandle)
     return bufPool.insert(bufferHandle).second;
 }
 
-native_handle_t* RegisteredHandlePool::remove(void* buffer)
+native_handle_t* RegisteredHandlePool::remove(buffer_handle_t buffer)
 {
-    auto bufferHandle = static_cast<native_handle_t*>(buffer);
+    auto bufferHandle = const_cast<native_handle_t*>(buffer);
 
     std::lock_guard<std::mutex> lock(mutex);
     return bufPool.erase(bufferHandle) == 1 ? bufferHandle : nullptr;
@@ -38,6 +38,11 @@ buffer_handle_t RegisteredHandlePool::get(const void* buffer)
 
     std::lock_guard<std::mutex> lock(mutex);
     return bufPool.count(bufferHandle) == 1 ? bufferHandle : nullptr;
+}
+
+bool RegisteredHandlePool::isRegistered(buffer_handle_t buffer)
+{
+    return (bufPool.find(buffer) != bufPool.end());
 }
 
 void RegisteredHandlePool::for_each(std::function<void(const buffer_handle_t &)> fn)

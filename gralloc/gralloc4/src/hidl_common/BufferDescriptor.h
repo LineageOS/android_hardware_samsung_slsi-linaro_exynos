@@ -19,8 +19,7 @@
 #define _GRALLOC_BUFFER_DESCRIPTOR_H_
 
 #include "core/mali_gralloc_bufferdescriptor.h"
-
-#include "4.x/gralloc_mapper_hidl_header.h"
+#include "hidl_common.h"
 
 #include <assert.h>
 #include <inttypes.h>
@@ -30,27 +29,25 @@ namespace arm {
 namespace mapper {
 namespace common {
 
-using android::hardware::hidl_vec;
-
 const size_t DESCRIPTOR_32BIT_FIELDS = 5;
 const size_t DESCRIPTOR_64BIT_FIELDS = 2;
 
 const uint64_t validUsageBits =
-		BufferUsage::GPU_CUBE_MAP |
-		BufferUsage::GPU_MIPMAP_COMPLETE |
-		BufferUsage::CPU_READ_MASK | BufferUsage::CPU_WRITE_MASK |
-		BufferUsage::GPU_TEXTURE | BufferUsage::GPU_RENDER_TARGET |
-		BufferUsage::COMPOSER_OVERLAY | BufferUsage::COMPOSER_CLIENT_TARGET |
-		BufferUsage::CAMERA_INPUT | BufferUsage::CAMERA_OUTPUT |
-		BufferUsage::PROTECTED |
-		BufferUsage::COMPOSER_CURSOR |
-		BufferUsage::VIDEO_ENCODER |
-		BufferUsage::RENDERSCRIPT |
-		BufferUsage::VIDEO_DECODER |
-		BufferUsage::SENSOR_DIRECT_DATA |
-		BufferUsage::GPU_DATA_BUFFER |
-		BufferUsage::VENDOR_MASK |
-		BufferUsage::VENDOR_MASK_HI;
+		static_cast<uint64_t>(BufferUsage::GPU_CUBE_MAP) |
+		static_cast<uint64_t>(BufferUsage::GPU_MIPMAP_COMPLETE) |
+		static_cast<uint64_t>(BufferUsage::CPU_READ_MASK) | static_cast<uint64_t>(BufferUsage::CPU_WRITE_MASK) |
+		static_cast<uint64_t>(BufferUsage::GPU_TEXTURE) | static_cast<uint64_t>(BufferUsage::GPU_RENDER_TARGET) |
+		static_cast<uint64_t>(BufferUsage::COMPOSER_OVERLAY) | static_cast<uint64_t>(BufferUsage::COMPOSER_CLIENT_TARGET) |
+		static_cast<uint64_t>(BufferUsage::CAMERA_INPUT) | static_cast<uint64_t>(BufferUsage::CAMERA_OUTPUT) |
+		static_cast<uint64_t>(BufferUsage::PROTECTED) |
+		static_cast<uint64_t>(BufferUsage::COMPOSER_CURSOR) |
+		static_cast<uint64_t>(BufferUsage::VIDEO_ENCODER) |
+		static_cast<uint64_t>(BufferUsage::RENDERSCRIPT) |
+		static_cast<uint64_t>(BufferUsage::VIDEO_DECODER) |
+		static_cast<uint64_t>(BufferUsage::SENSOR_DIRECT_DATA) |
+		static_cast<uint64_t>(BufferUsage::GPU_DATA_BUFFER) |
+		static_cast<uint64_t>(BufferUsage::VENDOR_MASK) |
+		static_cast<uint64_t>(BufferUsage::VENDOR_MASK_HI);
 
 template<typename BufferDescriptorInfoT>
 static bool validateDescriptorInfo(const BufferDescriptorInfoT &descriptorInfo)
@@ -69,7 +66,7 @@ static bool validateDescriptorInfo(const BufferDescriptorInfoT &descriptorInfo)
 }
 
 template <typename vecT>
-static void push_descriptor_uint32(hidl_vec<vecT> *vec, size_t *pos, uint32_t val)
+static void push_descriptor_uint32(frameworks_vec<vecT> *vec, size_t *pos, uint32_t val)
 {
 	static_assert(sizeof(val) % sizeof(vecT) == 0, "Unsupported vector type");
 	memcpy(vec->data() + *pos, &val, sizeof(val));
@@ -77,7 +74,7 @@ static void push_descriptor_uint32(hidl_vec<vecT> *vec, size_t *pos, uint32_t va
 }
 
 template <typename vecT>
-static uint32_t pop_descriptor_uint32(const hidl_vec<vecT> &vec, size_t *pos)
+static uint32_t pop_descriptor_uint32(const frameworks_vec<vecT> &vec, size_t *pos)
 {
 	uint32_t val;
 	static_assert(sizeof(val) % sizeof(vecT) == 0, "Unsupported vector type");
@@ -87,7 +84,7 @@ static uint32_t pop_descriptor_uint32(const hidl_vec<vecT> &vec, size_t *pos)
 }
 
 template <typename vecT>
-static void push_descriptor_uint64(hidl_vec<vecT> *vec, size_t *pos, uint64_t val)
+static void push_descriptor_uint64(frameworks_vec<vecT> *vec, size_t *pos, uint64_t val)
 {
 	static_assert(sizeof(val) % sizeof(vecT) == 0, "Unsupported vector type");
 	memcpy(vec->data() + *pos, &val, sizeof(val));
@@ -95,7 +92,7 @@ static void push_descriptor_uint64(hidl_vec<vecT> *vec, size_t *pos, uint64_t va
 }
 
 template <typename vecT>
-static uint64_t pop_descriptor_uint64(const hidl_vec<vecT> &vec, size_t *pos)
+static uint64_t pop_descriptor_uint64(const frameworks_vec<vecT> &vec, size_t *pos)
 {
 	uint64_t val;
 	static_assert(sizeof(val) % sizeof(vecT) == 0, "Unsupported vector type");
@@ -104,23 +101,25 @@ static uint64_t pop_descriptor_uint64(const hidl_vec<vecT> &vec, size_t *pos)
 	return val;
 }
 
-static void push_descriptor_string(hidl_vec<uint8_t> *vec, size_t *pos, const std::string &str)
+static void push_descriptor_string(frameworks_vec<uint8_t> *vec, size_t *pos, const std::string &str)
 {
 	strcpy(reinterpret_cast<char *>(vec->data() + *pos), str.c_str());
 	*pos += strlen(str.c_str()) + 1;
 }
 
-static std::string pop_descriptor_string(const hidl_vec<uint8_t> &vec, size_t *pos)
+static std::string pop_descriptor_string(const frameworks_vec<uint8_t> &vec, size_t *pos)
 {
-	std::string str(reinterpret_cast<const char *>(vec.data() + *pos));
-	*pos += str.size() + 1;
+	const char* charstr = reinterpret_cast<const char *>(vec.data() + *pos);
+	charstr += '\0';
+	std::string str(charstr);
+	str.resize(strlen(charstr));
 	return str;
 }
 
 template <typename vecT, typename BufferDescriptorInfoT>
-static const hidl_vec<vecT> grallocEncodeBufferDescriptor(const BufferDescriptorInfoT &descriptorInfo)
+static const frameworks_vec<vecT> grallocEncodeBufferDescriptor(const BufferDescriptorInfoT &descriptorInfo)
 {
-	hidl_vec<vecT> descriptor;
+	frameworks_vec<vecT> descriptor;
 
 	static_assert(sizeof(uint32_t) % sizeof(vecT) == 0, "Unsupported vector type");
 	size_t dynamic_size = 0;
@@ -149,7 +148,7 @@ static const hidl_vec<vecT> grallocEncodeBufferDescriptor(const BufferDescriptor
 }
 
 template <typename vecT>
-static bool grallocDecodeBufferDescriptor(const hidl_vec<vecT> &androidDescriptor, buffer_descriptor_t &grallocDescriptor)
+static bool grallocDecodeBufferDescriptor(const frameworks_vec<vecT> &androidDescriptor, buffer_descriptor_t &grallocDescriptor)
 {
 	static_assert(sizeof(uint32_t) % sizeof(vecT) == 0, "Unsupported vector type");
 	size_t pos = 0;

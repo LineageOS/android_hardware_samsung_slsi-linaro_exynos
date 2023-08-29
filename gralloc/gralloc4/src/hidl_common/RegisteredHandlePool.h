@@ -33,13 +33,15 @@ public:
 	bool add(buffer_handle_t bufferHandle);
 
 	/* Retrieves and removes the buffer handle from internal list */
-	native_handle_t* remove(void* buffer);
+	native_handle_t* remove(buffer_handle_t buffer);
 
 	/* Retrieves the buffer handle from internal list */
 	buffer_handle_t get(const void* buffer);
 
 	/* Applies a function to each buffer handle */
 	void for_each(std::function<void(const buffer_handle_t &)> fn);
+
+	bool isRegistered(buffer_handle_t handle);
 
 private:
 	std::mutex mutex;

@@ -109,4 +109,7 @@ cc_library_shared {
     include_dirs: [
         "hardware/samsung_slsi-linaro/exynos/include",
     ],
+    cflags: [
+        "-DGRALLOC_MAPPER_4=1",
+    ],
 }

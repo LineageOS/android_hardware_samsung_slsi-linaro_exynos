@@ -28,11 +28,6 @@
 #include <sys/mman.h>
 #include <cutils/native_handle.h>
 
-/* Allocator = 4.0, Mapper = 4.0 and Common = 1.2 */
-#define HIDL_ALLOCATOR_VERSION_SCALED 400
-#define HIDL_MAPPER_VERSION_SCALED 400
-#define HIDL_COMMON_VERSION_SCALED 120
-
 #include "mali_gralloc_formats.h"
 #include "mali_gralloc_usages.h"
 #include "gralloc_helper.h"

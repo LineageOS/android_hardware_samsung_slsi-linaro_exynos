@@ -34,6 +34,8 @@
 #include "MapperMetadata.h"
 #include "SharedMetadata.h"
 
+#include <cstdio>
+
 /* GraphicBufferMapper is expected to be valid (and leaked) during process
  * termination. IMapper, and in turn, gRegisteredHandles must be valid as
  * well. Create the registered handle pool on the heap, and let
@@ -48,6 +50,10 @@ RegisteredHandlePool* gRegisteredHandles = new RegisteredHandlePool;
 namespace arm {
 namespace mapper {
 namespace common {
+
+buffer_handle_t getBuffer(void *buffer) {
+	return gRegisteredHandles->get(buffer);
+}
 
 /*
  * Translates the register buffer API into existing gralloc implementation
@@ -101,53 +107,12 @@ static Error unregisterBuffer(buffer_handle_t bufferHandle)
 }
 
 /*
- * Retrieves the file descriptor referring to a sync fence object
- *
- * @param fenceHandle [in]  HIDL fence handle
- * @param outFenceFd  [out] Fence file descriptor. '-1' indicates no fence
- *
- * @return false, for an invalid HIDL fence handle
- *         true, otherwise
- */
-static bool getFenceFd(const hidl_handle& fenceHandle, int* outFenceFd)
-{
-	auto const handle = fenceHandle.getNativeHandle();
-	if (handle && handle->numFds > 1)
-	{
-		MALI_GRALLOC_LOGE("Invalid fence handle with %d fds", handle->numFds);
-		return false;
-	}
-
-	*outFenceFd = (handle && handle->numFds == 1) ? handle->data[0] : -1;
-	return true;
-}
-
-/*
- * Populates the HIDL fence handle for the given fence object
- *
- * @param fenceFd       [in] Fence file descriptor
- * @param handleStorage [in] HIDL handle storage for fence
- *
- * @return HIDL fence handle
- */
-static hidl_handle getFenceHandle(int fenceFd, char* handleStorage)
-{
-	native_handle_t* handle = nullptr;
-	if (fenceFd >= 0)
-	{
-		handle = native_handle_init(handleStorage, 1, 0);
-		handle->data[0] = fenceFd;
-	}
-
-	return hidl_handle(handle);
-}
-
-/*
  * Locks the given buffer for the specified CPU usage.
  *
  * @param bufferHandle [in]  Buffer to lock.
  * @param cpuUsage     [in]  Specifies one or more CPU usage flags to request
- * @param accessRegion [in]  Portion of the buffer that the client intends to access.
+ * @param accessRegion [in]  Portion of the buffer that the client intends to
+ * access.
  * @param fenceFd      [in]  Fence file descriptor
  * @param outData      [out] CPU accessible buffer address
  *
@@ -158,7 +123,7 @@ static hidl_handle getFenceHandle(int fenceFd, char* handleStorage)
  */
 static Error lockBuffer(buffer_handle_t bufferHandle,
                         uint64_t cpuUsage,
-                        const IMapper::Rect& accessRegion, int fenceFd,
+                        const GrallocRect& accessRegion, int fenceFd,
                         void** outData)
 {
 	/* dup fenceFd as it is going to be owned by gralloc. Note that it is
@@ -185,7 +150,7 @@ static Error lockBuffer(buffer_handle_t bufferHandle,
 	}
 
 	auto private_handle = private_handle_t::dynamicCast(bufferHandle);
-	if (private_handle->cpu_write != 0 && (cpuUsage & BufferUsage::CPU_WRITE_MASK))
+	if (private_handle->cpu_write != 0 && (cpuUsage & static_cast<uint64_t>(BufferUsage::CPU_WRITE_MASK)))
 	{
 		if (fenceFd >= 0)
 		{
@@ -204,12 +169,13 @@ static Error lockBuffer(buffer_handle_t bufferHandle,
 	}
 
 	void* data = nullptr;
-	if (mali_gralloc_lock(bufferHandle, cpuUsage, accessRegion.left, accessRegion.top, accessRegion.width,
-	                      accessRegion.height, &data) < 0)
+	if (mali_gralloc_lock(bufferHandle, cpuUsage, accessRegion.left, accessRegion.top, 
+						(accessRegion.right - accessRegion.left),
+						(accessRegion.bottom - accessRegion.top), &data) < 0)
 	{
+		MALI_GRALLOC_LOGE("Locking buffer %p failed", bufferHandle);
 		return Error::BAD_VALUE;
 	}
-
 	*outData = data;
 
 	return Error::NONE;
@@ -234,7 +200,6 @@ static Error unlockBuffer(buffer_handle_t bufferHandle,
 		return Error::BAD_BUFFER;
 	}
 
-	auto private_handle = private_handle_t::dynamicCast(bufferHandle);
 #if 0
 	if (!private_handle->cpu_write && !private_handle->cpu_read)
 	{
@@ -256,146 +221,99 @@ static Error unlockBuffer(buffer_handle_t bufferHandle,
 	return Error::NONE;
 }
 
-void importBuffer(const hidl_handle& rawHandle, IMapper::importBuffer_cb hidl_cb)
+Error importBuffer(const native_handle_t *inBuffer, buffer_handle_t *outBuffer)
 {
-	if (!rawHandle.getNativeHandle())
-	{
-		MALI_GRALLOC_LOGE("Invalid buffer handle to import");
-		hidl_cb(Error::BAD_BUFFER, nullptr);
-		return;
-	}
-
-	native_handle_t* bufferHandle = native_handle_clone(rawHandle.getNativeHandle());
-	if (!bufferHandle)
-	{
-		MALI_GRALLOC_LOGE("Failed to clone buffer handle");
-		hidl_cb(Error::NO_RESOURCES, nullptr);
-		return;
-	}
-
-	const Error error = registerBuffer(bufferHandle);
+	*outBuffer = const_cast<buffer_handle_t>(native_handle_clone(inBuffer));
+	const Error error = registerBuffer(*outBuffer);
 	if (error != Error::NONE)
 	{
-		native_handle_close(bufferHandle);
-		native_handle_delete(bufferHandle);
-
-		hidl_cb(error, nullptr);
-		return;
+		return error;
 	}
 
-	auto *private_handle = static_cast<private_handle_t *>(bufferHandle);
+	auto *private_handle = static_cast<private_handle_t *>(const_cast<native_handle_t*>(*outBuffer));
 	private_handle->attr_base = mmap(nullptr, private_handle->attr_size, PROT_READ | PROT_WRITE,
 	                                 MAP_SHARED, private_handle->get_share_attr_fd(), 0);
 	if (private_handle->attr_base == MAP_FAILED)
 	{
-		native_handle_close(bufferHandle);
-		native_handle_delete(bufferHandle);
-		hidl_cb(Error::NO_RESOURCES, nullptr);
-		return;
+		unregisterBuffer(*outBuffer);
+		native_handle_close(const_cast<native_handle_t*>(*outBuffer));
+		native_handle_delete(const_cast<native_handle_t*>(*outBuffer));
+		return Error::NO_RESOURCES;
 	}
 
-	if (gRegisteredHandles->add(bufferHandle) == false)
+	if (gRegisteredHandles->add(*outBuffer) == false)
 	{
 		/* The newly cloned handle is already registered. This can only happen
 		 * when a handle previously registered was native_handle_delete'd instead
 		 * of freeBuffer'd.
 		 */
 		MALI_GRALLOC_LOGE("Handle %p has already been imported; potential fd leaking",
-		       bufferHandle);
-		unregisterBuffer(bufferHandle);
-		native_handle_close(bufferHandle);
-		native_handle_delete(bufferHandle);
-
-		hidl_cb(Error::NO_RESOURCES, nullptr);
-		return;
+		       outBuffer);
+		unregisterBuffer(*outBuffer);
+		return Error::NO_RESOURCES;
 	}
 
-	hidl_cb(Error::NONE, bufferHandle);
+	return Error::NONE;
 }
 
-Error freeBuffer(void* buffer)
+Error freeBuffer(buffer_handle_t bufferHandle)
 {
-	native_handle_t * const bufferHandle = gRegisteredHandles->remove(buffer);
-	if (!bufferHandle)
-	{
-		MALI_GRALLOC_LOGE("Invalid buffer handle %p to freeBuffer", buffer);
-		return Error::BAD_BUFFER;
-	}
+    native_handle_t *handle = gRegisteredHandles->remove(bufferHandle);
+    if (handle == nullptr)
+    {
+        MALI_GRALLOC_LOGE("Invalid buffer handle %p to freeBuffer", bufferHandle);
+        return Error::BAD_BUFFER;
+    }
 
+	auto *private_handle = static_cast<private_handle_t *>(handle);
+	if (private_handle->attr_base != MAP_FAILED)
 	{
-		auto *private_handle = static_cast<private_handle_t *>(bufferHandle);
-		int ret = munmap(private_handle->attr_base, private_handle->attr_size);
-		if (ret < 0)
+		if (munmap(private_handle->attr_base, private_handle->attr_size) < 0)
 		{
 			MALI_GRALLOC_LOGW("munmap: %s", strerror(errno));
 		}
 		private_handle->attr_base = MAP_FAILED;
 	}
 
-	const Error status = unregisterBuffer(bufferHandle);
-	if (status != Error::NONE)
-	{
-		return status;
-	}
+    const Error status = unregisterBuffer(handle);
+    if (status != Error::NONE)
+    {
+        return status;
+    }
 
-	native_handle_close(bufferHandle);
-	native_handle_delete(bufferHandle);
+    native_handle_close(handle);
+    native_handle_delete(handle);
 
-	return Error::NONE;
+    return Error::NONE;
 }
 
-void lock(void* buffer, uint64_t cpuUsage, const IMapper::Rect& accessRegion,
-          const hidl_handle& acquireFence, IMapper::lock_cb hidl_cb)
+Error lock(buffer_handle_t bufferHandle, uint64_t cpuUsage, const GrallocRect &accessRegion, int acquireFence, void **outData)
 {
-	buffer_handle_t bufferHandle = gRegisteredHandles->get(buffer);
+	*outData = nullptr;
 	if (!bufferHandle || private_handle_t::validate(bufferHandle) < 0)
 	{
-		MALI_GRALLOC_LOGE("Buffer to lock: %p is not valid", buffer);
-		hidl_cb(Error::BAD_BUFFER, nullptr);
-		return;
+		MALI_GRALLOC_LOGE("Buffer to lock: %p is not valid",
+				  bufferHandle);
+		return Error::BAD_BUFFER;
 	}
 
-	int fenceFd;
-	if (!getFenceFd(acquireFence, &fenceFd))
-	{
-		hidl_cb(Error::BAD_VALUE, nullptr);
-		return;
-	}
-
-	void* data = nullptr;
-	const Error error = lockBuffer(bufferHandle, cpuUsage, accessRegion, fenceFd, &data);
-
-	hidl_cb(error, data);
+	const Error error = lockBuffer(bufferHandle, cpuUsage, accessRegion,
+				       acquireFence, outData);
+	return error;
 }
 
-void unlock(void* buffer, IMapper::unlock_cb hidl_cb)
-{
-	buffer_handle_t bufferHandle = gRegisteredHandles->get(buffer);
-	if (!bufferHandle)
-	{
-		MALI_GRALLOC_LOGE("Buffer to unlock: %p has not been registered with Gralloc", buffer);
-		hidl_cb(Error::BAD_BUFFER, nullptr);
-		return;
+Error unlock(buffer_handle_t bufferHandle, int *releaseFence) {
+	if(bufferHandle == nullptr) return Error::BAD_BUFFER;
+	if(!gRegisteredHandles->isRegistered(bufferHandle)) {
+		MALI_GRALLOC_LOGE("Buffer to unlock: %p has not been registered with Gralloc",
+		    bufferHandle);
+		return Error::BAD_BUFFER;
 	}
 
-	int fenceFd;
-	const Error error = unlockBuffer(bufferHandle, &fenceFd);
-	if (error == Error::NONE)
-	{
-		NATIVE_HANDLE_DECLARE_STORAGE(fenceStorage, 1, 0);
-		hidl_cb(error, getFenceHandle(fenceFd, fenceStorage));
-
-		if (fenceFd >= 0)
-		{
-			close(fenceFd);
-		}
-	}
-	else
-	{
-		hidl_cb(error, nullptr);
-	}
+	const Error error = unlockBuffer(bufferHandle, releaseFence);
+	return error;
 }
-
+#ifdef GRALLOC_MAPPER_4
 Error validateBufferSize(void* buffer,
                          const IMapper::BufferDescriptorInfo& descriptorInfo,
                          uint32_t in_stride)
@@ -515,28 +433,32 @@ Error validateBufferSize(void* buffer,
 
 	return Error::NONE;
 }
+#endif
 
-void getTransportSize(void* buffer, IMapper::getTransportSize_cb hidl_cb)
+Error getTransportSize(buffer_handle_t bufferHandle, uint32_t *outNumFds, uint32_t *outNumInts)
 {
+	*outNumFds = 0;
+	*outNumInts = 0;
 	/* The buffer must have been allocated by Gralloc */
-	buffer_handle_t bufferHandle = gRegisteredHandles->get(buffer);
 	if (!bufferHandle)
 	{
-		MALI_GRALLOC_LOGE("Buffer %p is not registered with Gralloc", bufferHandle);
-		hidl_cb(Error::BAD_BUFFER, -1, -1);
-		return;
+		MALI_GRALLOC_LOGE("Buffer %p is not registered with Gralloc",
+				  bufferHandle);
+		return Error::BAD_BUFFER;
 	}
 
 	if (private_handle_t::validate(bufferHandle) < 0)
 	{
-		MALI_GRALLOC_LOGE("Buffer %p is corrupted", buffer);
-		hidl_cb(Error::BAD_BUFFER, -1, -1);
-		return;
+		MALI_GRALLOC_LOGE("Buffer %p is corrupted", bufferHandle);
+		return Error::BAD_BUFFER;
 	}
-	hidl_cb(Error::NONE, bufferHandle->numFds, bufferHandle->numInts);
+	*outNumFds = bufferHandle->numFds;
+	*outNumInts = bufferHandle->numInts;
+	return Error::NONE;
 }
 
-void isSupported(const IMapper::BufferDescriptorInfo& description, IMapper::isSupported_cb hidl_cb)
+#ifdef GRALLOC_MAPPER_4
+bool isSupported(const IMapper::BufferDescriptorInfo &description)
 {
 	buffer_descriptor_t grallocDescriptor;
 	grallocDescriptor.width = description.width;
@@ -552,39 +474,36 @@ void isSupported(const IMapper::BufferDescriptorInfo& description, IMapper::isSu
 	if (result != 0)
 	{
 		MALI_GRALLOC_LOGV("Allocation for the given description will not succeed. error: %d", result);
-		hidl_cb(Error::NO_RESOURCES, false);
+		return false;
 	}
 	else
 	{
-		hidl_cb(Error::NONE, true);
+		return true;
 	}
 }
 
-void flushLockedBuffer(void *buffer, IMapper::flushLockedBuffer_cb hidl_cb)
+#endif
+Error flushLockedBuffer(buffer_handle_t handle)
 {
-	buffer_handle_t handle = gRegisteredHandles->get(buffer);
 	if (private_handle_t::validate(handle) < 0)
 	{
-		MALI_GRALLOC_LOGE("Bandle: %p is corrupted", handle);
-		hidl_cb(Error::BAD_BUFFER, hidl_handle{});
-		return;
+		MALI_GRALLOC_LOGE("Handle: %p is corrupted", handle);
+		return Error::BAD_BUFFER;
 	}
 
 	auto private_handle = static_cast<const private_handle_t *>(handle);
 	if (!private_handle->cpu_write && !private_handle->cpu_read)
 	{
 		MALI_GRALLOC_LOGE("Attempt to call flushLockedBuffer() on an unlocked buffer (%p)", handle);
-		hidl_cb(Error::BAD_BUFFER, hidl_handle{});
-		return;
+		return Error::BAD_BUFFER;
 	}
 
 	mali_gralloc_ion_sync_end(private_handle, false, true);
-	hidl_cb(Error::NONE, hidl_handle{});
+	return Error::NONE;
 }
 
-Error rereadLockedBuffer(void *buffer)
+Error rereadLockedBuffer(buffer_handle_t handle)
 {
-	buffer_handle_t handle = gRegisteredHandles->get(buffer);
 	if (private_handle_t::validate(handle) < 0)
 	{
 		MALI_GRALLOC_LOGE("Buffer: %p is corrupted", handle);
@@ -602,23 +521,23 @@ Error rereadLockedBuffer(void *buffer)
 	return Error::NONE;
 }
 
-void get(void *buffer, const IMapper::MetadataType &metadataType, IMapper::get_cb hidl_cb)
+Error get(buffer_handle_t buffer, const MetadataType &metadataType, std::vector<uint8_t> &vec)
 {
 	/* The buffer must have been allocated by Gralloc */
-	const private_handle_t *handle = static_cast<const private_handle_t *>(gRegisteredHandles->get(buffer));
+	const private_handle_t *handle = static_cast<const private_handle_t *>(buffer);
 	if (handle == nullptr)
 	{
 		MALI_GRALLOC_LOGE("Buffer: %p has not been registered with Gralloc", buffer);
-		hidl_cb(Error::BAD_BUFFER, hidl_vec<uint8_t>());
-		return;
+		return Error::BAD_BUFFER;
 	}
-	get_metadata(handle, metadataType, hidl_cb);
+
+	return get_metadata(handle, metadataType, vec);
 }
 
-Error set(void *buffer, const IMapper::MetadataType &metadataType, const hidl_vec<uint8_t> &metadata)
+Error set(buffer_handle_t buffer, const MetadataType &metadataType, const hidl_vec<uint8_t> &metadata)
 {
 	/* The buffer must have been allocated by Gralloc */
-	const private_handle_t *handle = static_cast<const private_handle_t *>(gRegisteredHandles->get(buffer));
+	const private_handle_t *handle = static_cast<const private_handle_t *>(buffer);
 	if (handle == nullptr)
 	{
 		MALI_GRALLOC_LOGE("Buffer: %p has not been registered with Gralloc", buffer);
@@ -627,129 +546,132 @@ Error set(void *buffer, const IMapper::MetadataType &metadataType, const hidl_ve
 	return set_metadata(handle, metadataType, metadata);
 }
 
-void listSupportedMetadataTypes(IMapper::listSupportedMetadataTypes_cb hidl_cb)
+MetadataTypeDescription describeStandard(StandardMetadataType meta, bool isGettable, bool isSettable)
+{
+	return MetadataTypeDescription(MetadataType(GRALLOC4_STANDARD_METADATA_TYPE,
+						    static_cast<uint64_t>(meta)), "", isGettable, isSettable);
+}
+
+std::vector<MetadataTypeDescription> listSupportedMetadataTypes()
 {
 	/* Returns a vector of {metadata type, description, isGettable, isSettable}
 	*  Only non-standardMetadataTypes require a description.
 	*/
-	hidl_vec<IMapper::MetadataTypeDescription> descriptions = {
-		{ android::gralloc4::MetadataType_BufferId, "", true, false },
-		{ android::gralloc4::MetadataType_Name, "", true, false },
-		{ android::gralloc4::MetadataType_Width, "", true, false },
-		{ android::gralloc4::MetadataType_Height, "", true, false },
-		{ android::gralloc4::MetadataType_LayerCount, "", true, false },
-		{ android::gralloc4::MetadataType_PixelFormatRequested, "", true, false },
-		{ android::gralloc4::MetadataType_PixelFormatFourCC, "", true, false },
-		{ android::gralloc4::MetadataType_PixelFormatModifier, "", true, false },
-		{ android::gralloc4::MetadataType_Usage, "", true, false },
-		{ android::gralloc4::MetadataType_AllocationSize, "", true, false },
-		{ android::gralloc4::MetadataType_ProtectedContent, "", true, false },
-		{ android::gralloc4::MetadataType_Compression, "", true, false },
-		{ android::gralloc4::MetadataType_Interlaced, "", true, false },
-		{ android::gralloc4::MetadataType_ChromaSiting, "", true, false },
-		{ android::gralloc4::MetadataType_PlaneLayouts, "", true, false },
-		{ android::gralloc4::MetadataType_Dataspace, "", true, true },
-		{ android::gralloc4::MetadataType_BlendMode, "", true, true },
-		{ android::gralloc4::MetadataType_Smpte2086, "", true, true },
-		{ android::gralloc4::MetadataType_Cta861_3, "", true, true },
-		{ android::gralloc4::MetadataType_Smpte2094_40, "", true, true },
-		{ android::gralloc4::MetadataType_Crop, "", true, true },
+	std::array<MetadataTypeDescription, 23> descriptions = {
+		describeStandard(StandardMetadataType::BUFFER_ID, true, false ),
+		describeStandard(StandardMetadataType::NAME, true, false ),
+		describeStandard(StandardMetadataType::WIDTH, true, false ),
+		describeStandard(StandardMetadataType::STRIDE, true, false ),
+		describeStandard(StandardMetadataType::HEIGHT, true, false ),
+		describeStandard(StandardMetadataType::LAYER_COUNT, true, false ),
+		describeStandard(StandardMetadataType::PIXEL_FORMAT_REQUESTED, true, false ),
+		describeStandard(StandardMetadataType::PIXEL_FORMAT_FOURCC, true, false ),
+		describeStandard(StandardMetadataType::PIXEL_FORMAT_MODIFIER, true, false ),
+		describeStandard(StandardMetadataType::USAGE, true, false ),
+		describeStandard(StandardMetadataType::ALLOCATION_SIZE, true, false ),
+		describeStandard(StandardMetadataType::PROTECTED_CONTENT, true, false ),
+		describeStandard(StandardMetadataType::COMPRESSION, true, false ),
+		describeStandard(StandardMetadataType::INTERLACED, true, false ),
+		describeStandard(StandardMetadataType::CHROMA_SITING, true, false ),
+		describeStandard(StandardMetadataType::PLANE_LAYOUTS, true, false ),
+		describeStandard(StandardMetadataType::DATASPACE, true, true ),
+		describeStandard(StandardMetadataType::BLEND_MODE, true, true ),
+		describeStandard(StandardMetadataType::SMPTE2086, true, true ),
+		describeStandard(StandardMetadataType::CTA861_3, true, true ),
+		describeStandard(StandardMetadataType::SMPTE2094_40, true, true ),
+		describeStandard(StandardMetadataType::CROP, true, true ),
 		/* Arm vendor metadata */
 		{ ArmMetadataType_PLANE_FDS,
-			"Vector of file descriptors of each plane", true, false },
-	};
-	hidl_cb(Error::NONE, descriptions);
-	return;
+			"Vector of file descriptors of each plane", true, false},
+        };
+	return std::vector<MetadataTypeDescription>(descriptions.begin(), descriptions.end());
 }
 
 
-static hidl_vec<IMapper::MetadataDump> dumpBufferHelper(const private_handle_t* handle)
+static BufferDump dumpBufferHelper(const private_handle_t *handle)
 {
-	hidl_vec<IMapper::MetadataType> standardMetadataTypes = {
-		android::gralloc4::MetadataType_BufferId,
-		android::gralloc4::MetadataType_Name,
-		android::gralloc4::MetadataType_Width,
-		android::gralloc4::MetadataType_Height,
-		android::gralloc4::MetadataType_LayerCount,
-		android::gralloc4::MetadataType_PixelFormatRequested,
-		android::gralloc4::MetadataType_PixelFormatFourCC,
-		android::gralloc4::MetadataType_PixelFormatModifier,
-		android::gralloc4::MetadataType_Usage,
-		android::gralloc4::MetadataType_AllocationSize,
-		android::gralloc4::MetadataType_ProtectedContent,
-		android::gralloc4::MetadataType_Compression,
-		android::gralloc4::MetadataType_Interlaced,
-		android::gralloc4::MetadataType_ChromaSiting,
-		android::gralloc4::MetadataType_PlaneLayouts,
-		android::gralloc4::MetadataType_Dataspace,
-		android::gralloc4::MetadataType_BlendMode,
-		android::gralloc4::MetadataType_Smpte2086,
-		android::gralloc4::MetadataType_Cta861_3,
-		android::gralloc4::MetadataType_Smpte2094_40,
-		android::gralloc4::MetadataType_Crop,
+	static std::array<MetadataType, 21> standardMetadataTypes = {
+		MetadataType(StandardMetadataType::BUFFER_ID),
+		MetadataType(StandardMetadataType::NAME),
+		MetadataType(StandardMetadataType::WIDTH),
+		MetadataType(StandardMetadataType::HEIGHT),
+		MetadataType(StandardMetadataType::LAYER_COUNT),
+		MetadataType(StandardMetadataType::PIXEL_FORMAT_REQUESTED),
+		MetadataType(StandardMetadataType::PIXEL_FORMAT_FOURCC),
+		MetadataType(StandardMetadataType::PIXEL_FORMAT_MODIFIER),
+		MetadataType(StandardMetadataType::USAGE),
+		MetadataType(StandardMetadataType::ALLOCATION_SIZE),
+		MetadataType(StandardMetadataType::PROTECTED_CONTENT),
+		MetadataType(StandardMetadataType::COMPRESSION),
+		MetadataType(StandardMetadataType::INTERLACED),
+		MetadataType(StandardMetadataType::CHROMA_SITING),
+		MetadataType(StandardMetadataType::PLANE_LAYOUTS),
+		MetadataType(StandardMetadataType::DATASPACE),
+		MetadataType(StandardMetadataType::BLEND_MODE),
+		MetadataType(StandardMetadataType::SMPTE2086),
+		MetadataType(StandardMetadataType::CTA861_3),
+		MetadataType(StandardMetadataType::SMPTE2094_40),
+		MetadataType(StandardMetadataType::CROP),
 	};
 
-	std::vector<IMapper::MetadataDump> metadataDumps;
+	std::vector<MetadataDump> metadataDumps;
 	for (const auto& metadataType: standardMetadataTypes)
 	{
-		get_metadata(handle, metadataType, [&metadataDumps, &metadataType](Error error, hidl_vec<uint8_t> metadata) {
-			switch(error)
-			{
-			case Error::NONE:
-				metadataDumps.push_back({metadataType, metadata});
-				break;
-			case Error::UNSUPPORTED:
-			default:
-				return;
-			}
-		});
+		std::vector<uint8_t> metadata;
+		Error error = get_metadata(handle, metadataType, metadata);
+		if (error == Error::NONE)
+		{
+			metadataDumps.push_back(MetadataDump(MetadataType(metadataType), metadata));
+		}
+		else
+		{
+			return BufferDump();
+		}
 	}
-	return hidl_vec<IMapper::MetadataDump>(metadataDumps);
+	return BufferDump(metadataDumps);
 }
 
-void dumpBuffer(void *buffer, IMapper::dumpBuffer_cb hidl_cb)
+Error dumpBuffer(buffer_handle_t buffer, BufferDump &bufferDump)
 {
-	IMapper::BufferDump bufferDump{};
-	auto handle = static_cast<const private_handle_t *>(gRegisteredHandles->get(buffer));
+	auto handle = static_cast<const private_handle_t *>(buffer);
 	if (handle == nullptr)
 	{
 		MALI_GRALLOC_LOGE("Buffer: %p has not been registered with Gralloc", buffer);
-		hidl_cb(Error::BAD_BUFFER, bufferDump);
-		return;
+		return Error::BAD_BUFFER;
 	}
 
-	bufferDump.metadataDump = dumpBufferHelper(handle);
-	hidl_cb(Error::NONE, bufferDump);
+	bufferDump = dumpBufferHelper(handle);
+	return Error::NONE;
 }
 
-void dumpBuffers(IMapper::dumpBuffers_cb hidl_cb)
+std::vector<BufferDump> dumpBuffers()
 {
-	std::vector<IMapper::BufferDump> bufferDumps;
+	std::vector<BufferDump> bufferDumps;
 	gRegisteredHandles->for_each([&bufferDumps](buffer_handle_t buffer) {
-		IMapper::BufferDump bufferDump { dumpBufferHelper(static_cast<const private_handle_t *>(buffer)) };
+		BufferDump bufferDump { dumpBufferHelper(static_cast<const private_handle_t *>(buffer)) };
 		bufferDumps.push_back(bufferDump);
 	});
-	hidl_cb(Error::NONE, hidl_vec<IMapper::BufferDump>(bufferDumps));
+	return bufferDumps;
 }
 
-void getReservedRegion(void *buffer, IMapper::getReservedRegion_cb hidl_cb)
+Error getReservedRegion(buffer_handle_t buffer, void **outReservedRegion, uint64_t &outReservedSize)
 {
-	auto handle = static_cast<const private_handle_t *>(gRegisteredHandles->get(buffer));
+	auto handle = static_cast<const private_handle_t *>(buffer);
 	if (handle == nullptr)
 	{
 		MALI_GRALLOC_LOGE("Buffer: %p has not been registered with Gralloc", buffer);
-		hidl_cb(Error::BAD_BUFFER, 0, 0);
-		return;
+		return Error::BAD_BUFFER;
 	}
 	else if (handle->reserved_region_size == 0)
 	{
 		MALI_GRALLOC_LOGE("Buffer: %p has no reserved region", buffer);
-		hidl_cb(Error::BAD_BUFFER, 0, 0);
-		return;
+		return Error::BAD_BUFFER;
 	}
-	void *reserved_region = static_cast<std::byte *>(handle->attr_base)
+
+	*outReservedRegion = static_cast<std::byte *>(handle->attr_base)
 	    + mapper::common::shared_metadata_size();
-	hidl_cb(Error::NONE, reserved_region, handle->reserved_region_size);
+	outReservedSize = handle->reserved_region_size;
+	return Error::NONE;
 }
 
 } // namespace common
