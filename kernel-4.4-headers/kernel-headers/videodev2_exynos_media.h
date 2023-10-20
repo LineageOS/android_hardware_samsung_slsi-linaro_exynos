@@ -74,4 +74,9 @@
 #define YUV420N_CR_SIZE(w,h) (__ALIGN_UP((__ALIGN_UP((w) / 2, 16) * (__ALIGN_UP((h), 16) / 2) + 256), 16))
 #define YUV420N_CB_BASE(base,w,h) ((base) + YUV420N_Y_SIZE((w), (h)))
 #define YUV420N_CR_BASE(base,w,h) (YUV420N_CB_BASE((base), (w), (h)) + YUV420N_CB_SIZE((w), (h)))
+#define NV12M_Y_SIZE(w,h) (__ALIGN_UP((w), 64) * __ALIGN_UP((h), 16) + 256)
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+#define NV12M_CBCR_SIZE(w,h) ((__ALIGN_UP((w), 64) * __ALIGN_UP((h), 16) / 2) + 256)
+#define NV12M_Y_2B_SIZE(w,h) (__ALIGN_UP((w / 4), 16) * __ALIGN_UP((h), 16) + 256)
+#define NV12M_CBCR_2B_SIZE(w,h) ((__ALIGN_UP((w / 4), 16) * __ALIGN_UP((h), 16) / 2) + 256)
 #endif
