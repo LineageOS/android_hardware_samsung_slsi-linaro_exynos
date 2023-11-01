@@ -18,6 +18,7 @@
 
 #include <inttypes.h>
 #include <sync/sync.h>
+#include <hardware/gralloc1.h>
 #include "RegisteredHandlePool.h"
 #include "Mapper.h"
 #include "BufferDescriptor.h"
@@ -107,6 +108,37 @@ static Error unregisterBuffer(buffer_handle_t bufferHandle)
 }
 
 /*
+ * Converts a gralloc error code to a mapper error code
+ *
+ * @param grallocError  [in] Gralloc error as integer.
+ *
+ * @return Corresponding Mapper error code
+ *
+ * @note There is no full 1:1 correspondence, several gralloc errors may map to Error::UNSUPPORTED.
+ * @note -EINVAL is mapped to Error::BAD_VALUE.
+ */
+static Error grallocErrorToMapperError(int grallocError)
+{
+	switch(grallocError)
+	{
+		case GRALLOC1_ERROR_NONE:
+			return Error::NONE;
+		case GRALLOC1_ERROR_BAD_DESCRIPTOR:
+			return Error::BAD_DESCRIPTOR;
+		case GRALLOC1_ERROR_BAD_HANDLE:
+			return Error::BAD_BUFFER;
+		case GRALLOC1_ERROR_BAD_VALUE:
+		case -EINVAL:
+			return Error::BAD_VALUE;
+		case GRALLOC1_ERROR_NO_RESOURCES:
+			return Error::NO_RESOURCES;
+		default:
+			/* Covers NOT_SHARED, UNDEFINED, UNSUPPORTED */
+			return Error::UNSUPPORTED;
+	}
+}
+
+/*
  * Locks the given buffer for the specified CPU usage.
  *
  * @param bufferHandle [in]  Buffer to lock.
@@ -119,6 +151,7 @@ static Error unregisterBuffer(buffer_handle_t bufferHandle)
  * @return Error::BAD_BUFFER for an invalid buffer
  *         Error::NO_RESOURCES when unable to duplicate fence
  *         Error::BAD_VALUE when locking fails
+ *         Error::UNSUPPORTED when locking fails on unsupported image formats
  *         Error::NONE on successful buffer lock
  */
 static Error lockBuffer(buffer_handle_t bufferHandle,
@@ -170,16 +203,24 @@ static Error lockBuffer(buffer_handle_t bufferHandle,
 	}
 
 	void* data = nullptr;
-	if (mali_gralloc_lock(bufferHandle, cpuUsage, accessRegion.left, accessRegion.top,
-						(accessRegion.right - accessRegion.left),
-						(accessRegion.bottom - accessRegion.top), &data) < 0)
+	const int gralloc_err = mali_gralloc_lock(
+					bufferHandle, cpuUsage,
+					accessRegion.left, accessRegion.top,
+					(accessRegion.right - accessRegion.left),
+					(accessRegion.bottom - accessRegion.top),
+					&data);
+
+	const Error lock_err = grallocErrorToMapperError(gralloc_err);
+	if(Error::NONE == lock_err)
 	{
-		return Error::BAD_VALUE;
+		*outData = data;
+	}
+	else
+	{
+		MALI_GRALLOC_LOGE("Locking failed with error: %d", gralloc_err);
 	}
 
-	*outData = data;
-
-	return Error::NONE;
+	return lock_err;
 }
 
 /*
@@ -210,16 +251,21 @@ static Error unlockBuffer(buffer_handle_t bufferHandle,
 	}
 #endif
 
-	const int result = mali_gralloc_unlock(bufferHandle);
-	if (result)
+	const int gralloc_err = mali_gralloc_unlock(bufferHandle);
+	const Error unlock_err = grallocErrorToMapperError(gralloc_err);
+
+	if (Error::NONE == unlock_err)
 	{
-		MALI_GRALLOC_LOGE("Unlocking failed with error: %d", result);
-		return Error::BAD_VALUE;
+		*outFenceFd = -1;
+	}
+	else
+	{
+		MALI_GRALLOC_LOGE("Unlocking failed with error: %d",
+				  gralloc_err);
+		return Error::BAD_BUFFER;
 	}
 
-	*outFenceFd = -1;
-
-	return Error::NONE;
+	return unlock_err;
 }
 
 Error importBuffer(const native_handle_t *inBuffer, buffer_handle_t *outBuffer)
