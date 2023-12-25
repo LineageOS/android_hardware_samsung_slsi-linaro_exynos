@@ -211,11 +211,17 @@ typedef struct {
     bool enableThumb;
 
     char maker[32];
+#if HWJPEG_ANDROID_VERSION >= 12
     char model[64];
+#else
+    char model[32];
+#endif
     char software[32];
     char exif_version[4];
     char date_time[20];
+#if HWJPEG_ANDROID_VERSION >= 11
     char offset_time[7];
+#endif
     char sec_time[5];
     unsigned int  maker_note_size;
     unsigned char *maker_note;
