@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f1d64812_e91c5ce6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2644
+      },
+      "writtenOn": "2024-02-19T05:34:40Z",
+      "side": 1,
+      "message": "Fixes the build error for dopinder if troika/kane are also synced.\noverriding commands for target `out/target/product/dopinder/vendor/bin/hw/\nandroid.hardware.graphics.allocator@4.0-service\u0027, previously defined at\nout/soong/installs-lineage_dopinder.mk:32240\n\nDoesn\u0027t break troika builds, it uses 2.0-service.",
+      "revId": "803047fcf521519132c9166adc96d016384ab176",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
