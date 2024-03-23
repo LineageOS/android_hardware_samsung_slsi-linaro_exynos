@@ -1973,7 +1973,7 @@ void ExynosCameraMetadataConverter::translateVendorJpegMetaData(CameraMetadata *
     uniqueIdStr = String8::format("%s", m_parameters->getImageUniqueId());
 
     settings->update(SAMSUNG_ANDROID_JPEG_IMAGE_UNIQUE_ID, uniqueIdStr);
-    CLOGV("imageUniqueId is %s", uniqueIdStr.string());
+    CLOGV("imageUniqueId is %s", uniqueIdStr.c_str());
 
     return;
 }

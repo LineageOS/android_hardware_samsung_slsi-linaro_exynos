@@ -817,7 +817,7 @@ void ISecCameraHardware::initDefaultParameters()
 
     if (mCameraId == CAMERA_FACING_BACK) {
         mParameters.set(CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES,
-                SecCameraParameters::createSizesStr(backPreviewSizes, ARRAY_SIZE(backPreviewSizes)).string());
+                SecCameraParameters::createSizesStr(backPreviewSizes, ARRAY_SIZE(backPreviewSizes)).c_str());
 
         mParameters.set(CameraParameters::KEY_PREVIEW_FPS_RANGE, B_KEY_PREVIEW_FPS_RANGE_VALUE);
         mParameters.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE, B_KEY_SUPPORTED_PREVIEW_FPS_RANGE_VALUE);
@@ -828,7 +828,7 @@ void ISecCameraHardware::initDefaultParameters()
         mParameters.set(CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO, B_KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO_VALUE);
     } else {
         mParameters.set(CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES,
-                SecCameraParameters::createSizesStr(frontPreviewSizes, ARRAY_SIZE(frontPreviewSizes)).string());
+                SecCameraParameters::createSizesStr(frontPreviewSizes, ARRAY_SIZE(frontPreviewSizes)).c_str());
 
         mParameters.set(CameraParameters::KEY_PREVIEW_FPS_RANGE, F_KEY_PREVIEW_FPS_RANGE_VALUE);
         mParameters.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE, F_KEY_SUPPORTED_PREVIEW_FPS_RANGE_VALUE);
@@ -841,7 +841,7 @@ void ISecCameraHardware::initDefaultParameters()
 
     mParameters.setPreviewFormat(previewPixelFormats[0].desc);
     mParameters.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FORMATS,
-        SecCameraParameters::createValuesStr(previewPixelFormats, ARRAY_SIZE(previewPixelFormats)).string());
+        SecCameraParameters::createValuesStr(previewPixelFormats, ARRAY_SIZE(previewPixelFormats)).c_str());
 
     /* Picture */
     mParameters.setPictureSize(mPictureSize.width, mPictureSize.height);
@@ -850,21 +850,21 @@ void ISecCameraHardware::initDefaultParameters()
 
     if (mCameraId == CAMERA_FACING_BACK) {
         mParameters.set(CameraParameters::KEY_SUPPORTED_PICTURE_SIZES,
-                SecCameraParameters::createSizesStr(backPictureSizes, ARRAY_SIZE(backPictureSizes)).string());
+                SecCameraParameters::createSizesStr(backPictureSizes, ARRAY_SIZE(backPictureSizes)).c_str());
 
         mParameters.set(CameraParameters::KEY_SUPPORTED_JPEG_THUMBNAIL_SIZES,
-                SecCameraParameters::createSizesStr(backThumbSizes, ARRAY_SIZE(backThumbSizes)).string());
+                SecCameraParameters::createSizesStr(backThumbSizes, ARRAY_SIZE(backThumbSizes)).c_str());
     } else {
         mParameters.set(CameraParameters::KEY_SUPPORTED_PICTURE_SIZES,
-                SecCameraParameters::createSizesStr(frontPictureSizes, ARRAY_SIZE(frontPictureSizes)).string());
+                SecCameraParameters::createSizesStr(frontPictureSizes, ARRAY_SIZE(frontPictureSizes)).c_str());
 
         mParameters.set(CameraParameters::KEY_SUPPORTED_JPEG_THUMBNAIL_SIZES,
-                SecCameraParameters::createSizesStr(frontThumbSizes, ARRAY_SIZE(frontThumbSizes)).string());
+                SecCameraParameters::createSizesStr(frontThumbSizes, ARRAY_SIZE(frontThumbSizes)).c_str());
     }
 
     mParameters.setPictureFormat(picturePixelFormats[0].desc);
     mParameters.set(CameraParameters::KEY_SUPPORTED_PICTURE_FORMATS,
-        SecCameraParameters::createValuesStr(picturePixelFormats, ARRAY_SIZE(picturePixelFormats)).string());
+        SecCameraParameters::createValuesStr(picturePixelFormats, ARRAY_SIZE(picturePixelFormats)).c_str());
 
 	mParameters.set(CameraParameters::KEY_JPEG_QUALITY, 1);
 	mParameters.set(CameraParameters::KEY_JPEG_THUMBNAIL_QUALITY, 100);
@@ -875,11 +875,11 @@ void ISecCameraHardware::initDefaultParameters()
     mParameters.setVideoSize(mVideoSize.width, mVideoSize.height);
     if (mCameraId == CAMERA_FACING_BACK) {
         mParameters.set(CameraParameters::KEY_SUPPORTED_VIDEO_SIZES,
-            SecCameraParameters::createSizesStr(backRecordingSizes, ARRAY_SIZE(backRecordingSizes)).string());
+            SecCameraParameters::createSizesStr(backRecordingSizes, ARRAY_SIZE(backRecordingSizes)).c_str());
         mParameters.set(CameraParameters::KEY_VIDEO_STABILIZATION_SUPPORTED, B_KEY_VIDEO_STABILIZATION_SUPPORTED_VALUE);
     } else {
         mParameters.set(CameraParameters::KEY_SUPPORTED_VIDEO_SIZES,
-                SecCameraParameters::createSizesStr(frontRecordingSizes, ARRAY_SIZE(frontRecordingSizes)).string());
+                SecCameraParameters::createSizesStr(frontRecordingSizes, ARRAY_SIZE(frontRecordingSizes)).c_str());
         mParameters.set(CameraParameters::KEY_VIDEO_STABILIZATION_SUPPORTED, F_KEY_VIDEO_STABILIZATION_SUPPORTED_VALUE);
     }
 
@@ -888,27 +888,27 @@ void ISecCameraHardware::initDefaultParameters()
     /* UI settings */
     mParameters.set(CameraParameters::KEY_WHITE_BALANCE, whiteBalances[0].desc);
     mParameters.set(CameraParameters::KEY_SUPPORTED_WHITE_BALANCE,
-        SecCameraParameters::createValuesStr(whiteBalances, ARRAY_SIZE(whiteBalances)).string());
+        SecCameraParameters::createValuesStr(whiteBalances, ARRAY_SIZE(whiteBalances)).c_str());
 
     mParameters.set(CameraParameters::KEY_EFFECT, effects[0].desc);
     mParameters.set(CameraParameters::KEY_SUPPORTED_EFFECTS,
-       SecCameraParameters::createValuesStr(effects, ARRAY_SIZE(effects)).string());
+       SecCameraParameters::createValuesStr(effects, ARRAY_SIZE(effects)).c_str());
 
     if (mCameraId == CAMERA_FACING_BACK) {
         mParameters.set(CameraParameters::KEY_SCENE_MODE, sceneModes[0].desc);
         mParameters.set(CameraParameters::KEY_SUPPORTED_SCENE_MODES,
-                SecCameraParameters::createValuesStr(sceneModes, ARRAY_SIZE(sceneModes)).string());
+                SecCameraParameters::createValuesStr(sceneModes, ARRAY_SIZE(sceneModes)).c_str());
 
         if (IsFlashSupported()) {
             mParameters.set(CameraParameters::KEY_FLASH_MODE, flashModes[0].desc);
             mParameters.set(CameraParameters::KEY_SUPPORTED_FLASH_MODES,
-                    SecCameraParameters::createValuesStr(flashModes, ARRAY_SIZE(flashModes)).string());
+                    SecCameraParameters::createValuesStr(flashModes, ARRAY_SIZE(flashModes)).c_str());
         }
 
         mParameters.set(CameraParameters::KEY_FOCUS_MODE, backFocusModes[0].desc);
         mParameters.set(CameraParameters::KEY_FOCUS_DISTANCES, B_KEY_NORMAL_FOCUS_DISTANCES_VALUE);
         mParameters.set(CameraParameters::KEY_SUPPORTED_FOCUS_MODES,
-                SecCameraParameters::createValuesStr(backFocusModes, ARRAY_SIZE(backFocusModes)).string());
+                SecCameraParameters::createValuesStr(backFocusModes, ARRAY_SIZE(backFocusModes)).c_str());
 
         if (IsAutoFocusSupported()) {
             /* FOCUS AREAS supported.
@@ -924,7 +924,7 @@ void ISecCameraHardware::initDefaultParameters()
         mParameters.set(CameraParameters::KEY_FOCUS_MODE, frontFocusModes[0].desc);
         mParameters.set(CameraParameters::KEY_FOCUS_DISTANCES, F_KEY_FOCUS_DISTANCES_VALUE);
         mParameters.set(CameraParameters::KEY_SUPPORTED_FOCUS_MODES,
-                SecCameraParameters::createValuesStr(frontFocusModes, ARRAY_SIZE(frontFocusModes)).string());
+                SecCameraParameters::createValuesStr(frontFocusModes, ARRAY_SIZE(frontFocusModes)).c_str());
     }
 
     /* Face Detect */
@@ -973,11 +973,11 @@ void ISecCameraHardware::initDefaultParameters()
     // chooseAntiBandingFrequency();
     if (mCameraId == CAMERA_FACING_BACK) {
         mParameters.set(CameraParameters::KEY_SUPPORTED_ANTIBANDING,
-                SecCameraParameters::createValuesStr(antibandings, ARRAY_SIZE(antibandings)).string());
+                SecCameraParameters::createValuesStr(antibandings, ARRAY_SIZE(antibandings)).c_str());
         mParameters.set(CameraParameters::KEY_ANTIBANDING, antibandings[3].desc);
     }
 
-    ALOGV("initDefaultParameters EX: %s", mParameters.flatten().string());
+    ALOGV("initDefaultParameters EX: %s", mParameters.flatten().c_str());
 }
 
 status_t ISecCameraHardware::setPreviewWindow(preview_stream_ops *w)
@@ -4509,7 +4509,7 @@ status_t ISecCameraHardware::setParameters(const CameraParameters &params)
 
     Mutex::Autolock l(&mLock);
 
-    ALOGV("DEBUG(%s): [Before Param] %s", __FUNCTION__, params.flatten().string());
+    ALOGV("DEBUG(%s): [Before Param] %s", __FUNCTION__, params.flatten().c_str());
 
     status_t rc, final_rc = NO_ERROR;
 
@@ -4765,7 +4765,7 @@ status_t ISecCameraHardware::setParameters(const CameraParameters &params)
 
     LOG_PERFORMANCE_END(1, "total");
 
-    ALOGV("DEBUG(%s): [After Param] %s", __FUNCTION__, params.flatten().string());
+    ALOGV("DEBUG(%s): [After Param] %s", __FUNCTION__, params.flatten().c_str());
 
     ALOGD("setParameters X: %s", final_rc == NO_ERROR ? "success" : "failed");
     return final_rc;
@@ -5014,11 +5014,11 @@ status_t ISecCameraHardware::setRecordingMode(const CameraParameters &params)
     mParameters.set(CameraParameters::KEY_RECORDING_HINT, str);
 
     String8 recordHint(str);
-    ALOGV("setRecordingMode: %s", recordHint.string());
+    ALOGV("setRecordingMode: %s", recordHint.c_str());
 
     if (recordHint == "true") {
         mFps = mMaxFrameRate / 1000;
-        ALOGD("DEBUG(%s): fps(%d) %s ", __FUNCTION__, mFps, recordHint.string());
+        ALOGD("DEBUG(%s): fps(%d) %s ", __FUNCTION__, mFps, recordHint.c_str());
 
         mMovieMode = true;
     } else {
