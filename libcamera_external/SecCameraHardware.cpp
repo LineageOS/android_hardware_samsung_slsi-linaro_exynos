@@ -1025,7 +1025,7 @@ int SecCameraHardware::FLiteV4l2::gctrl(uint32_t id, char *value, int size)
 
     CLEAR(ctrl);
     ctrl.id = id;
-    ctrl.string = value;
+    ctrl.c_str = value;
     ctrl.size=size;
 
     int err = ioctl(mCameraFd, VIDIOC_G_EXT_CTRLS, &ctrls);
@@ -1061,7 +1061,7 @@ int SecCameraHardware::FLiteV4l2::sctrl(uint32_t id, char *value, int size)
 
     CLEAR(ctrl);
     ctrl.id = id;
-    ctrl.string = value;
+    ctrl.c_str = value;
     ctrl.size=size;
 
     int err = ioctl(mCameraFd, VIDIOC_S_EXT_CTRLS, &ctrls);
