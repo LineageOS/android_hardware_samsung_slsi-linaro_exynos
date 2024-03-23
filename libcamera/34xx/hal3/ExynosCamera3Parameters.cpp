@@ -5597,13 +5597,13 @@ void ExynosCamera3Parameters::setSamsungCamera(bool value)
             int max_zoom_ratio = (int)getMaxZoomRatio();
             tempStr.setTo("");
             if (getZoomRatioList(tempStr, maxZoom, max_zoom_ratio, m_staticInfo->zoomRatioList) == NO_ERROR)
-                m_params.set(CameraParameters::KEY_ZOOM_RATIOS, tempStr.string());
+                m_params.set(CameraParameters::KEY_ZOOM_RATIOS, tempStr.c_str());
             else
                 m_params.set(CameraParameters::KEY_ZOOM_RATIOS, "100");
 
             m_params.set("constant-growth-rate-zoom-supported", "true");
 
-            CLOGV("INFO(%s):zoomRatioList=%s", "setDefaultParameter", tempStr.string());
+            CLOGV("INFO(%s):zoomRatioList=%s", "setDefaultParameter", tempStr.c_str());
         } else {
             m_params.set(CameraParameters::KEY_ZOOM_SUPPORTED, "false");
             m_params.set(CameraParameters::KEY_SMOOTH_ZOOM_SUPPORTED, "false");
