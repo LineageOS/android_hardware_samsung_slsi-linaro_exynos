@@ -137,7 +137,7 @@ void mali_gralloc_dump_internal(uint32_t *outSize, char *outBuffer)
 		{
 			dumpSize = dumpStrings.size();
 			*outSize = (dumpSize < *outSize) ? dumpSize : *outSize;
-			memcpy(outBuffer, dumpStrings.string(), *outSize);
+			memcpy(outBuffer, dumpStrings.c_str(), *outSize);
 		}
 	}
 }

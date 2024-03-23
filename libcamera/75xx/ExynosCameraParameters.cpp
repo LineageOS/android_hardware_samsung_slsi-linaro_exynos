@@ -454,7 +454,7 @@ void ExynosCameraParameters::setDefaultParameter(void)
         tempStr = String8::format("%dx%d", m_cameraInfo.previewW, m_cameraInfo.previewH);
     }
 
-    p.set(CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES, tempStr.string());
+    p.set(CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES, tempStr.c_str());
     CLOGD("DEBUG(%s): Default preview size is %dx%d", __FUNCTION__, m_cameraInfo.previewW, m_cameraInfo.previewH);
     p.setPreviewSize(m_cameraInfo.previewW, m_cameraInfo.previewH);
 
@@ -491,9 +491,9 @@ void ExynosCameraParameters::setDefaultParameter(void)
     }
 #endif
 
-    CLOGD("DEBUG(%s): KEY_SUPPORTED_VIDEO_SIZES %s", __FUNCTION__, tempStr.string());
+    CLOGD("DEBUG(%s): KEY_SUPPORTED_VIDEO_SIZES %s", __FUNCTION__, tempStr.c_str());
 
-    p.set(CameraParameters::KEY_SUPPORTED_VIDEO_SIZES, tempStr.string());
+    p.set(CameraParameters::KEY_SUPPORTED_VIDEO_SIZES, tempStr.c_str());
 
     CLOGD("DEBUG(%s): Max video size is %dx%d", __FUNCTION__, m_cameraInfo.maxVideoW, m_cameraInfo.maxVideoH);
     CLOGD("DEBUG(%s): Default video size is %dx%d", __FUNCTION__, m_cameraInfo.videoW, m_cameraInfo.videoH);
@@ -511,7 +511,7 @@ void ExynosCameraParameters::setDefaultParameter(void)
     /* Preferred preview size for Video */
     tempStr.setTo("");
     tempStr = String8::format("%dx%d", m_cameraInfo.previewW, m_cameraInfo.previewH);
-    p.set(CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO, tempStr.string());
+    p.set(CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO, tempStr.c_str());
 
     /* Picture Size */
     getMaxPictureSize(&m_cameraInfo.pictureW, &m_cameraInfo.pictureH);
@@ -525,7 +525,7 @@ void ExynosCameraParameters::setDefaultParameter(void)
         tempStr = String8::format("%dx%d", m_cameraInfo.pictureW, m_cameraInfo.pictureH);
     }
 
-    p.set(CameraParameters::KEY_SUPPORTED_PICTURE_SIZES, tempStr.string());
+    p.set(CameraParameters::KEY_SUPPORTED_PICTURE_SIZES, tempStr.c_str());
     CLOGD("DEBUG(%s): Default picture size is %dx%d", __FUNCTION__, m_cameraInfo.pictureW, m_cameraInfo.pictureH);
     p.setPictureSize(m_cameraInfo.pictureW, m_cameraInfo.pictureH);
 
@@ -545,7 +545,7 @@ void ExynosCameraParameters::setDefaultParameter(void)
     }
     /* 0x0 is no thumbnail mode */
     tempStr.append(",0x0");
-    p.set(CameraParameters::KEY_SUPPORTED_JPEG_THUMBNAIL_SIZES, tempStr.string());
+    p.set(CameraParameters::KEY_SUPPORTED_JPEG_THUMBNAIL_SIZES, tempStr.c_str());
     p.set(CameraParameters::KEY_JPEG_THUMBNAIL_WIDTH,  m_cameraInfo.thumbnailW);
     p.set(CameraParameters::KEY_JPEG_THUMBNAIL_HEIGHT, m_cameraInfo.thumbnailH);
 
@@ -614,7 +614,7 @@ void ExynosCameraParameters::setDefaultParameter(void)
     }
 
     p.set(CameraParameters::KEY_SUPPORTED_FOCUS_MODES,
-          tempStr.string());
+          tempStr.c_str());
 
     if (focusMode & FOCUS_MODE_AUTO)
         p.set(CameraParameters::KEY_FOCUS_MODE,
@@ -679,7 +679,7 @@ void ExynosCameraParameters::setDefaultParameter(void)
         tempStr.append(CameraParameters::FLASH_MODE_TORCH);
     }
 
-    p.set(CameraParameters::KEY_SUPPORTED_FLASH_MODES, tempStr.string());
+    p.set(CameraParameters::KEY_SUPPORTED_FLASH_MODES, tempStr.c_str());
     p.set(CameraParameters::KEY_FLASH_MODE, CameraParameters::FLASH_MODE_OFF);
 
     /* scene mode */
@@ -750,7 +750,7 @@ void ExynosCameraParameters::setDefaultParameter(void)
     }
 
     p.set(CameraParameters::KEY_SUPPORTED_SCENE_MODES,
-          tempStr.string());
+          tempStr.c_str());
     p.set(CameraParameters::KEY_SCENE_MODE,
           CameraParameters::SCENE_MODE_AUTO);
 
@@ -793,7 +793,7 @@ void ExynosCameraParameters::setDefaultParameter(void)
         tempStr.append(CameraParameters::EFFECT_AQUA);
     }
 
-    p.set(CameraParameters::KEY_SUPPORTED_EFFECTS, tempStr.string());
+    p.set(CameraParameters::KEY_SUPPORTED_EFFECTS, tempStr.c_str());
     p.set(CameraParameters::KEY_EFFECT, CameraParameters::EFFECT_NONE);
 
     /* white balance */
@@ -832,7 +832,7 @@ void ExynosCameraParameters::setDefaultParameter(void)
     }
 
     p.set(CameraParameters::KEY_SUPPORTED_WHITE_BALANCE,
-          tempStr.string());
+          tempStr.c_str());
     p.set(CameraParameters::KEY_WHITE_BALANCE, CameraParameters::WHITE_BALANCE_AUTO);
 
     /* Auto Whitebalance Lock supported */
@@ -862,7 +862,7 @@ void ExynosCameraParameters::setDefaultParameter(void)
     }
 
     p.set(CameraParameters::KEY_SUPPORTED_ANTIBANDING,
-          tempStr.string());
+          tempStr.c_str());
 
     p.set(CameraParameters::KEY_ANTIBANDING, CameraParameters::ANTIBANDING_AUTO);
 
@@ -894,13 +894,13 @@ void ExynosCameraParameters::setDefaultParameter(void)
             int max_zoom_ratio = (int)getMaxZoomRatio();
             tempStr.setTo("");
             if (getZoomRatioList(tempStr, maxZoom, max_zoom_ratio, m_staticInfo->zoomRatioList) == NO_ERROR)
-                p.set(CameraParameters::KEY_ZOOM_RATIOS, tempStr.string());
+                p.set(CameraParameters::KEY_ZOOM_RATIOS, tempStr.c_str());
             else
                 p.set(CameraParameters::KEY_ZOOM_RATIOS, "100");
 
             p.set("constant-growth-rate-zoom-supported", "true");
 
-            ALOGV("INFO(%s):zoomRatioList=%s", "setDefaultParameter", tempStr.string());
+            ALOGV("INFO(%s):zoomRatioList=%s", "setDefaultParameter", tempStr.c_str());
         } else {
             p.set(CameraParameters::KEY_ZOOM_SUPPORTED, "false");
             p.set(CameraParameters::KEY_SMOOTH_ZOOM_SUPPORTED, "false");
@@ -934,15 +934,15 @@ void ExynosCameraParameters::setDefaultParameter(void)
         snprintf(strBuf, 256, ",%d", i);
         tempStr.append(strBuf);
     }
-    p.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES,  tempStr.string());
+    p.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES,  tempStr.c_str());
 
     minFpsRange = minFpsRange * 1000;
     maxFpsRange = maxFpsRange * 1000;
 
     tempStr.setTo("");
     getSupportedFpsList(tempStr, minFpsRange, maxFpsRange, m_cameraId, m_staticInfo);
-    CLOGI("INFO(%s):supportedFpsList=%s", "setDefaultParameter", tempStr.string());
-    p.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE, tempStr.string());
+    CLOGI("INFO(%s):supportedFpsList=%s", "setDefaultParameter", tempStr.c_str());
+    p.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE, tempStr.c_str());
     /* p.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE, "(15000,30000),(30000,30000)"); */
 
     /* limit 30 fps on default setting. */
@@ -1007,7 +1007,7 @@ void ExynosCameraParameters::setDefaultParameter(void)
     }
 
     p.set("iso-values",
-          tempStr.string());
+          tempStr.c_str());
 
     p.set("hdr-mode", 0);
     p.set("metering", "center");
