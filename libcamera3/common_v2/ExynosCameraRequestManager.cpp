@@ -173,7 +173,7 @@ ExynosCameraRequest::ExynosCameraRequest(camera3_capture_request_t* request, Cam
         m_serviceMeta = request->settings;
     } else {
         CLOGV2("serviceMeta is NULL, use previousMeta");
-        if (previousMeta.isEmpty()) {
+        if (previousMeta.empty()) {
             CLOGE2("previous meta is empty, ERROR ");
         } else {
             m_serviceMeta = previousMeta;
@@ -1376,7 +1376,7 @@ ExynosCameraRequestSP_sprt_t ExynosCameraRequestManager::registerToServiceList(E
 
 status_t ExynosCameraRequestManager::isPrevRequest()
 {
-    if (m_previousMeta.isEmpty())
+    if (m_previousMeta.empty())
         return BAD_VALUE;
     else
         return OK;
