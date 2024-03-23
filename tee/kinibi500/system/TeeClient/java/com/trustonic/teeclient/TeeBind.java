@@ -120,7 +120,7 @@ class BindSessionList {
     }
 
     public Elem getElem(String intent) {
-        if (!session_list_.isEmpty()) {
+        if (!session_list_.empty()) {
             for (int i = 0; i < session_list_.size(); i++) {
                 String  intentI = session_list_.get(i).getIntent();
                 if (intent.compareTo(intentI) == 0) {
@@ -166,7 +166,7 @@ class BindSessionList {
 
     public String toString() {
         String res = "";
-        if (!session_list_.isEmpty()) {
+        if (!session_list_.empty()) {
             res = "Session list : \n";
             for (int i = 0; i < session_list_.size(); i++) {
                 res += "    " + session_list_.get(i) + "\n";

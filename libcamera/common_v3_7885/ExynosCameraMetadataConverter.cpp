@@ -1337,7 +1337,7 @@ status_t ExynosCamera3MetadataConverter::translateColorControlData(CameraMetadat
     struct camera2_shot *dst = NULL;
     camera_metadata_entry_t entry;
 
-    if (settings.isEmpty()) {
+    if (settings.empty()) {
         ALOGE("ERR(%s[%d]):Settings is NULL!!", __FUNCTION__, __LINE__);
         return BAD_VALUE;
     }
@@ -1780,7 +1780,7 @@ status_t ExynosCamera3MetadataConverter::translateDemosaicControlData(CameraMeta
     struct camera2_shot *dst = NULL;
     camera_metadata_entry_t entry;
 
-    if (settings.isEmpty()) {
+    if (settings.empty()) {
         ALOGE("ERR(%s[%d]):Settings is NULL!!", __FUNCTION__, __LINE__);
         return BAD_VALUE;
     }
@@ -1806,7 +1806,7 @@ status_t ExynosCamera3MetadataConverter::translateEdgeControlData(CameraMetadata
     struct camera2_shot *dst = NULL;
     camera_metadata_entry_t entry;
 
-    if (settings.isEmpty()) {
+    if (settings.empty()) {
         ALOGE("ERR(%s[%d]):Settings is NULL!!", __FUNCTION__, __LINE__);
         return BAD_VALUE;
     }
@@ -1838,7 +1838,7 @@ status_t ExynosCamera3MetadataConverter::translateFlashControlData(CameraMetadat
     struct camera2_shot *dst = NULL;
     camera_metadata_entry_t entry;
 
-    if (settings.isEmpty()) {
+    if (settings.empty()) {
         ALOGE("ERR(%s[%d]):Settings is NULL!!", __FUNCTION__, __LINE__);
         return BAD_VALUE;
     }
@@ -1887,7 +1887,7 @@ status_t ExynosCamera3MetadataConverter::translateHotPixelControlData(CameraMeta
     struct camera2_shot *dst = NULL;
     camera_metadata_entry_t entry;
 
-    if (settings.isEmpty()) {
+    if (settings.empty()) {
         ALOGE("ERR(%s[%d]):Settings is NULL!!", __FUNCTION__, __LINE__);
         return BAD_VALUE;
     }
@@ -1913,7 +1913,7 @@ status_t ExynosCamera3MetadataConverter::translateJpegControlData(CameraMetadata
     struct camera2_shot *dst = NULL;
     camera_metadata_entry_t entry;
 
-    if (settings.isEmpty()) {
+    if (settings.empty()) {
         ALOGE("ERR(%s[%d]):Settings is NULL!!", __FUNCTION__, __LINE__);
         return BAD_VALUE;
     }
@@ -1990,7 +1990,7 @@ status_t ExynosCamera3MetadataConverter::translateLensControlData(CameraMetadata
     struct camera2_shot *dst = NULL;
     camera_metadata_entry_t entry;
 
-    if (settings.isEmpty()) {
+    if (settings.empty()) {
         ALOGE("ERR(%s[%d]):Settings is NULL!!", __FUNCTION__, __LINE__);
         return BAD_VALUE;
     }
@@ -2059,7 +2059,7 @@ status_t ExynosCamera3MetadataConverter::translateNoiseControlData(CameraMetadat
     struct camera2_shot *dst = NULL;
     camera_metadata_entry_t entry;
 
-    if (settings.isEmpty()) {
+    if (settings.empty()) {
         ALOGE("ERR(%s[%d]):Settings is NULL!!", __FUNCTION__, __LINE__);
         return BAD_VALUE;
     }
@@ -2092,7 +2092,7 @@ status_t ExynosCamera3MetadataConverter::translateRequestControlData(CameraMetad
     struct camera2_shot *dst = NULL;
     camera_metadata_entry_t entry;
 
-    if (settings.isEmpty()) {
+    if (settings.empty()) {
         ALOGE("ERR(%s[%d]):Settings is NULL!!", __FUNCTION__, __LINE__);
         return BAD_VALUE;
     }
@@ -2127,7 +2127,7 @@ status_t ExynosCamera3MetadataConverter::translateScalerControlData(CameraMetada
     struct camera2_shot *dst = NULL;
     camera_metadata_entry_t entry;
 
-    if (settings.isEmpty()) {
+    if (settings.empty()) {
         ALOGE("ERR(%s[%d]):Settings is NULL!!", __FUNCTION__, __LINE__);
         return BAD_VALUE;
     }
@@ -2161,7 +2161,7 @@ status_t ExynosCamera3MetadataConverter::translateSensorControlData(CameraMetada
     struct camera2_shot *dst = NULL;
     camera_metadata_entry_t entry;
 
-    if (settings.isEmpty()) {
+    if (settings.empty()) {
         ALOGE("ERR(%s[%d]):Settings is NULL!!", __FUNCTION__, __LINE__);
         return BAD_VALUE;
     }
@@ -2252,7 +2252,7 @@ status_t ExynosCamera3MetadataConverter::translateShadingControlData(CameraMetad
     struct camera2_shot *dst = NULL;
     camera_metadata_entry_t entry;
 
-    if (settings.isEmpty()) {
+    if (settings.empty()) {
         ALOGE("ERR(%s[%d]):Settings is NULL!!", __FUNCTION__, __LINE__);
         return BAD_VALUE;
     }
@@ -2284,7 +2284,7 @@ status_t ExynosCamera3MetadataConverter::translateStatisticsControlData(CameraMe
     struct camera2_shot *dst = NULL;
     camera_metadata_entry_t entry;
 
-    if (settings.isEmpty()) {
+    if (settings.empty()) {
         ALOGE("ERR(%s[%d]):Settings is NULL!!", __FUNCTION__, __LINE__);
         return BAD_VALUE;
     }
@@ -2347,7 +2347,7 @@ status_t ExynosCamera3MetadataConverter::translateTonemapControlData(CameraMetad
     struct camera2_shot *dst = NULL;
     camera_metadata_entry_t entry;
 
-    if (settings.isEmpty()) {
+    if (settings.empty()) {
         ALOGE("ERR(%s[%d]):Settings is NULL!!", __FUNCTION__, __LINE__);
         return BAD_VALUE;
     }
@@ -2501,7 +2501,7 @@ status_t ExynosCamera3MetadataConverter::translateLedControlData(CameraMetadata 
     struct camera2_shot *dst = NULL;
     camera_metadata_entry_t entry;
 
-    if (settings.isEmpty()) {
+    if (settings.empty()) {
         ALOGE("ERR(%s[%d]):Settings is NULL!!", __FUNCTION__, __LINE__);
         return BAD_VALUE;
     }
@@ -2527,7 +2527,7 @@ status_t ExynosCamera3MetadataConverter::translateBlackLevelControlData(CameraMe
     struct camera2_shot *dst = NULL;
     camera_metadata_entry_t entry;
 
-    if (settings.isEmpty()) {
+    if (settings.empty()) {
         ALOGE("ERR(%s[%d]):Settings is NULL!!", __FUNCTION__, __LINE__);
         return BAD_VALUE;
     }
@@ -2564,7 +2564,7 @@ status_t ExynosCamera3MetadataConverter::convertRequestToShot(CameraMetadata &re
     status_t ret = OK;
     uint32_t errorFlag = 0;
 
-    if (request.isEmpty()) {
+    if (request.empty()) {
         ALOGE("ERR(%s[%d]):Settings is NULL!!", __FUNCTION__, __LINE__);
         return BAD_VALUE;
     }
