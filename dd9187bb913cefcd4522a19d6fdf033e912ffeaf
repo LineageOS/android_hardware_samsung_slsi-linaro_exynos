@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bcb016be_a78c75ef",
+        "filename": "libcamera/common_v3_7885/ExynosCameraMetadataConverter.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1392,
+      "author": {
+        "id": 25925
+      },
+      "writtenOn": "2024-03-26T05:50:43Z",
+      "side": 0,
+      "message": "I don\u0027t think this is supposed to be replaced?",
+      "revId": "dd9187bb913cefcd4522a19d6fdf033e912ffeaf",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}

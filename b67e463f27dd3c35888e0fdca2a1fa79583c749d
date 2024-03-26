@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4f2c79a3_a6bf6e5d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25925
+      },
+      "writtenOn": "2024-03-26T05:50:43Z",
+      "side": 1,
+      "message": "There seem to be some locations where especially isEmpty() was mistakenly replaced.\nYou should re-check that.",
+      "revId": "b67e463f27dd3c35888e0fdca2a1fa79583c749d",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f348dcf2_f1a921df",
+        "filename": "tee/kinibi500/system/TeeClient/java/com/trustonic/teeclient/TeeBind.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 25925
+      },
+      "writtenOn": "2024-03-26T05:50:43Z",
+      "side": 1,
+      "message": "This shouldn\u0027t be replaced either",
+      "revId": "b67e463f27dd3c35888e0fdca2a1fa79583c749d",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
