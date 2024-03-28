@@ -16,6 +16,24 @@
       "message": "I removed the two offending uses of empty() instead of isEmpty(). It still builds error free on Troika. I don\u0027t understand why this is needed here. If I undo ALL isEmpty replacements I get build errors. Why does it work in these places and not everywhere? I could just edit the files to change only the offending uses of .string and .isEmpty but that would need to be done for every device that uses these repos.",
       "revId": "2b6b54f5c91ceeea5d1261bfd8ca6667385bf9a8",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "68a319d5_483a92d3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25925
+      },
+      "writtenOn": "2024-03-28T04:43:10Z",
+      "side": 1,
+      "message": "Because these aren\u0027t from String8/String16 classes, if you look closer.\nThere are still some more left, these two were just examples.\nIn general the entire changes to these tee java files should be reverted, otherwise it seems to mostly be usages of CameraMetadata#isEmpty that were mistakenly replaced.\nAs for the reason why it didn\u0027t give errors on troika, I don\u0027t think the affected files are built there at all.",
+      "parentUuid": "0c938aec_8c79e65e",
+      "revId": "2b6b54f5c91ceeea5d1261bfd8ca6667385bf9a8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
