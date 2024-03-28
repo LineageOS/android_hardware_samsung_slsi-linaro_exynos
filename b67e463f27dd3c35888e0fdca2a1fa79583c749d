@@ -33,6 +33,24 @@
       "message": "This shouldn\u0027t be replaced either",
       "revId": "b67e463f27dd3c35888e0fdca2a1fa79583c749d",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ebfc7fa6_d38b232f",
+        "filename": "tee/kinibi500/system/TeeClient/java/com/trustonic/teeclient/TeeBind.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 2644
+      },
+      "writtenOn": "2024-03-28T02:37:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f348dcf2_f1a921df",
+      "revId": "b67e463f27dd3c35888e0fdca2a1fa79583c749d",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
