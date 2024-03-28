@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bdde9c6b_e8495703",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2644
+      },
+      "writtenOn": "2024-03-28T18:10:54Z",
+      "side": 1,
+      "message": "I removed all the isEmpty changes and moved the two needed for troika to a separate commit (387758).",
+      "revId": "132514fc005a422d9d261aa0ea4249f611afe167",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
