@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "31f1c2ef_79ae1a7a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25925
+      },
+      "writtenOn": "2024-03-29T20:46:16Z",
+      "side": 1,
+      "message": "PS7 reverted all the changes done in PS6, was that intentional?",
+      "revId": "f0a7b35a0bd7b28cf1d997ed6df15bf287b1e569",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
