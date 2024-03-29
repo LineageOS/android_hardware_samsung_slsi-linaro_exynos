@@ -18,6 +18,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a1b1a5f0_a72b1fdf",
+        "filename": "libcamera/34xx/hal1/Ged/ExynosCamera1ParametersVendor.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2241,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2024-03-29T17:29:29Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "34b71507_e0b33a07",
+      "revId": "dd9187bb913cefcd4522a19d6fdf033e912ffeaf",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6bc4fe5c_585dca30",
@@ -31,6 +49,24 @@
       "writtenOn": "2024-03-29T16:33:36Z",
       "side": 0,
       "message": "This shouldn\u0027t be replaced",
+      "revId": "dd9187bb913cefcd4522a19d6fdf033e912ffeaf",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "184e31cd_4bad2c8b",
+        "filename": "libcamera/75xx/ExynosCameraParameters.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 5568,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2024-03-29T17:29:29Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "6bc4fe5c_585dca30",
       "revId": "dd9187bb913cefcd4522a19d6fdf033e912ffeaf",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
@@ -87,6 +123,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3b228e95_867e42fc",
+        "filename": "libcamera_external/SecCameraHardware.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1028,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2024-03-29T17:29:29Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "67572a60_0b41eb19",
+      "revId": "dd9187bb913cefcd4522a19d6fdf033e912ffeaf",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "141f109d_9c22c239",
@@ -100,6 +154,24 @@
       "writtenOn": "2024-03-29T16:33:36Z",
       "side": 0,
       "message": "Revert",
+      "revId": "dd9187bb913cefcd4522a19d6fdf033e912ffeaf",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3936a6f1_3adb90c3",
+        "filename": "libcamera_external/SecCameraHardware.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1064,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2024-03-29T17:29:29Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "141f109d_9c22c239",
       "revId": "dd9187bb913cefcd4522a19d6fdf033e912ffeaf",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
