@@ -990,6 +990,7 @@ void update_call_stream(struct stream_out *out, audio_devices_t current_devices,
 
         voice_set_call_active(adev->voice, false);
         proxy_stop_voice_call(adev->proxy);
+        proxy_set_volume(adev->proxy, VOLUME_TYPE_CALL_RX_MUTE, false, false);
     }
 
     /* Do actual routing */
