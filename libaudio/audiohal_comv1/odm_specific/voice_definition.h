@@ -37,11 +37,6 @@ enum bt_nrec_status {
 #define TTY_MODE_HCO             0x00000080
 #define TTY_MODE_CLEAR           0xFFFFFF0F
 
-#define TTY_MODE_OFF_RIL         0
-#define TTY_MODE_FULL_RIL        1
-#define TTY_MODE_HCO_RIL         2
-#define TTY_MODE_VCO_RIL         3
-
 #define HAC_MODE_OFF             0x00000100
 #define HAC_MODE_ON              0x00000200
 #define HAC_MODE_CLEAR           0xFFFFF0FF

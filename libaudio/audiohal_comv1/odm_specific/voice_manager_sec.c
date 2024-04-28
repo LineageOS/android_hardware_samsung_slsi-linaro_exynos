@@ -33,10 +33,7 @@
 #define VOLUME_STEPS_DEFAULT  "5"
 #define VOLUME_STEPS_PROPERTY "ro.vendor.config.vc_call_vol_steps"
 
-
 #define DEVICE_INVALID           -1
-
-
 
 /*
  * Local Functions
@@ -55,15 +52,6 @@ static int voice_set_volte_status(struct voice_manager *voice, int status)
     int ret = 0;
     if (voice) {
         SecRilSetVoLTEState(status);
-    }
-    return ret;
-}
-
-static int voice_set_hac_mode(struct voice_manager *voice, bool status)
-{
-    int ret = 0;
-    if (voice) {
-        SecRilSetHACMode(status);
     }
     return ret;
 }
@@ -179,7 +167,7 @@ int voice_set_path(struct voice_manager *voice, audio_devices_t devices)
 int voice_set_mic_mute(struct voice_manager *voice, bool status)
 {
     int ret = 0;
-    if (voice_is_call_mode(voice) || (voice->loopback_mode != FACTORY_LOOPBACK_OFF)) {
+    if (voice_is_call_active(voice) || (voice->loopback_mode != FACTORY_LOOPBACK_OFF)) {
         SecRilSetTxMute(status);
     }
     ALOGD("vm-%s: MIC Mute = %d!", __func__, status);
@@ -232,13 +220,14 @@ void voice_set_parameters(struct audio_device *adev, struct str_parms *parms)
     ret = str_parms_get_str(parms, AUDIO_PARAMETER_VOLTE_STATUS, value, sizeof(value));
     if (ret >= 0) {
         if (!strcmp(value, "voice")) {
+            ALOGI("vm-%s: VoLTE Voice Call is On", __func__);
             voice->volte_status = VOLTE_VOICE;
-            ALOGD("vm-%s: VoLTE Voice Call Start!!", __func__);
         } else if (!strcmp(value, "end")) {
+            ALOGI("vm-%s: VoLTE Voice Call is Off", __func__);
             voice->volte_status = VOLTE_OFF;
-            ALOGD("vm-%s: VoLTE Voice Call End!!", __func__);
-        } else
-            ALOGD("vm-%s: Unknown VoLTE parameters = %s!!", __func__, value);
+        } else {
+            ALOGE("vm-%s: Unknown VoLTE parameters = %s!!", __func__, value);
+        }
 
         voice_set_volte_status(voice, voice->volte_status);
     }
@@ -248,9 +237,12 @@ void voice_set_parameters(struct audio_device *adev, struct str_parms *parms)
     if (ret >= 0) {
         if (!strcmp(value, AUDIO_PARAMETER_VALUE_ON)) {
             voice->bluetooth_nrec = BT_NREC_ON;
+            ALOGI("vm-%s: BT NREC is On", __func__);
         } else if (!strcmp(value, AUDIO_PARAMETER_VALUE_OFF)) {
             voice->bluetooth_nrec = BT_NREC_OFF;
+            ALOGI("vm-%s: BT NREC is Off", __func__);
         }
+        proxy_set_call_path_param(CALL_PATH_SET, BT_NREC, voice->bluetooth_nrec);
 
         str_parms_del(parms, AUDIO_PARAMETER_KEY_BT_NREC);
     }
@@ -259,8 +251,10 @@ void voice_set_parameters(struct audio_device *adev, struct str_parms *parms)
     ret = str_parms_get_str(parms, AUDIO_PARAMETER_KEY_BT_SCO_WB, value, sizeof(value));
     if (ret >= 0) {
         if (!strcmp(value, AUDIO_PARAMETER_VALUE_ON)) {
+            ALOGI("vm-%s: set to WB for BT-SCO", __func__);
             voice->bluetooth_samplerate = WB_SAMPLING_RATE;
         } else if (!strcmp(value, AUDIO_PARAMETER_VALUE_OFF)) {
+            ALOGI("vm-%s: set to NB for BT-SCO", __func__);
             voice->bluetooth_samplerate = NB_SAMPLING_RATE;
         }
 
@@ -282,19 +276,15 @@ void voice_set_parameters(struct audio_device *adev, struct str_parms *parms)
     if (ret >= 0) {
         if (!strcmp(value, AUDIO_PARAMETER_VALUE_TTY_OFF)) {
             voice->tty_mode = TTY_MODE_OFF;
-            voice_set_tty_mode(voice,TTY_MODE_OFF_RIL);
             ALOGD("vm-%s: TTY_MODE_OFF", __func__);
         } else if (!strcmp(value, AUDIO_PARAMETER_VALUE_TTY_VCO)) {
             voice->tty_mode = TTY_MODE_VCO;
-            voice_set_tty_mode(voice,TTY_MODE_VCO_RIL);
             ALOGD("vm-%s: TTY_MODE_VCO", __func__);
         } else if (!strcmp(value, AUDIO_PARAMETER_VALUE_TTY_HCO)) {
             voice->tty_mode = TTY_MODE_HCO;
-            voice_set_tty_mode(voice,TTY_MODE_HCO_RIL);
             ALOGD("vm-%s: TTY_MODE_HCO", __func__);
         } else if (!strcmp(value, AUDIO_PARAMETER_VALUE_TTY_FULL)) {
             voice->tty_mode = TTY_MODE_FULL;
-            voice_set_tty_mode(voice,TTY_MODE_FULL_RIL);
             ALOGD("vm-%s: TTY_MODE_FULL", __func__);
         } else
             ALOGD("vm-%s: Unknown TTY_MODE parameters = %s!!", __func__, value);
@@ -307,20 +297,12 @@ void voice_set_parameters(struct audio_device *adev, struct str_parms *parms)
     if (ret >= 0) {
         if (!strcmp(value, AUDIO_PARAMETER_VALUE_HAC_ON)) {
             voice->hac_mode = HAC_MODE_ON;
-            voice_set_hac_mode(voice,true);
             ALOGD("vm-%s: HAC_MODE_ON", __func__);
         } else if (!strcmp(value, AUDIO_PARAMETER_VALUE_HAC_OFF)) {
             voice->hac_mode = HAC_MODE_OFF;
-            voice_set_hac_mode(voice,false);
             ALOGD("vm-%s: HAC_MODE_OFF", __func__);
         } else
             ALOGD("vm-%s: Unknown HAC_MODE parameters = %s!!", __func__, value);
-
-        if (voice_is_call_active(voice)
-           && adev->primary_output
-           && adev->primary_output->common.requested_devices != 0) {
-            voice_set_path(voice, adev->primary_output->common.requested_devices);
-        }
 
         str_parms_del(parms, AUDIO_PARAMETER_KEY_HAC);
     }
@@ -338,7 +320,6 @@ int voice_set_callback(struct voice_manager * voice __unused, void * callback_fu
     SecRilRegisterCallback(0, callback_func);
     return ret;
 }
-
 
 /*
  * Get Functions
@@ -389,15 +370,6 @@ void voice_ril_dump(int fd __unused)
 int voice_get_volume_index(struct voice_manager *voice, float volume)
 {
     return (int)(volume * voice->volume_steps_max);
-}
-
-int voice_set_tty_mode(struct voice_manager *voice, int ttymode)
-{
-    int ret = 0;
-    if (voice) {
-        SecRilSetTTYmode(ttymode);
-    }
-    return ret;
 }
 
 int voice_callback(void * handle, int event, const void *data, unsigned int datalen)

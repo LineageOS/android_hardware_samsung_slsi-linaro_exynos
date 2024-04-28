@@ -116,7 +116,6 @@ int  voice_get_vowifi_band(struct voice_manager *voice);
 int  voice_get_cur_indevice_id(struct voice_manager *voice);
 bool voice_get_mic_mute(struct voice_manager *voice);
 int  voice_get_volume_index(struct voice_manager *voice, float volume);
-int  voice_set_tty_mode(struct voice_manager *voice, int ttymode);
 
 /* Other Functions */
 int voice_set_loopback_device(struct voice_manager *voice, int mode, int rx_dev, int tx_dev);

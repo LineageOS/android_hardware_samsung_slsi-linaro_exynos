@@ -76,17 +76,10 @@ static int map_incall_device(struct rilclient_intf *voice, audio_devices_t devic
 
     switch(devices) {
         case AUDIO_DEVICE_OUT_EARPIECE:
-            if (voice->volte_status == VOLTE_OFF) {
-                if (voice->hac_mode)
-                    device_type = SOUND_AUDIO_PATH_HANDSET_HAC;
-                else
-                    device_type = SOUND_AUDIO_PATH_HANDSET;
-            } else {
-                if (voice->hac_mode)
-                    device_type = SOUND_AUDIO_PATH_VOLTE_HANDSET_HAC;
-                else
-                    device_type = SOUND_AUDIO_PATH_VOLTE_HANDSET;
-            }
+            if (voice->volte_status == VOLTE_OFF)
+                device_type = SOUND_AUDIO_PATH_HANDSET;
+            else
+                device_type = SOUND_AUDIO_PATH_VOLTE_HANDSET;
             break;
 
         case AUDIO_DEVICE_OUT_SPEAKER:
@@ -97,51 +90,20 @@ static int map_incall_device(struct rilclient_intf *voice, audio_devices_t devic
             break;
 
         case AUDIO_DEVICE_OUT_WIRED_HEADSET:
+        case AUDIO_DEVICE_OUT_WIRED_HEADPHONE:
             if (voice->volte_status == VOLTE_OFF)
                 device_type = SOUND_AUDIO_PATH_HEADSET;
             else
                 device_type = SOUND_AUDIO_PATH_VOLTE_HEADSET;
             break;
 
-        case AUDIO_DEVICE_OUT_WIRED_HEADPHONE:
-            if (voice->volte_status == VOLTE_OFF)
-                device_type = SOUND_AUDIO_PATH_35PI_HEADSET;
-            else
-                device_type = SOUND_AUDIO_PATH_VOLTE_35PI_HEADSET;
-            break;
-
         case AUDIO_DEVICE_OUT_BLUETOOTH_SCO:
         case AUDIO_DEVICE_OUT_BLUETOOTH_SCO_HEADSET:
         case AUDIO_DEVICE_OUT_BLUETOOTH_SCO_CARKIT:
             if (voice->volte_status == VOLTE_OFF)
-                if (voice->btsco_ec == BT_NREC_OFF)
-                    if (voice->btsco_sr == NB_SAMPLING_RATE)
-                        device_type = SOUND_AUDIO_PATH_BT_NS_EC_OFF;
-                    else
-                        device_type = SOUND_AUDIO_PATH_WB_BT_NS_EC_OFF;
-                else
-                    if (voice->btsco_sr == NB_SAMPLING_RATE)
-                        device_type = SOUND_AUDIO_PATH_BLUETOOTH;
-                    else
-                        device_type = SOUND_AUDIO_PATH_WB_BLUETOOTH;
+                device_type = SOUND_AUDIO_PATH_STEREO_BLUETOOTH;
             else
-                if (voice->btsco_ec == BT_NREC_OFF)
-                    if (voice->btsco_sr == NB_SAMPLING_RATE)
-                        device_type = SOUND_AUDIO_PATH_VOLTE_BT_NS_EC_OFF;
-                    else
-                        device_type = SOUND_AUDIO_PATH_VOLTE_WB_BT_NS_EC_OFF;
-                else
-                    if (voice->btsco_sr == NB_SAMPLING_RATE)
-                        device_type = SOUND_AUDIO_PATH_VOLTE_BLUETOOTH;
-                    else
-                        device_type = SOUND_AUDIO_PATH_VOLTE_WB_BLUETOOTH;
-            break;
-
-        case AUDIO_DEVICE_OUT_LINE:
-            if (voice->volte_status == VOLTE_OFF)
-                device_type = SOUND_AUDIO_PATH_LINEOUT;
-            else
-                device_type = SOUND_AUDIO_PATH_VOLTE_LINEOUT;
+                device_type = SOUND_AUDIO_PATH_VOLTE_STEREO_BLUETOOTH;
             break;
 
         default:
@@ -211,7 +173,6 @@ int SecRilOpen()
     rilc->call_forward = false;
 
     rilc->usbmic_state = false;
-    rilc->hac_mode = false;
 
     /*
      * Open & Connect SecRil Audio Client Library
@@ -412,7 +373,7 @@ int SecRilSetVoiceVolume(int device __unused, int volume, float fvolume)
 int SecRilSetVoicePath(int mode __unused, int device)
 {
     struct rilclient_intf *rilc = getInstance();
-    int path;
+    int path = SOUND_AUDIO_PATH_NONE;
     int ret = 0;
 
     if(rilc) {
@@ -524,17 +485,6 @@ int SecRilSetVoLTEState(int state)
 
     return ret;
 }
-int SecRilSetHACMode(bool state)
-{
-    struct rilclient_intf *rilc = getInstance();
-    int ret = 0;
-
-    if(rilc) {
-        rilc->hac_mode = state;
-    }
-
-    return ret;
-}
 
 void SecRilSetCallFowardingMode(bool callFwd)
 {
@@ -583,9 +533,4 @@ void SecRilSetUSBMicState(bool state)
     }
 
     return ;
-}
-
-int SecRilSetTTYmode(int __unused ttymode)
-{
-    return 0;
 }
