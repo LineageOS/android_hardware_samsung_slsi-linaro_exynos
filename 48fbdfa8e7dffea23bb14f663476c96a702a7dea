@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d108750f_4d9550a3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25925
+      },
+      "writtenOn": "2024-05-29T04:23:35Z",
+      "side": 1,
+      "message": "You should probably remove this case inste",
+      "revId": "48fbdfa8e7dffea23bb14f663476c96a702a7dea",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "46521155_49ea014a",
+        "filename": "libaudio/audiohal_comv1/common_audiohal/audio_hw.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 547,
+      "author": {
+        "id": 25925
+      },
+      "writtenOn": "2024-05-29T04:23:35Z",
+      "side": 1,
+      "message": "I think this should be removed rather than ignoring the warning",
+      "revId": "48fbdfa8e7dffea23bb14f663476c96a702a7dea",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
