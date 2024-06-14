@@ -24,6 +24,7 @@
 #include <ui/GraphicTypes.h>
 #include <ui/PixelFormat.h>
 #include <ui/Rect.h>
+#include <utils/Trace.h>
 
 /* Gralloc1 usages enum is provided here to ensure backward compatibility
  * This enum will be deprecated in Android S so please consider switching to
@@ -44,6 +45,11 @@ class ExynosGraphicBufferMapper : public android::GraphicBufferMapper {
     static inline ExynosGraphicBufferMapper &get() {
         return static_cast<ExynosGraphicBufferMapper &>(getInstance());
     }
+
+    android::status_t lockAsync(buffer_handle_t handle, uint64_t producerUsage,
+                       uint64_t consumerUsage, const android::Rect& bounds, void** vaddr,
+                       int fenceFd, int32_t* outBytesPerPixel = nullptr,
+                       int32_t* outBytesPerStride = nullptr);
 
     android::status_t lock64(buffer_handle_t handle, uint64_t usage, const android::Rect &bounds, void **vaddr,
                              int32_t *outBytesPerPixel = nullptr, int32_t *outBytesPerStride = nullptr);

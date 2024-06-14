@@ -59,6 +59,9 @@ exynosgraphicbuffercore_cc_defaults {
     defaults: [
         "libexynos_headers_c2_defaults",
     ],
+    srcs: [
+        "common/exynos_graphicbuffer_mapper.cpp",
+    ],
     soong_config_variables: {
         gralloc_version: {
             three: {
@@ -101,6 +104,7 @@ exynosgraphicbuffer_cc_defaults {
         "exynosgraphicbuffercore_defaults",
     ],
     shared_libs: [
+        "libgrallocusage",
         "libui",
         "android.hardware.graphics.allocator@2.0",
         "android.hardware.graphics.allocator@3.0",
