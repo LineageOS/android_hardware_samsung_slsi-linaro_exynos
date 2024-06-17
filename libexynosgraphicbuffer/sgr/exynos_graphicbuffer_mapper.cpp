@@ -26,7 +26,7 @@ using namespace vendor::graphics;
 
 status_t ExynosGraphicBufferMapper::lock64(buffer_handle_t handle, uint64_t usage, const Rect &bounds, void **vaddr,
                                            int32_t *outBytesPerPixel, int32_t *outBytesPerStride) {
-    return lockAsync(handle, usage, usage, bounds, vaddr, -1, outBytesPerPixel, outBytesPerStride);
+    return lockAsync(handle, usage, usage, bounds, vaddr, -1);
 }
 
 status_t ExynosGraphicBufferMapper::lockYCbCr64(buffer_handle_t handle, uint64_t usage, const Rect &bounds,
