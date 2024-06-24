@@ -174,8 +174,12 @@ int validate_lock_input_parameters(const buffer_handle_t buffer, const int l,
 		return GRALLOC1_ERROR_UNSUPPORTED;
 	}
 
-	/* Producer and consumer usage is verified in gralloc1 specific code. */
-	GRALLOC_UNUSED(usage);
+	/* Verify that we're locking a buffer that is used by CPU. */
+	if ((usage & (GRALLOC_USAGE_SW_READ_MASK | GRALLOC_USAGE_SW_WRITE_MASK)) == 0) {
+		MALI_GRALLOC_LOGE("Attempt to lock buffer %p with not-cpu usage (0x%" PRIx64 ")",
+			buffer, usage);
+		return -EINVAL;
+	}
 
 	return 0;
 }
@@ -251,7 +255,6 @@ int mali_gralloc_lock(buffer_handle_t buffer,
 
 		buffer_sync(hnd, get_tx_direction(usage));
 	}
-
 	return 0;
 }
 
