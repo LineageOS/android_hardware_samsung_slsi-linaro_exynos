@@ -4204,8 +4204,11 @@ static int adev_open_input_stream(
     in->common.stream_type = ASTREAM_NONE;
     in->common.stream_usage = AUSAGE_NONE;
 
-    if ((flags & AUDIO_INPUT_FLAG_FAST) != 0) {
-        if (isCallMode(adev) && config->sample_rate != LOW_LATENCY_CAPTURE_SAMPLE_RATE) {
+    if (isCallMode(adev)) {
+        if ((config->sample_rate == LOW_LATENCY_CAPTURE_SAMPLE_RATE) && ((flags & AUDIO_INPUT_FLAG_VOIP_TX) != 0)) {
+            flags = AUDIO_INPUT_FLAG_FAST;
+            ALOGD("device-%s: Low latency capture samplerate used without AUDIO_INPUT_FLAG_FAST during call mode. flags changed(%#x)", __func__, flags);
+        } else if ((config->sample_rate != LOW_LATENCY_CAPTURE_SAMPLE_RATE) && ((flags & AUDIO_INPUT_FLAG_FAST) != 0)) {
             flags &= ~AUDIO_INPUT_FLAG_FAST;
             flags |= AUDIO_INPUT_FLAG_VOIP_TX;
             ALOGD("device-%s: Denied to open Low Latency input. flags changed(%#x)", __func__, flags);
