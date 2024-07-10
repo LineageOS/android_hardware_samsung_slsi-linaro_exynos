@@ -2848,6 +2848,17 @@ static int in_set_parameters(struct audio_stream *stream, const char *kvpairs)
     parms = str_parms_create_str(kvpairs);
 
     pthread_mutex_lock(&in->common.lock);
+    ret = str_parms_get_str(parms, AUDIO_PARAMETER_STREAM_INPUT_SOURCE, value, sizeof(value));
+    if (ret >= 0) {
+        unsigned int new_source = atoi(value);
+        if (in->requested_source == AUDIO_SOURCE_VOICE_RECOGNITION || new_source == AUDIO_SOURCE_VOICE_RECOGNITION) {
+            stop_active_input(in);
+            in->requested_source = new_source;
+            in->common.stream_usage = adev_get_capture_ausage(adev, in);
+            in->pcm_reconfig = true;
+        }
+    }
+
     ret = str_parms_get_str(parms, AUDIO_PARAMETER_STREAM_ROUTING, value, sizeof(value));
     if (ret >= 0) {
         audio_devices_t requested_devices = atoi(value);
