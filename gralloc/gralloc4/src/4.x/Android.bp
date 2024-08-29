@@ -89,6 +89,7 @@ cc_library_shared {
 
 cc_library_shared {
     name: "android.hardware.graphics.mapper@4.0-impl",
+    vintf_fragments: ["manifest_mapper.xml"],
     defaults: [
         "arm_gralloc_api_4x_defaults",
         "libexynos_headers_c2_defaults",
