@@ -113,7 +113,7 @@ void mali_gralloc_dump_internal(uint32_t *outSize, char *outBuffer)
 
 	if (NULL == outBuffer)
 	{
-		if (!dumpStrings.isEmpty())
+		if (!dumpStrings.empty())
 		{
 			dumpStrings.clear();
 		}
@@ -122,7 +122,7 @@ void mali_gralloc_dump_internal(uint32_t *outSize, char *outBuffer)
 	}
 	else
 	{
-		if (dumpStrings.isEmpty())
+		if (dumpStrings.empty())
 		{
 			*outSize = 0;
 		}
