@@ -16,6 +16,7 @@ int main() {
     auto service = ndk::SharedRefBase::make<GrallocAllocator>();
     auto binder = service->asBinder();
 
+    AIBinder_setInheritRt(binder.get(), true);
     AIBinder_setMinSchedulerPolicy(binder.get(), SCHED_NORMAL, -20);
 
     const auto instance = std::string() + GrallocAllocator::descriptor + "/default";
