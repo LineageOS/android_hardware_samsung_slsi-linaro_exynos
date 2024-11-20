@@ -16,6 +16,24 @@
       "message": "same, you don\u0027t handle the cflags at all.",
       "revId": "b65a30012704da5f2698a3b8f36fef5c0af426ed",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3078f1ba_d80741bc",
+        "filename": "libexynosutils/Android.mk",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 34207
+      },
+      "writtenOn": "2024-11-20T19:45:15Z",
+      "side": 0,
+      "message": "I looked at all ifdefs in the libexynosutils source, and from the ones defined in BoardConfigCFlags.mk, the only present was the one i hardcoded, and i could find 1 (one) example of BOARD_USES_FIMC being true, which is on https://github.com/gteslte/android_device_samsung_smdk3470-common/blob/0f39f1ee8d43340f6727a0fdf4040bf93022bf80/BoardConfigCommon.mk#L93. Therefore i think it makes sense to hardcode this one and this one only.",
+      "parentUuid": "c6a4f21c_71680846",
+      "revId": "b65a30012704da5f2698a3b8f36fef5c0af426ed",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
