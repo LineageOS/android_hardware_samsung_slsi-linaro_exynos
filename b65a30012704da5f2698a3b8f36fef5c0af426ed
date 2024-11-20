@@ -34,6 +34,24 @@
       "parentUuid": "c6a4f21c_71680846",
       "revId": "b65a30012704da5f2698a3b8f36fef5c0af426ed",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b623f4d_884d0fb1",
+        "filename": "libexynosutils/Android.mk",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2024-11-20T21:09:56Z",
+      "side": 0,
+      "message": "but don\u0027t other devices set relevant board flags to set those other CFLAGS?",
+      "parentUuid": "3078f1ba_d80741bc",
+      "revId": "b65a30012704da5f2698a3b8f36fef5c0af426ed",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
