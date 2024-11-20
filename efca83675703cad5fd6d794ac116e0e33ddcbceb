@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b05676f_fdda4e2a",
+        "filename": "libv4l2/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2024-11-20T18:04:48Z",
+      "side": 1,
+      "message": "? - you don\u0027t handle configurable cflags at all. You seem to just hardcode one?",
+      "revId": "efca83675703cad5fd6d794ac116e0e33ddcbceb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
