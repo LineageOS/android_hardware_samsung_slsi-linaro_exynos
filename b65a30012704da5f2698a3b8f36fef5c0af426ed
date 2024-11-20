@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c6a4f21c_71680846",
+        "filename": "libexynosutils/Android.mk",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2024-11-20T18:14:09Z",
+      "side": 0,
+      "message": "same, you don\u0027t handle the cflags at all.",
+      "revId": "b65a30012704da5f2698a3b8f36fef5c0af426ed",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
