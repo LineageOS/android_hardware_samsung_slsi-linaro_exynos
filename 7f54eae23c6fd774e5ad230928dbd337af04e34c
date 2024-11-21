@@ -16,6 +16,24 @@
       "message": "feel like doing libcsc? ;p\n\nThank you for the contribution!",
       "revId": "7f54eae23c6fd774e5ad230928dbd337af04e34c",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9eb00215_97612426",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 34207
+      },
+      "writtenOn": "2024-11-21T17:50:45Z",
+      "side": 1,
+      "message": "my next task is libhwjpeg, but yes, i\u0027ll have to do libcsc as well. pretty easy as we can just copy everything from tensor.",
+      "parentUuid": "62778f56_f943873a",
+      "revId": "7f54eae23c6fd774e5ad230928dbd337af04e34c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }

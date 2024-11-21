@@ -16,6 +16,24 @@
       "message": "? - you don\u0027t handle configurable cflags at all. You seem to just hardcode one?",
       "revId": "efca83675703cad5fd6d794ac116e0e33ddcbceb",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b18d8b8_b9fbe278",
+        "filename": "libv4l2/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 34207
+      },
+      "writtenOn": "2024-11-21T17:50:45Z",
+      "side": 1,
+      "message": "That is the only flag relevant to the compilation of this lib, and since BOARD_USES_FIMC is not enabled on basically all modern devices, the -DUSES_GSCALER will be used in all cases, see https://github.com/LineageOS/android_hardware_samsung_slsi-linaro_exynos/blob/b65a30012704da5f2698a3b8f36fef5c0af426ed/BoardConfigCFlags.mk#L11-L15",
+      "parentUuid": "8b05676f_fdda4e2a",
+      "revId": "efca83675703cad5fd6d794ac116e0e33ddcbceb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
