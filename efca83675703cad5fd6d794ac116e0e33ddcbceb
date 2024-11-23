@@ -52,6 +52,24 @@
       "parentUuid": "8b18d8b8_b9fbe278",
       "revId": "efca83675703cad5fd6d794ac116e0e33ddcbceb",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "638cf461_a64e7521",
+        "filename": "libv4l2/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2024-11-23T18:12:37Z",
+      "side": 1,
+      "message": "yeah this is kind of why I\u0027ve been avoiding it :/",
+      "parentUuid": "9102fc75_2d6bdd78",
+      "revId": "efca83675703cad5fd6d794ac116e0e33ddcbceb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
