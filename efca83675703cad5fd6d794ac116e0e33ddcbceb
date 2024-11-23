@@ -34,6 +34,24 @@
       "parentUuid": "8b05676f_fdda4e2a",
       "revId": "efca83675703cad5fd6d794ac116e0e33ddcbceb",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9102fc75_2d6bdd78",
+        "filename": "libv4l2/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 34207
+      },
+      "writtenOn": "2024-11-23T08:20:17Z",
+      "side": 1,
+      "message": "You are raising a valid concern though... what are we gonna do for modules that do need configurable cflags? I\u0027ve been told about select() in soong, but that would need us to add a lot of extra things and rework the whole bsp.",
+      "parentUuid": "8b18d8b8_b9fbe278",
+      "revId": "efca83675703cad5fd6d794ac116e0e33ddcbceb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
