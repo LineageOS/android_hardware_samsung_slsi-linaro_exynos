@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "67f150f0_cb50b24f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2024-11-23T22:04:00Z",
+      "side": 1,
+      "message": "Regardless, I still can\u0027t get any of these building on troika: hardware/samsung_slsi-linaro/exynos/libexynosutils/exynos_format_v4l2.c:321:10: error: use of undeclared identifier \u0027V4L2_PIX_FMT_NV12M_SBWCL_10B\u0027\n  321 |     case V4L2_PIX_FMT_NV12M_SBWCL_10B:\n      |          ^\nhardware/samsung_slsi-linaro/exynos/libexynosutils/exynos_format_v4l2.c:457:10: error: use of undeclared identifier \u0027V4L2_PIX_FMT_NV12M_SBWC_8B\u0027\n  457 |     case V4L2_PIX_FMT_NV12M_SBWC_8B:",
+      "revId": "efca83675703cad5fd6d794ac116e0e33ddcbceb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8b05676f_fdda4e2a",
