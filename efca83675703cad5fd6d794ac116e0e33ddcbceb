@@ -70,6 +70,24 @@
       "parentUuid": "9102fc75_2d6bdd78",
       "revId": "efca83675703cad5fd6d794ac116e0e33ddcbceb",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "402bfd3d_a86243ff",
+        "filename": "libv4l2/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 34207
+      },
+      "writtenOn": "2024-11-23T20:13:05Z",
+      "side": 1,
+      "message": "You can check my latest change about giantmscl, that seems to work.",
+      "parentUuid": "638cf461_a64e7521",
+      "revId": "efca83675703cad5fd6d794ac116e0e33ddcbceb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
