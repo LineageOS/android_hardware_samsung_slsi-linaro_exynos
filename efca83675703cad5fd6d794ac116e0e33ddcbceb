@@ -123,6 +123,24 @@
       "parentUuid": "402bfd3d_a86243ff",
       "revId": "efca83675703cad5fd6d794ac116e0e33ddcbceb",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e9bc8abd_864e4a5e",
+        "filename": "libv4l2/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2024-11-23T22:50:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1e7ff6e2_34ed0f67",
+      "revId": "efca83675703cad5fd6d794ac116e0e33ddcbceb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
