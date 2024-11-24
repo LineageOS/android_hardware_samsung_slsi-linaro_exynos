@@ -36,6 +36,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f8a0e3d2_86a73c7e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 34207
+      },
+      "writtenOn": "2024-11-24T15:21:47Z",
+      "side": 1,
+      "message": "I think it would be best if you added those definitions into your device\u0027s kernel headers.",
+      "parentUuid": "88853487_26aaeb28",
+      "revId": "efca83675703cad5fd6d794ac116e0e33ddcbceb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8b05676f_fdda4e2a",
