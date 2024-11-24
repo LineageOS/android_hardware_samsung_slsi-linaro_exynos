@@ -77,6 +77,30 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "90b38c76_337a84af",
+        "filename": "libv4l2/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 34207
+      },
+      "writtenOn": "2024-11-24T20:14:15Z",
+      "side": 1,
+      "message": "Fixed.",
+      "parentUuid": "e94ecee4_ab40230b",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 1
+      },
+      "revId": "efca83675703cad5fd6d794ac116e0e33ddcbceb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8b05676f_fdda4e2a",
@@ -215,6 +239,30 @@
       "writtenOn": "2024-11-24T19:51:04Z",
       "side": 1,
       "message": "same here",
+      "range": {
+        "startLine": 35,
+        "startChar": 0,
+        "endLine": 35,
+        "endChar": 1
+      },
+      "revId": "efca83675703cad5fd6d794ac116e0e33ddcbceb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1a048900_e4900eb6",
+        "filename": "libv4l2/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 34207
+      },
+      "writtenOn": "2024-11-24T20:14:15Z",
+      "side": 1,
+      "message": "Same.",
+      "parentUuid": "26cc95cc_53532272",
       "range": {
         "startLine": 35,
         "startChar": 0,
