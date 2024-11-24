@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "88853487_26aaeb28",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 34207
+      },
+      "writtenOn": "2024-11-24T08:35:10Z",
+      "side": 1,
+      "message": "These values seem to be defined in my kernel headers, but not yours. Seems like the solution is to somehow use the kernel headers in hardware/samsung_slsi-linaro/exynos. What i tried to do was to instead use the kernel headers from the device, but seems like that won\u0027t always work.\n\nActually, we could utilize select() here as well. Though, for devices with newer kernels, we should still somehow allow to use device_kernel_headers.",
+      "parentUuid": "67f150f0_cb50b24f",
+      "revId": "efca83675703cad5fd6d794ac116e0e33ddcbceb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8b05676f_fdda4e2a",
         "filename": "libv4l2/Android.bp",
         "patchSetId": 2
