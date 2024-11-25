@@ -16,6 +16,24 @@
       "message": "@borbely.vince.11@gmail.com got time to do libcsc?",
       "revId": "fa4204de1bc265770a51f59eedfeeec5d27587d3",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "305175fe_8f1001bd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 34207
+      },
+      "writtenOn": "2024-11-25T17:53:10Z",
+      "side": 1,
+      "message": "already doing that ;)\n\nan idea though: we could create a new boardconfig makefile that warns users to convert the old-style boardconfig stuff to soong for the soong libs.",
+      "parentUuid": "971b7e23_3d74b8a5",
+      "revId": "fa4204de1bc265770a51f59eedfeeec5d27587d3",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
