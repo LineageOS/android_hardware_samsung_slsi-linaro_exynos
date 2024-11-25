@@ -16,6 +16,24 @@
       "message": "whole file: needed?",
       "revId": "2c71b5faa25b7d6e83b973d2b45ee0186578d33b",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9ac4e3c2_cd10b3f7",
+        "filename": "tee/kinibi410/system/Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 17401
+      },
+      "writtenOn": "2024-11-25T06:04:11Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "7898871b_2b9136d6",
+      "revId": "2c71b5faa25b7d6e83b973d2b45ee0186578d33b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
