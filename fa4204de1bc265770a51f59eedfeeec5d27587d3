@@ -34,6 +34,24 @@
       "parentUuid": "971b7e23_3d74b8a5",
       "revId": "fa4204de1bc265770a51f59eedfeeec5d27587d3",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "79c97159_a8011780",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2024-11-25T18:25:35Z",
+      "side": 1,
+      "message": "Good idea. Pls join our public discord and toss your username to me @npjohnson on discord. I\u0027ll get you invited to the #exynos channel\n\nlibGrallocWrapper is in the shortlist too - with libcsc and libGrallocWrapper moved to BP troika can drop all extract hacks lol",
+      "parentUuid": "305175fe_8f1001bd",
+      "revId": "fa4204de1bc265770a51f59eedfeeec5d27587d3",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
