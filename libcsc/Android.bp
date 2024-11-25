@@ -1,0 +1,36 @@
+cc_library_shared {
+    name: "libcsc",
+
+    cflags: [
+        "-DLOG_TAG=\"libcsc\"",
+    ] + select(soong_config_variable("libcsc", "USES_FIMC"), {
+        "true": ["-DUSES_FIMC"],
+        default: ["-DUSES_GSCALER"],
+    }) + select(soong_config_variable("libcsc", "DEFAULT_CSC_HW"), {
+        any @ default_csc_hw: ["-DDEFAULT_CSC_HW=" + default_csc_hw],
+        default: ["-DDEFAULT_CSC_HW=5"],
+    }),
+    shared_libs: [
+        "liblog",
+        "libutils",
+        "libcutils",
+        "libexynosscaler",
+    ],
+
+    static_libs: [
+        "libswconverter",
+    ],
+
+    header_libs: [
+        "libcutils_headers",
+        "libsystem_headers",
+        "libhardware_headers",
+        "libexynos_headers",
+    ],
+
+    srcs: [
+        "csc.c",
+    ],
+
+    proprietary: true,
+}

@@ -1,0 +1,19 @@
+cc_library_static {
+    name: "libswconverter",
+
+    srcs: ["swconvertor.c"],
+
+    cflags: [
+        "-Werror",
+        "-Wno-unused-variable",
+        "-Wno-unused-function",
+    ],
+    include_dirs: ["hardware/samsung_slsi-linaro/exynos/include"],
+
+    proprietary: true,
+
+    shared_libs: [
+        "liblog"
+    ],
+
+}
