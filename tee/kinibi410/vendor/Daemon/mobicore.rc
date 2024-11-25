@@ -1,0 +1,13 @@
+on late-fs
+    start mobicore
+
+on nonencrypted
+    mkdir /data/vendor/mcRegistry 0775 system drmrpc
+
+on property:vold.decrypt=trigger_restart_framework
+    mkdir /data/vendor/mcRegistry 0775 system drmrpc
+
+service mobicore /vendor/bin/mcDriverDaemon -r FFFFFFFF000000000000000000000001 -r /vendor/app/mcRegistry/FFFFFFFFD00000000000000000000016.tlbin
+    user drmrpc
+    group drmrpc
+    class core

@@ -1,0 +1,5 @@
+f3505276a4941aedc45b96746843db80b985cc84e35df363be1106d5e4b0398a vendor.trustonic.tee@1.0::ITee
+72b2445e9835a12280ec9a4695409ad830919a96e74dabfd4398d3b65452c288 vendor.trustonic.tee.tui@1.0::ITui
+066bbcbbfce87560bebcb7f97261326fcd76f4d1e6b9631add2ab6db51bc2e78 vendor.trustonic.tee.tui@1.0::ITuiCallback
+a7179be5b530885b20dfea4b84a4f95e81c682578f7e2c8f54487c821e43039d vendor.trustonic.tee@1.1::ITee
+537930d2dab2288ec681baf0f8b6e0e39df7edc9460edac98c102ffc44db03e4 vendor.trustonic.tee@1.1::ITeeCallback

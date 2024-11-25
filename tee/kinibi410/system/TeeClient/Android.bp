@@ -1,0 +1,54 @@
+cc_library_shared {
+
+    name: "libTeeClient",
+
+    srcs: [
+        "jni/*.cpp",
+    ],
+
+    cflags: ["-fvisibility=hidden"] + ["-DTBASE_API_LEVEL=9"] + [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+    ] + ["-std=c++11"] + [
+        "-DLOG_ANDROID",
+        "-DDYNAMIC_LOG",
+    ],
+
+    local_include_dirs: [
+        "include",
+        "include/GP",
+        "jni",
+    ],
+
+    // ANDROIDMK TRANSLATION ERROR: unsupported non-const variable name
+    // LOCAL_SRC_FILES := $(FILE_LIST:$(LOCAL_PATH)/%=%)
+
+    //host_ldlibs: ["-llog"],
+    shared_libs: [
+        "liblog",
+        "libnativehelper",
+    ],
+
+    export_include_dirs: [
+        "include",
+        "include/GP",
+        "jni",
+    ],
+
+}
+
+java_library {
+    name: "TeeClient",
+    optimize: {
+        enabled: false,
+    },
+    srcs: ["java/**/*.java"],
+
+    //certificate: "platform",
+    dex_preopt: {
+        enabled: false,
+    },
+    platform_apis: true,
+
+}

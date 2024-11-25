@@ -1,0 +1,23 @@
+cc_binary {
+
+    name: "caKeyInjectionTool",
+    proprietary: true,
+    srcs: [
+        "src/*.cpp",
+        "src/*.c",
+    ],
+
+    local_include_dirs: [
+        "src",
+        ".",
+    ],
+
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+    ] + ["-DTBASE_API_LEVEL=11"] + ["-DLOG_ANDROID"] + ["-DLOG_TAG=\"caKeyInjectionTool\""], // Enable logging to logcat by default
+
+    shared_libs: ["libMcClient"] + ["liblog"],
+
+}
