@@ -16,6 +16,24 @@
       "message": "may be worth checking if it differs from the one we copy and if we can just use this one  https://github.com/LineageOS/android_device_motorola_exynos9610-common/blob/lineage-22.0/common.mk#L204",
       "revId": "ef953fa1926d20b1db188a92a3e3b2e87c49da07",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c2319c56_cc05a973",
+        "filename": "tee/kinibi410/vendor/Daemon/mobicore.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2024-11-25T06:19:53Z",
+      "side": 1,
+      "message": "export MC_AUTH_TOKEN_PATH /mnt/vendor/persist/mobicore\n    mkdir /mnt/vendor/persist/mobicore 0775 system system\n    mkdir /mnt/vendor/persist/mobicore 0775 system drmrpc\n    \n    we have more stuff :/",
+      "parentUuid": "a048c230_55fd0808",
+      "revId": "ef953fa1926d20b1db188a92a3e3b2e87c49da07",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
