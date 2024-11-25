@@ -52,6 +52,24 @@
       "parentUuid": "305175fe_8f1001bd",
       "revId": "fa4204de1bc265770a51f59eedfeeec5d27587d3",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b32dcc1d_31b822c7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 17401
+      },
+      "writtenOn": "2024-11-25T20:25:30Z",
+      "side": 1,
+      "message": "one way to handle is would be to add a compatibility translation in https://github.com/LineageOS/android_hardware_samsung_slsi-linaro_config/blob/lineage-22.0/BoardConfigCommon.mk i.e. map old flags to new flags while also emitting warnings, or update all makefiles in that repo as every bsp related flag should be set there to begin with (with a few override exceptions which would be cought by a graceful translation )",
+      "parentUuid": "79c97159_a8011780",
+      "revId": "fa4204de1bc265770a51f59eedfeeec5d27587d3",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
