@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "971b7e23_3d74b8a5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2024-11-25T17:48:49Z",
+      "side": 1,
+      "message": "@borbely.vince.11@gmail.com got time to do libcsc?",
+      "revId": "fa4204de1bc265770a51f59eedfeeec5d27587d3",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
