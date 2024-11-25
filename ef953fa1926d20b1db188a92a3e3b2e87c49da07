@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a048c230_55fd0808",
+        "filename": "tee/kinibi410/vendor/Daemon/mobicore.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 17401
+      },
+      "writtenOn": "2024-11-25T06:16:56Z",
+      "side": 1,
+      "message": "may be worth checking if it differs from the one we copy and if we can just use this one  https://github.com/LineageOS/android_device_motorola_exynos9610-common/blob/lineage-22.0/common.mk#L204",
+      "revId": "ef953fa1926d20b1db188a92a3e3b2e87c49da07",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
