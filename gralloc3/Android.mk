@@ -26,8 +26,6 @@ ifdef GRALLOC_USE_GRALLOC1_API
     endif
 endif
 
-include $(TOP_LOCAL_PATH)/gralloc.version.mk
-
 # Place and access VPU library from /vendor directory in unit testing as default
 # /system is not in the linker permitted paths
 ifeq ($(MALI_GRALLOC_API_TESTS), 1)
