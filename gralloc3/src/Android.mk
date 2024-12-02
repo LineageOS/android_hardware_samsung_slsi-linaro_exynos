@@ -21,9 +21,6 @@ LOCAL_PATH := $(call my-dir)
 # Binary located in hw/gralloc.<ro.product.board>.so
 include $(CLEAR_VARS)
 
-# Include makefile which exports Gralloc Major and Minor version numbers
-include $(LOCAL_PATH)/../gralloc.version.mk
-
 # Include platform specific makefiles
 include $(if $(wildcard $(LOCAL_PATH)/Android.$(TARGET_BOARD_PLATFORM).mk), $(LOCAL_PATH)/Android.$(TARGET_BOARD_PLATFORM).mk,)
 
@@ -174,7 +171,7 @@ LOCAL_CFLAGS_arm += -DMALI_GRALLOC_DPU_LIBRARY_PATH=$(MALI_GRALLOC_DPU_LIBRARY_3
 LOCAL_CFLAGS += -DMALI_GRALLOC_VPU_LIBRARY_PATH=$(MALI_GRALLOC_VPU_LIBRARY_PATH)
 
 # Software behaviour flags
-LOCAL_CFLAGS += -DGRALLOC_VERSION_MAJOR=$(GRALLOC_VERSION_MAJOR)
+LOCAL_CFLAGS += -DGRALLOC_VERSION_MAJOR=1
 LOCAL_CFLAGS += -DHIDL_ALLOCATOR_VERSION_SCALED=$(HIDL_ALLOCATOR_VERSION_SCALED)
 LOCAL_CFLAGS += -DHIDL_MAPPER_VERSION_SCALED=$(HIDL_MAPPER_VERSION_SCALED)
 LOCAL_CFLAGS += -DHIDL_COMMON_VERSION_SCALED=$(HIDL_COMMON_VERSION_SCALED)
@@ -228,23 +225,7 @@ ifneq ($(BOARD_USES_EXYNOS_DATASPACE_FEATURE), true)
 LOCAL_CFLAGS += -DGRALLOC_FORCE_BT601
 endif
 
-ifeq ($(shell expr $(GRALLOC_VERSION_MAJOR) \<= 1), 1)
 LOCAL_SHARED_LIBRARIES := libhardware liblog libcutils libGLESv1_CM libion_exynos libsync libutils
-else ifeq ($(GRALLOC_VERSION_MAJOR), 2)
-    ifeq ($(GRALLOC_MAPPER), 1)
-        LOCAL_SHARED_LIBRARIES := libhardware libhidlbase liblog libcutils libion_exynos libsync libutils
-        LOCAL_SHARED_LIBRARIES += android.hardware.graphics.mapper@2.0
-        ifeq ($(HIDL_MAPPER_VERSION_SCALED), 210)
-            LOCAL_SHARED_LIBRARIES += android.hardware.graphics.mapper@2.1
-        endif
-    else
-        LOCAL_SHARED_LIBRARIES := libhardware libhidlbase liblog libcutils libion_exynos libsync libutils
-        LOCAL_SHARED_LIBRARIES += android.hardware.graphics.allocator@2.0
-        ifeq ($(HIDL_MAPPER_VERSION_SCALED), 210)
-            LOCAL_SHARED_LIBRARIES += android.hardware.graphics.mapper@2.1
-        endif
-    endif
-endif
 
 LOCAL_SHARED_LIBRARIES += libnativewindow
 LOCAL_STATIC_LIBRARIES := libarect
@@ -254,22 +235,10 @@ LOCAL_PRELINK_MODULE := false
 LOCAL_MODULE_RELATIVE_PATH := hw
 LOCAL_MODULE_PATH_32 := $(TARGET_OUT_VENDOR)/lib
 LOCAL_MODULE_PATH_64 := $(TARGET_OUT_VENDOR)/lib64
-ifeq ($(shell expr $(GRALLOC_VERSION_MAJOR) \<= 1), 1)
-    ifeq ($(TARGET_SOC),)
-        LOCAL_MODULE := gralloc.default
-    else
-        LOCAL_MODULE := gralloc.$(TARGET_SOC)
-    endif
-else ifeq ($(GRALLOC_VERSION_MAJOR), 2)
-    ifeq ($(GRALLOC_MAPPER), 1)
-        ifeq ($(HIDL_MAPPER_VERSION_SCALED), 200)
-            LOCAL_MODULE := android.hardware.graphics.mapper@2.0-impl
-        else ifeq ($(HIDL_MAPPER_VERSION_SCALED), 210)
-            LOCAL_MODULE := android.hardware.graphics.mapper@2.0-impl-2.1
-        endif
-    else
-        LOCAL_MODULE := android.hardware.graphics.allocator@2.0-impl
-    endif
+ifeq ($(TARGET_SOC),)
+    LOCAL_MODULE := gralloc.default
+else
+    LOCAL_MODULE := gralloc.$(TARGET_SOC)
 endif
 
 LOCAL_MODULE_OWNER := arm
@@ -289,44 +258,11 @@ LOCAL_SRC_FILES := \
     mali_gralloc_debug.cpp \
     format_info.cpp
 
-ifeq ($(GRALLOC_VERSION_MAJOR), 0)
-    LOCAL_SRC_FILES += mali_gralloc_module.cpp \
-                       framebuffer_device.cpp \
-                       gralloc_vsync_${GRALLOC_VSYNC_BACKEND}.cpp \
-                       legacy/alloc_device.cpp
-else ifeq ($(GRALLOC_VERSION_MAJOR), 1)
-    LOCAL_SRC_FILES += mali_gralloc_module.cpp \
-                       framebuffer_device.cpp \
-                       gralloc_vsync_${GRALLOC_VSYNC_BACKEND}.cpp \
-                       mali_gralloc_public_interface.cpp \
-                       mali_gralloc_private_interface.cpp
-else ifeq ($(GRALLOC_VERSION_MAJOR), 2)
-    ifeq ($(GRALLOC_MAPPER), 1)
-        LOCAL_SRC_FILES += GrallocMapper.cpp
-    else
-        LOCAL_SRC_FILES += framebuffer_device.cpp \
-                           GrallocAllocator.cpp
-    endif
-
-    LOCAL_EXPORT_SHARED_LIBRARY_HEADERS := \
-        android.hardware.graphics.allocator@2.0 \
-        libhidlbase
-
-    ifeq ($(HIDL_MAPPER_VERSION_SCALED), 200)
-        LOCAL_EXPORT_SHARED_LIBRARY_HEADERS += android.hardware.graphics.mapper@2.0
-        LOCAL_EXPORT_SHARED_LIBRARY_HEADERS += android.hardware.graphics.common@1.0
-    else ifeq ($(HIDL_MAPPER_VERSION_SCALED), 210)
-        LOCAL_EXPORT_SHARED_LIBRARY_HEADERS += android.hardware.graphics.mapper@2.1
-        LOCAL_EXPORT_SHARED_LIBRARY_HEADERS += android.hardware.graphics.common@1.1
-    endif
-
-    ifeq ($(HIDL_COMMON_VERSION_SCALED), 100)
-        LOCAL_EXPORT_SHARED_LIBRARY_HEADERS += android.hardware.graphics.common@1.0
-    else ifeq ($(HIDL_COMMON_VERSION_SCALED), 110)
-        LOCAL_EXPORT_SHARED_LIBRARY_HEADERS += android.hardware.graphics.common@1.1
-    endif
-endif
-
+LOCAL_SRC_FILES += mali_gralloc_module.cpp \
+                   framebuffer_device.cpp \
+                   gralloc_vsync_${GRALLOC_VSYNC_BACKEND}.cpp \
+                   mali_gralloc_public_interface.cpp \
+                   mali_gralloc_private_interface.cpp
 LOCAL_MODULE_OWNER := arm
 
 include $(BUILD_SHARED_LIBRARY)
@@ -338,9 +274,6 @@ include $(CLEAR_VARS)
 # HAL module implemenation, not prelinked.
 # Binary located in hw/gralloc.<ro.product.board>.so
 include $(CLEAR_VARS)
-
-# Include makefile which exports Gralloc Major and Minor version numbers
-include $(LOCAL_PATH)/../gralloc.version.mk
 
 # Include platform specific makefiles
 include $(if $(wildcard $(LOCAL_PATH)/Android.$(TARGET_BOARD_PLATFORM).mk), $(LOCAL_PATH)/Android.$(TARGET_BOARD_PLATFORM).mk,)
@@ -478,7 +411,7 @@ LOCAL_CFLAGS_arm += -DMALI_GRALLOC_DPU_LIBRARY_PATH=$(MALI_GRALLOC_DPU_LIBRARY_3
 LOCAL_CFLAGS += -DMALI_GRALLOC_VPU_LIBRARY_PATH=$(MALI_GRALLOC_VPU_LIBRARY_PATH)
 
 # Software behaviour flags
-LOCAL_CFLAGS += -DGRALLOC_VERSION_MAJOR=$(GRALLOC_VERSION_MAJOR)
+LOCAL_CFLAGS += -DGRALLOC_VERSION_MAJOR=1
 LOCAL_CFLAGS += -DHIDL_ALLOCATOR_VERSION_SCALED=$(HIDL_ALLOCATOR_VERSION_SCALED)
 LOCAL_CFLAGS += -DHIDL_MAPPER_VERSION_SCALED=$(HIDL_MAPPER_VERSION_SCALED)
 LOCAL_CFLAGS += -DHIDL_COMMON_VERSION_SCALED=$(HIDL_COMMON_VERSION_SCALED)
@@ -535,23 +468,7 @@ ifneq ($(BOARD_USES_EXYNOS_DATASPACE_FEATURE), true)
 LOCAL_CFLAGS += -DGRALLOC_FORCE_BT601
 endif
 
-ifeq ($(shell expr $(GRALLOC_VERSION_MAJOR) \<= 1), 1)
 LOCAL_SHARED_LIBRARIES := libhardware liblog libcutils libGLESv1_CM libion_exynos libsync libutils
-else ifeq ($(GRALLOC_VERSION_MAJOR), 2)
-    ifeq ($(GRALLOC_MAPPER), 1)
-        LOCAL_SHARED_LIBRARIES := libhardware libhidlbase liblog libcutils libion_exynos libsync libutils
-        LOCAL_SHARED_LIBRARIES += android.hardware.graphics.mapper@2.0
-        ifeq ($(HIDL_MAPPER_VERSION_SCALED), 210)
-            LOCAL_SHARED_LIBRARIES += android.hardware.graphics.mapper@2.1
-        endif
-    else
-        LOCAL_SHARED_LIBRARIES := libhardware libhidlbase liblog libcutils libion_exynos libsync libutils
-        LOCAL_SHARED_LIBRARIES += android.hardware.graphics.allocator@2.0
-        ifeq ($(HIDL_MAPPER_VERSION_SCALED), 210)
-            LOCAL_SHARED_LIBRARIES += android.hardware.graphics.mapper@2.1
-        endif
-    endif
-endif
 
 LOCAL_SHARED_LIBRARIES += android.hardware.graphics.mapper@2.0
 
