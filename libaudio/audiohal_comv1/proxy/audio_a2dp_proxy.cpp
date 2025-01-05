@@ -17,20 +17,21 @@
 #define LOG_TAG "audio_hw_a2dp_proxy"
 #define LOG_NDEBUG 0
 
-#include <dlfcn.h>
-#include <errno.h>
 #include <stdlib.h>
+#include <errno.h>
+#include <dlfcn.h>
 
-#include <log/log.h>
 #include <system/audio.h>
+#include <log/log.h>
 
 #include <android/hidl/allocator/1.0/IAllocator.h>
 #include <android/hidl/memory/1.0/IMemory.h>
 #include <hidlmemory/mapping.h>
 
+#include "vendor/samsung_slsi/hardware/ExynosA2DPOffload/2.0/IExynosA2DPOffload.h"
 #include "audio_a2dp_proxy.h"
 #include "audio_mixer.h"
-#include "vendor/samsung_slsi/hardware/ExynosA2DPOffload/2.0/IExynosA2DPOffload.h"
+
 
 /*****************************************************************************/
 /**                                                                         **/
@@ -42,14 +43,15 @@ using vendor::samsung_slsi::hardware::ExynosA2DPOffload::V2_0::IExynosA2DPOffloa
 
 using ::android::sp;
 
-using ::android::hidl::allocator::V1_0::IAllocator;
 using ::android::hidl::base::V1_0::IBase;
+using ::android::hidl::allocator::V1_0::IAllocator;
 using ::android::hidl::memory::V1_0::IMemory;
 
-using ::android::hardware::hidl_death_recipient;
 using ::android::hardware::hidl_memory;
 using ::android::hardware::Return;
 using ::android::hardware::Void;
+using ::android::hardware::hidl_death_recipient;
+
 
 static android::sp<IExynosA2DPOffload> gA2DPHal_ = nullptr;
 static std::mutex gA2DPHalMutex;
@@ -79,7 +81,8 @@ static android::sp<IExynosA2DPOffload> getA2DPHal() {
             if (gA2DPHalDeathRecipient == nullptr) {
                 gA2DPHalDeathRecipient = new A2DPHalDeathRecipient();
             }
-            Return<bool> linked = gA2DPHal_->linkToDeath(gA2DPHalDeathRecipient, 0 /* cookie */);
+            Return<bool> linked = gA2DPHal_->linkToDeath(
+                gA2DPHalDeathRecipient, 0 /* cookie */);
             if (!linked.isOk()) {
                 ALOGE("Transaction error in linking to A2DP HAL death: %s",
                       linked.description().c_str());
@@ -96,6 +99,7 @@ static android::sp<IExynosA2DPOffload> getA2DPHal() {
     return gA2DPHal_;
 }
 
+
 /*****************************************************************************
 **  Constants & Macros
 ******************************************************************************/
@@ -103,19 +107,19 @@ static android::sp<IExynosA2DPOffload> getA2DPHal() {
 /* BT A2DP Host Status */
 typedef enum {
     AUDIO_A2DP_STATUS_NONE,
-    AUDIO_A2DP_STATUS_INIT,       // Load BT A2DP Host IPC Library & BT A2DP Stream is closed
-    AUDIO_A2DP_STATUS_STANDBY,    // BT A2DP Stream is opened, but not working
-    AUDIO_A2DP_STATUS_STARTED,    // BT A2DP Stream is working
-    AUDIO_A2DP_STATUS_SUSPENDED,  // BT A2DP Stream is suspended
+    AUDIO_A2DP_STATUS_INIT,         // Load BT A2DP Host IPC Library & BT A2DP Stream is closed
+    AUDIO_A2DP_STATUS_STANDBY,      // BT A2DP Stream is opened, but not working
+    AUDIO_A2DP_STATUS_STARTED,      // BT A2DP Stream is working
+    AUDIO_A2DP_STATUS_SUSPENDED,    // BT A2DP Stream is suspended
     AUDIO_A2DP_STATUS_CNT,
 } a2dp_status;
 
-const char* a2dpstatus_table[AUDIO_A2DP_STATUS_CNT] = {
-        [AUDIO_A2DP_STATUS_NONE] = "A2DP_STATUS_NONE",
-        [AUDIO_A2DP_STATUS_INIT] = "A2DP_STATUS_INIT",
-        [AUDIO_A2DP_STATUS_STANDBY] = "A2DP_STATUS_STANDBY",
-        [AUDIO_A2DP_STATUS_STARTED] = "A2DP_STATUS_STARTED",
-        [AUDIO_A2DP_STATUS_SUSPENDED] = "A2DP_STATUS_SUSPENDED",
+const char * a2dpstatus_table[AUDIO_A2DP_STATUS_CNT] = {
+    [AUDIO_A2DP_STATUS_NONE]      = "A2DP_STATUS_NONE",
+    [AUDIO_A2DP_STATUS_INIT]      = "A2DP_STATUS_INIT",
+    [AUDIO_A2DP_STATUS_STANDBY]   = "A2DP_STATUS_STANDBY",
+    [AUDIO_A2DP_STATUS_STARTED]   = "A2DP_STATUS_STARTED",
+    [AUDIO_A2DP_STATUS_SUSPENDED] = "A2DP_STATUS_SUSPENDED",
 };
 
 struct a2dp_proxy {
@@ -124,23 +128,26 @@ struct a2dp_proxy {
     a2dp_status prev_status;
 };
 
+
 /******************************************************************************/
 /**                                                                          **/
 /** A2DP Proxy is Singleton                                                  **/
 /**                                                                          **/
 /******************************************************************************/
 
-static struct a2dp_proxy* a2dp_instance = NULL;
+static struct a2dp_proxy *a2dp_instance = NULL;
 
-static struct a2dp_proxy* getA2DPInstance(void) {
+static struct a2dp_proxy* getA2DPInstance(void)
+{
     if (a2dp_instance == NULL) {
-        a2dp_instance = (struct a2dp_proxy*)calloc(1, sizeof(struct a2dp_proxy));
+        a2dp_instance = (struct a2dp_proxy *)calloc(1, sizeof(struct a2dp_proxy));
         ALOGI("proxy-%s: created A2DP Proxy Instance!", __func__);
     }
     return a2dp_instance;
 }
 
-static void destroyA2DPInstance(void) {
+static void destroyA2DPInstance(void)
+{
     if (a2dp_instance) {
         free(a2dp_instance);
         a2dp_instance = NULL;
@@ -149,29 +156,29 @@ static void destroyA2DPInstance(void) {
     return;
 }
 
+
 /******************************************************************************/
 /**                                                                          **/
 /** Bluetooth A2DP Proxy Interfaces                                          **/
 /**                                                                          **/
 /******************************************************************************/
 
-void proxy_a2dp_set_mixer(uint32_t bit_rate, uint32_t peer_mtu) {
-    struct a2dp_proxy* aproxy_a2dp = getA2DPInstance();
-    uint32_t value[MIXER_CTL_ABOX_A2DP_DYN_PARAMS_CNT] = {
-            0,
-    };
+void proxy_a2dp_set_mixer(uint32_t bit_rate, uint32_t peer_mtu)
+{
+    struct a2dp_proxy *aproxy_a2dp = getA2DPInstance();
+    uint32_t value[MIXER_CTL_ABOX_A2DP_DYN_PARAMS_CNT] = {0, };
 
     ALOGI("proxy-%s: bit_rate[%d], peerMtu[%d]", __func__, bit_rate, peer_mtu);
 
     value[0] = bit_rate;
     value[1] = peer_mtu;
 
-    proxy_set_mixer_value_array(NULL, MIXER_CTL_ABOX_A2DP_DYN_PARAMS, value,
-                                MIXER_CTL_ABOX_A2DP_DYN_PARAMS_CNT);
+    proxy_set_mixer_value_array(NULL, MIXER_CTL_ABOX_A2DP_DYN_PARAMS, value, MIXER_CTL_ABOX_A2DP_DYN_PARAMS_CNT);
 }
 
-int proxy_a2dp_get_config(uint32_t* type, void* config) {
-    struct a2dp_proxy* aproxy_a2dp = getA2DPInstance();
+int proxy_a2dp_get_config(uint32_t *type, void *config)
+{
+    struct a2dp_proxy *aproxy_a2dp = getA2DPInstance();
     hidl_memory codec_info;
     int ret = -1;
 
@@ -183,13 +190,12 @@ int proxy_a2dp_get_config(uint32_t* type, void* config) {
 
         if (aproxy_a2dp->cur_status == AUDIO_A2DP_STATUS_STARTED) {
             sp<IAllocator> ashmemAllocator = IAllocator::getService("ashmem");
-            Return<void> allocReturn =
-                    ashmemAllocator->allocate(4, [&](bool success, const hidl_memory& m) {
-                        if (!success)
-                            ALOGE("proxy-%s: Failed to get AshMem Allocator", __func__);
-                        else
-                            codec_info = m;
-                    });
+            Return<void> allocReturn = ashmemAllocator->allocate(4, [&](bool success, const hidl_memory& m) {
+                if (!success)
+                    ALOGE("proxy-%s: Failed to get AshMem Allocator", __func__);
+                else
+                    codec_info = m;
+            });
 
             sp<IMemory> memory = ::android::hardware::mapMemory(codec_info);
             if (memory.get() == nullptr)
@@ -197,34 +203,33 @@ int proxy_a2dp_get_config(uint32_t* type, void* config) {
             else {
                 ret = a2dpHal->a2dp_get_codec_config(codec_info);
                 if (ret == 0) {
-                    uint32_t* codec_type =
-                            static_cast<uint32_t*>(static_cast<void*>(memory->getPointer()));
+                    uint32_t* codec_type = static_cast<uint32_t*>(static_cast<void*>(memory->getPointer()));
                     ALOGI("proxy-%s: Codec Type = %d", __func__, codec_type[0]);
 
                     // Copy A2DP CODEC Configurations based on CODEC Type
                     *type = codec_type[0];
                     if (codec_type[0] == (uint32_t)AUDIO_FORMAT_SBC) {
-                        memcpy(config, (void*)&codec_type[1], sizeof(audio_sbc_encoder_config));
+                        memcpy(config, (void *)&codec_type[1], sizeof(audio_sbc_encoder_config));
                     } else if (codec_type[0] == (uint32_t)AUDIO_FORMAT_APTX) {
-                        memcpy(config, (void*)&codec_type[1], sizeof(audio_aptx_encoder_config));
-                    } else if (codec_type[0] == (uint32_t)AUDIO_FORMAT_SSC) {
-                        memcpy(config, (void*)&codec_type[1], sizeof(audio_ssc_encoder_config));
-                    } else if (codec_type[0] == (uint32_t)AUDIO_FORMAT_AAC) {
-                        memcpy(config, (void*)&codec_type[1], sizeof(audio_aac_encoder_config));
+                        memcpy(config, (void *)&codec_type[1], sizeof(audio_aptx_encoder_config));
+                    } else if(codec_type[0] == (uint32_t)AUDIO_FORMAT_SSC) {
+                        memcpy(config, (void *)&codec_type[1], sizeof(audio_ssc_encoder_config));
+                    } else if(codec_type[0] == (uint32_t)AUDIO_FORMAT_AAC) {
+                        memcpy(config,(void *)&codec_type[1],sizeof(audio_aac_encoder_config));
                     }
                 } else
                     ALOGE("proxy-%s: A2DP Stream did not get codec config", __func__);
             }
         } else
-            ALOGI("proxy-%s: Abnormal A2DP Status(%s)", __func__,
-                  a2dpstatus_table[aproxy_a2dp->cur_status]);
+            ALOGI("proxy-%s: Abnormal A2DP Status(%s)", __func__, a2dpstatus_table[aproxy_a2dp->cur_status]);
     }
 
     return ret;
 }
 
-int proxy_a2dp_start(void) {
-    struct a2dp_proxy* aproxy_a2dp = getA2DPInstance();
+int proxy_a2dp_start(void)
+{
+    struct a2dp_proxy *aproxy_a2dp = getA2DPInstance();
     int ret = -1;
 
     if (aproxy_a2dp) {
@@ -239,20 +244,19 @@ int proxy_a2dp_start(void) {
                 aproxy_a2dp->prev_status = aproxy_a2dp->cur_status;
                 aproxy_a2dp->cur_status = AUDIO_A2DP_STATUS_STARTED;
                 ALOGI("proxy-%s: Transit to %s from %s", __func__,
-                      a2dpstatus_table[aproxy_a2dp->cur_status],
-                      a2dpstatus_table[aproxy_a2dp->prev_status]);
+                      a2dpstatus_table[aproxy_a2dp->cur_status], a2dpstatus_table[aproxy_a2dp->prev_status]);
             } else
                 ALOGE("proxy-%s: A2DP Stream did not started", __func__);
         } else
-            ALOGI("proxy-%s: Abnormal A2DP Status(%s)", __func__,
-                  a2dpstatus_table[aproxy_a2dp->cur_status]);
+            ALOGI("proxy-%s: Abnormal A2DP Status(%s)", __func__, a2dpstatus_table[aproxy_a2dp->cur_status]);
     }
 
     return ret;
 }
 
-int proxy_a2dp_stop(void) {
-    struct a2dp_proxy* aproxy_a2dp = getA2DPInstance();
+int proxy_a2dp_stop(void)
+{
+    struct a2dp_proxy *aproxy_a2dp = getA2DPInstance();
     int ret = -1;
 
     if (aproxy_a2dp) {
@@ -267,21 +271,20 @@ int proxy_a2dp_stop(void) {
                 aproxy_a2dp->prev_status = aproxy_a2dp->cur_status;
                 aproxy_a2dp->cur_status = AUDIO_A2DP_STATUS_STANDBY;
                 ALOGI("proxy-%s: Transit to %s from %s", __func__,
-                      a2dpstatus_table[aproxy_a2dp->cur_status],
-                      a2dpstatus_table[aproxy_a2dp->prev_status]);
+                       a2dpstatus_table[aproxy_a2dp->cur_status], a2dpstatus_table[aproxy_a2dp->prev_status]);
             } else
                 ALOGE("proxy-%s: A2DP Stream did not stopped", __func__);
         } else {
-            ALOGI("proxy-%s: Ignored as A2DP Status(%s)", __func__,
-                  a2dpstatus_table[aproxy_a2dp->cur_status]);
+            ALOGI("proxy-%s: Ignored as A2DP Status(%s)", __func__, a2dpstatus_table[aproxy_a2dp->cur_status]);
         }
     }
 
     return ret;
 }
 
-int proxy_a2dp_suspend(bool flag) {
-    struct a2dp_proxy* aproxy_a2dp = getA2DPInstance();
+int proxy_a2dp_suspend(bool flag)
+{
+    struct a2dp_proxy *aproxy_a2dp = getA2DPInstance();
     int ret = 0;
 
     if (aproxy_a2dp) {
@@ -298,13 +301,11 @@ int proxy_a2dp_suspend(bool flag) {
                     aproxy_a2dp->prev_status = aproxy_a2dp->cur_status;
                     aproxy_a2dp->cur_status = AUDIO_A2DP_STATUS_SUSPENDED;
                     ALOGI("proxy-%s: Transit to %s from %s", __func__,
-                          a2dpstatus_table[aproxy_a2dp->cur_status],
-                          a2dpstatus_table[aproxy_a2dp->prev_status]);
+                          a2dpstatus_table[aproxy_a2dp->cur_status], a2dpstatus_table[aproxy_a2dp->prev_status]);
                 } else
                     ALOGE("proxy-%s: A2DP Stream did not suspended", __func__);
             } else {
-                ALOGI("proxy-%s: Ignored as A2DP Status(%s)", __func__,
-                      a2dpstatus_table[aproxy_a2dp->cur_status]);
+                ALOGI("proxy-%s: Ignored as A2DP Status(%s)", __func__, a2dpstatus_table[aproxy_a2dp->cur_status]);
                 ret = -1;
             }
         } else {
@@ -313,11 +314,9 @@ int proxy_a2dp_suspend(bool flag) {
                 aproxy_a2dp->prev_status = aproxy_a2dp->cur_status;
                 aproxy_a2dp->cur_status = AUDIO_A2DP_STATUS_STANDBY;
                 ALOGI("proxy-%s: Transit to %s from %s", __func__,
-                      a2dpstatus_table[aproxy_a2dp->cur_status],
-                      a2dpstatus_table[aproxy_a2dp->prev_status]);
+                      a2dpstatus_table[aproxy_a2dp->cur_status], a2dpstatus_table[aproxy_a2dp->prev_status]);
             } else {
-                ALOGI("proxy-%s: Ignored as A2DP Status(%s)", __func__,
-                      a2dpstatus_table[aproxy_a2dp->cur_status]);
+                ALOGI("proxy-%s: Ignored as A2DP Status(%s)", __func__, a2dpstatus_table[aproxy_a2dp->cur_status]);
                 ret = 0;
             }
         }
@@ -327,16 +326,19 @@ int proxy_a2dp_suspend(bool flag) {
 }
 
 /* added by samsung audiocore */
-bool proxy_a2dp_is_suspended(void) {
-    struct a2dp_proxy* aproxy_a2dp = getA2DPInstance();
+bool proxy_a2dp_is_suspended(void)
+{
+    struct a2dp_proxy *aproxy_a2dp = getA2DPInstance();
 
-    if (aproxy_a2dp && aproxy_a2dp->cur_status == AUDIO_A2DP_STATUS_SUSPENDED) return true;
+    if (aproxy_a2dp && aproxy_a2dp->cur_status == AUDIO_A2DP_STATUS_SUSPENDED)
+        return true;
 
     return false;
 }
 
-int proxy_a2dp_open(void) {
-    struct a2dp_proxy* aproxy_a2dp = getA2DPInstance();
+int proxy_a2dp_open(void)
+{
+    struct a2dp_proxy *aproxy_a2dp = getA2DPInstance();
     int ret = -1;
 
     if (aproxy_a2dp) {
@@ -351,20 +353,19 @@ int proxy_a2dp_open(void) {
                 aproxy_a2dp->prev_status = aproxy_a2dp->cur_status;
                 aproxy_a2dp->cur_status = AUDIO_A2DP_STATUS_STANDBY;
                 ALOGI("proxy-%s: Transit to %s from %s", __func__,
-                      a2dpstatus_table[aproxy_a2dp->cur_status],
-                      a2dpstatus_table[aproxy_a2dp->prev_status]);
+                      a2dpstatus_table[aproxy_a2dp->cur_status], a2dpstatus_table[aproxy_a2dp->prev_status]);
             } else
                 ALOGE("proxy-%s: A2DP Stream did not opened", __func__);
         } else
-            ALOGE("proxy-%s: Abnormal A2DP Status(%s)", __func__,
-                  a2dpstatus_table[aproxy_a2dp->cur_status]);
+            ALOGE("proxy-%s: Abnormal A2DP Status(%s)", __func__, a2dpstatus_table[aproxy_a2dp->cur_status]);
     }
 
     return ret;
 }
 
-int proxy_a2dp_close(void) {
-    struct a2dp_proxy* aproxy_a2dp = getA2DPInstance();
+int proxy_a2dp_close(void)
+{
+    struct a2dp_proxy *aproxy_a2dp = getA2DPInstance();
     int ret = -1;
 
     if (aproxy_a2dp) {
@@ -379,8 +380,7 @@ int proxy_a2dp_close(void) {
                 aproxy_a2dp->prev_status = aproxy_a2dp->cur_status;
                 aproxy_a2dp->cur_status = AUDIO_A2DP_STATUS_STANDBY;
                 ALOGI("proxy-%s: Transit to %s from %s", __func__,
-                      a2dpstatus_table[aproxy_a2dp->cur_status],
-                      a2dpstatus_table[aproxy_a2dp->prev_status]);
+                      a2dpstatus_table[aproxy_a2dp->cur_status], a2dpstatus_table[aproxy_a2dp->prev_status]);
             } else
                 ALOGE("proxy-%s: A2DP Stream did not stopped", __func__);
         }
@@ -390,8 +390,7 @@ int proxy_a2dp_close(void) {
             aproxy_a2dp->prev_status = aproxy_a2dp->cur_status;
             aproxy_a2dp->cur_status = AUDIO_A2DP_STATUS_INIT;
             ALOGI("proxy-%s: Transit to %s from %s", __func__,
-                  a2dpstatus_table[aproxy_a2dp->cur_status],
-                  a2dpstatus_table[aproxy_a2dp->prev_status]);
+                  a2dpstatus_table[aproxy_a2dp->cur_status], a2dpstatus_table[aproxy_a2dp->prev_status]);
         } else
             ALOGE("proxy-%s: A2DP Stream did not closed", __func__);
     }
@@ -399,8 +398,9 @@ int proxy_a2dp_close(void) {
     return ret;
 }
 
-int proxy_a2dp_init(void) {
-    struct a2dp_proxy* aproxy_a2dp = NULL;
+int proxy_a2dp_init(void)
+{
+    struct a2dp_proxy *aproxy_a2dp = NULL;
 
     /* Creates the structure for a2dp_proxy */
     aproxy_a2dp = getA2DPInstance();
@@ -412,14 +412,15 @@ int proxy_a2dp_init(void) {
     /* Initializes variables */
     aproxy_a2dp->cur_status = AUDIO_A2DP_STATUS_INIT;
     aproxy_a2dp->prev_status = AUDIO_A2DP_STATUS_NONE;
-    ALOGI("proxy-%s: Transit to %s from %s", __func__, a2dpstatus_table[aproxy_a2dp->cur_status],
-          a2dpstatus_table[aproxy_a2dp->prev_status]);
+    ALOGI("proxy-%s: Transit to %s from %s", __func__,
+          a2dpstatus_table[aproxy_a2dp->cur_status], a2dpstatus_table[aproxy_a2dp->prev_status]);
 
     return 0;
 }
 
-int proxy_a2dp_deinit(void) {
-    struct a2dp_proxy* aproxy_a2dp = getA2DPInstance();
+int proxy_a2dp_deinit(void)
+{
+    struct a2dp_proxy *aproxy_a2dp = getA2DPInstance();
 
     if (aproxy_a2dp) {
         aproxy_a2dp->cur_status = AUDIO_A2DP_STATUS_NONE;
@@ -432,3 +433,4 @@ int proxy_a2dp_deinit(void) {
 
     return 0;
 }
+
