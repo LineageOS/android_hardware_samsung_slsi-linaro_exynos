@@ -1,0 +1,142 @@
+// Copyright (C) 2017 The Android Open Source Project
+// Copyright (C) 2025 The LineageOS Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+soong_config_module_type {
+    name: "audioproxy",
+    module_type: "cc_defaults",
+    config_namespace: "universal9830AudioVars",
+    bool_variables: [
+        "use_bta2dp_offload",
+        "use_camcorder_quad_mic",
+        "use_direct_rcvspk_path",
+        "use_sec_audio_dump",
+        "use_sec_audio_dynamic_nrec",
+        "use_sec_audio_param_update",
+        "use_sec_audio_resampler",
+        "use_sec_audio_samsungrecord",
+        "use_sec_audio_sound_trigger_enabled",
+        "use_sec_audio_support_gamechat_spk_aec",
+        "use_sec_audio_support_listenback_dspeffect",
+        "use_soundtrigger_hal",
+        "use_usb_offload",
+        "use_quad_mic",
+    ],
+    properties: [
+        "cflags",
+        "shared_libs",
+        "srcs",
+    ],
+}
+
+audioproxy {
+    name: "audioproxy_defaults",
+    soong_config_variables: {
+        use_bta2dp_offload: {
+            cflags: ["-DSUPPORT_BTA2DP_OFFLOAD"],
+            shared_libs: [
+                "libbase",
+                "libhidlbase",
+                "libhidlmemory",
+                "libutils",
+                "android.hidl.allocator@1.0",
+                "android.hidl.memory@1.0",
+                "vendor.samsung_slsi.hardware.ExynosA2DPOffload@2.0",
+            ],
+            srcs: ["audio_a2dp_proxy.cpp"],
+        },
+        use_camcorder_quad_mic: {
+            cflags: ["-DSUPPORT_CAMCORDER_QUAD_MIC"],
+        },
+        use_direct_rcvspk_path: {
+            cflags: ["-DSUPPORT_DIRECT_RCVSPK_PATH"],
+        },
+        use_sec_audio_dump: {
+            cflags: ["-DSEC_AUDIO_DUMP"],
+        },
+        use_sec_audio_dynamic_nrec: {
+            cflags: ["-DSEC_AUDIO_DYNAMIC_NREC"],
+        },
+        use_sec_audio_param_update: {
+            cflags: ["-DSEC_AUDIO_PARAM_UPDATE"],
+        },
+        use_sec_audio_resampler: {
+            cflags: ["-DSEC_AUDIO_RESAMPLER"],
+            shared_libs: [
+                "libSamsungPostProcessConvertor",
+            ],
+        },
+        use_sec_audio_samsungrecord: {
+            cflags: ["-DSEC_AUDIO_SAMSUNGRECORD"],
+        },
+        use_sec_audio_sound_trigger_enabled: {
+            cflags: ["-DSEC_AUDIO_SOUND_TRIGGER_ENABLED"],
+        },
+        use_sec_audio_support_gamechat_spk_aec: {
+            cflags: ["-DSEC_AUDIO_SUPPORT_GAMECHAT_SPK_AEC"],
+        },
+        use_sec_audio_support_listenback_dspeffect: {
+            cflags: ["-DSEC_AUDIO_SUPPORT_LISTENBACK_DSPEFFECT"],
+        },
+        use_soundtrigger_hal: {
+            cflags: [
+                "-DSUPPORT_STHAL_INTERFACE",
+                "-DTARGET_SOC_NAME=exynos9830",
+            ],
+        },
+        use_usb_offload: {
+            cflags: ["-DSUPPORT_USB_OFFLOAD"],
+            srcs: ["audio_usb_proxy.c"],
+        },
+        use_quad_mic: {
+            cflags: ["-DSUPPORT_QUAD_MIC"],
+        },
+    },
+}
+
+cc_library_shared {
+    name: "libaudioproxy",
+    defaults: ["audioproxy_defaults"],
+    vendor: true,
+
+    srcs: [
+        "audio_proxy.c",
+    ],
+    include_dirs: [
+        "hardware/samsung_slsi-linaro/exynos/include/libaudio/audiohal_comv1",
+        "hardware/samsung_slsi-linaro/exynos/libaudio/audiohal_comv1/odm_specific",
+        "external/tinyalsa/include",
+        "external/tinycompress/include",
+        "external/kernel-headers/original/uapi/sound",
+        "external/expat/lib",
+    ],
+
+    header_libs: ["libhardware_headers"],
+    shared_libs: [
+        "liblog",
+        "libcutils",
+        "libtinyalsa",
+        "libtinycompress",
+        "libaudioutils",
+        "libaudioroute",
+        "libalsautils",
+        "libexpat",
+    ],
+    cflags: [
+        "-Wno-unused-parameter",
+        "-Wno-unused-variable",
+        "-Wno-unused-function",
+        "-DSUPPORT_MCD_FEATURE",
+    ],
+}
