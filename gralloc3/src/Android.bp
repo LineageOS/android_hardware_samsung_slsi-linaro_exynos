@@ -53,10 +53,6 @@ cc_library_shared {
         "-DLOG_TAG=\"gralloc\"",
         "-DLOG_NDEBUG=1",
         "-DMALI_GPU_SUPPORT_AFBC_BASIC=1",
-        "-DMALI_GPU_SUPPORT_AFBC_SPLITBLK=0",
-        "-DMALI_GPU_SUPPORT_AFBC_WIDEBLK=0",
-        "-DMALI_GPU_SUPPORT_AFBC_TILED_HEADERS=0",
-        "-DMALI_GPU_SUPPORT_AFBC_YUV_WRITE=0",
         "-DMALI_GRALLOC_VPU_LIBRARY_PATH=\"/system/lib/\"",
         "-DGRALLOC_VERSION_MAJOR=1",
         "-DHIDL_ALLOCATOR_VERSION_SCALED=200",
@@ -69,15 +65,11 @@ cc_library_shared {
         "-DGRALLOC_DISP_H=1920",
         "-DGRALLOC_AFBC_MIN_SIZE=50",
         "-DDISABLE_FRAMEBUFFER_HAL=1",
-        "-DGRALLOC_USE_ION_DMA_HEAP=0",
-        "-DGRALLOC_USE_ION_COMPOUND_PAGE_HEAP=0",
         "-DGRALLOC_FB_BPP=32",
         "-DGRALLOC_FB_SWAP_RED_BLUE=1",
         "-DGRALLOC_LIBRARY_BUILD=1",
         "-DGRALLOC_USE_ION_DMABUF_SYNC=1",
-        "-DGRALLOC_IMPORT_BUFFER_REQUIRED=0",
         "-DGRALLOC_HFR_BATCH_SIZE=8",
-        "-DGRALLOC_USE_ASHMEM_METADATA=0",
     ] + select(soong_config_variable("arm_gralloc", "uses_exynos_afbc_feature"), {
         "true": [
             "-DGRALLOC_ARM_NO_EXTERNAL_AFBC=0",
@@ -105,6 +97,21 @@ cc_library_shared {
     }) + select(soong_config_variable("arm_gralloc", "uses_exynos_dataspace_feature"), {
         "true": [],
         default: ["-DGRALLOC_FORCE_BT601"],
+    }) + select(soong_config_variable("arm_gralloc", "GRALLOC_SECURE_BUFFER_NO_AFBC"), {
+        "true": ["-DGRALLOC_SECURE_BUFFER_NO_AFBC=1"],
+        default: [],
+    }) + select(soong_config_variable("arm_gralloc", "GRALLOC_DPU_SUPPORT_1010102_AFBC"), {
+        "true": ["-DGRALLOC_DPU_SUPPORT_1010102_AFBC=1"],
+        default: [],
+    }) + select(soong_config_variable("arm_gralloc", "GRALLOC_7885_WA"), {
+        "true": ["-DGRALLOC_7885_WA"],
+        default: [],
+    }) + select(soong_config_variable("arm_gralloc", "MFC_CHROMA_VALIGN"), {
+        any @ flag_val: [
+            "-DCHROMA_VALIGN=" + flag_val,
+            "-DEXYNOS_CHROMA_VSTRIDE_ALIGN",
+        ],
+        default: [],
     }),
     arch: {
         arm64: {
@@ -156,4 +163,132 @@ cc_library_shared {
         "mali_gralloc_debug.cpp",
     ],
 
+}
+
+cc_defaults {
+    name: "gralloc3_defaults",
+    relative_install_path: "hw",
+    include_dirs: ["hardware/samsung_slsi-linaro/exynos/include"],
+    cflags: [
+        "-Werror",
+        "-DLOG_TAG=\"gralloc\"",
+        "-DLOG_NDEBUG=1",
+        "-DMALI_GPU_SUPPORT_AFBC_BASIC=1",
+        "-DMALI_GRALLOC_VPU_LIBRARY_PATH=\"/system/lib/\"",
+        "-DGRALLOC_VERSION_MAJOR=1",
+        "-DHIDL_ALLOCATOR_VERSION_SCALED=200",
+        "-DHIDL_MAPPER_VERSION_SCALED=210",
+        "-DHIDL_COMMON_VERSION_SCALED=110",
+        "-DHIDL_IALLOCATOR_NAMESPACE=V2_0",
+        "-DHIDL_IMAPPER_NAMESPACE=V2_1",
+        "-DHIDL_COMMON_NAMESPACE=V1_1",
+        "-DGRALLOC_DISP_W=1080",
+        "-DGRALLOC_DISP_H=1920",
+        "-DGRALLOC_AFBC_MIN_SIZE=50",
+        "-DDISABLE_FRAMEBUFFER_HAL=1",
+        "-DGRALLOC_FB_BPP=32",
+        "-DGRALLOC_FB_SWAP_RED_BLUE=1",
+        "-DGRALLOC_LIBRARY_BUILD=1",
+        "-DGRALLOC_USE_ION_DMABUF_SYNC=1",
+        "-DGRALLOC_HFR_BATCH_SIZE=8",
+    ] + select(soong_config_variable("arm_gralloc", "uses_exynos_afbc_feature"), {
+        "true": [
+            "-DGRALLOC_ARM_NO_EXTERNAL_AFBC=0",
+            "-DGRALLOC_INIT_AFBC=1",
+        ],
+        default: [
+            "-DGRALLOC_ARM_NO_EXTERNAL_AFBC=1",
+            "-DGRALLOC_INIT_AFBC=0",
+        ],
+    }) + select(soong_config_variable("arm_gralloc", "gralloc_scaler_wfd"), {
+        "true": ["-DGRALLOC_SCALER_WFD=1"],
+        default: ["-DGRALLOC_SCALER_WFD=0"],
+    }) + select(soong_config_variable("arm_gralloc", "gralloc_ion_handle_import"), {
+        "false": ["-DGRALLOC_ION_HANDLE_IMPORT=0"],
+        default: ["-DGRALLOC_ION_HANDLE_IMPORT=1"],
+    }) + select(soong_config_variable("arm_gralloc", "uses_align_restriction"), {
+        "true": ["-DGRALLOC_MSCL_ALIGN_RESTRICTION"],
+        default: [],
+    }) + select(soong_config_variable("arm_gralloc", "exynos_s10b_format_align"), {
+        "64": ["-DBOARD_EXYNOS_S10B_FORMAT_ALIGN=64"],
+        default: ["-DBOARD_EXYNOS_S10B_FORMAT_ALIGN=16"],
+    }) + select(soong_config_variable("arm_gralloc", "gralloc_ion_sync"), {
+        "true": ["-DGRALLOC_ION_SYNC"],
+        default: [],
+    }) + select(soong_config_variable("arm_gralloc", "uses_exynos_dataspace_feature"), {
+        "true": [],
+        default: ["-DGRALLOC_FORCE_BT601"],
+    }) + select(soong_config_variable("arm_gralloc", "GRALLOC_SECURE_BUFFER_NO_AFBC"), {
+        "true": ["-DGRALLOC_SECURE_BUFFER_NO_AFBC=1"],
+        default: [],
+    }) + select(soong_config_variable("arm_gralloc", "GRALLOC_DPU_SUPPORT_1010102_AFBC"), {
+        "true": ["-DGRALLOC_DPU_SUPPORT_1010102_AFBC=1"],
+        default: [],
+    }) + select(soong_config_variable("arm_gralloc", "GRALLOC_7885_WA"), {
+        "true": ["-DGRALLOC_7885_WA"],
+        default: [],
+    }) + select(soong_config_variable("arm_gralloc", "MFC_CHROMA_VALIGN"), {
+        any @ flag_val: [
+            "-DCHROMA_VALIGN=" + flag_val,
+            "-DEXYNOS_CHROMA_VSTRIDE_ALIGN",
+        ],
+        default: [],
+    }),
+    arch: {
+        arm64: {
+            cflags: [
+                "-DMALI_GRALLOC_GPU_LIBRARY_PATH1=\"/vendor/lib64/egl/\"",
+                "-DMALI_GRALLOC_GPU_LIBRARY_PATH2=\"/system/lib64/egl/\"",
+                "-DMALI_GRALLOC_DPU_LIBRARY_PATH=\"/vendor/lib64/hw/\"",
+            ],
+        },
+        arm: {
+            cflags: [
+                "-DMALI_GRALLOC_GPU_LIBRARY_PATH1=\"/vendor/lib/egl/\"",
+                "-DMALI_GRALLOC_GPU_LIBRARY_PATH2=\"/system/lib/egl/\"",
+                "-DMALI_GRALLOC_DPU_LIBRARY_PATH=\"/vendor/lib/hw/\"",
+            ],
+        },
+    },
+
+    shared_libs: [
+        "libhardware",
+        "liblog",
+        "libcutils",
+        "libGLESv1_CM",
+        "libion_exynos",
+        "libsync",
+        "libutils",
+        "libnativewindow",
+    ],
+    static_libs: ["libarect"],
+    header_libs: ["libnativebase_headers"],
+
+    owner: "samsung_arm",
+    proprietary: true,
+
+    compile_multilib: "both",
+
+    srcs: [
+        "gralloc_buffer_priv.cpp",
+        "mali_gralloc_bufferaccess.cpp",
+        "mali_gralloc_bufferallocation.cpp",
+        "mali_gralloc_bufferdescriptor.cpp",
+        "mali_gralloc_ion.cpp",
+        "mali_gralloc_formats.cpp",
+        "mali_gralloc_reference.cpp",
+        "mali_gralloc_debug.cpp",
+        "format_info.cpp",
+        "mali_gralloc_module.cpp",
+        "framebuffer_device.cpp",
+        "gralloc_vsync_default.cpp",
+        "mali_gralloc_public_interface.cpp",
+        "mali_gralloc_private_interface.cpp",
+    ],
+
+}
+
+cc_library_shared {
+    name: "gralloc.exynos9610",
+	defaults: ["gralloc3_defaults"],
 }
