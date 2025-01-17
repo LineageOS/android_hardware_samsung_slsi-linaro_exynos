@@ -1,0 +1,31 @@
+
+cc_library_shared {
+    name: "libaudio-ril",
+    proprietary: true,
+
+    shared_libs: [
+        "liblog",
+        "libcutils",
+        "libutils",
+        "libc",
+    ],
+
+    header_libs: [
+        "libhardware_headers",
+    ],
+
+    include_dirs: [
+        "hardware/samsung_slsi-linaro/exynos/include/libaudio/audiohal",
+    ],
+
+    local_include_dirs: select(soong_config_variable("exynos_audio", "USE_SITRIL"), {
+        "true": [ "audioril-sit/include" ],
+        default: [ "audioril-sec/include" ],
+    }),
+ 
+    srcs: select(soong_config_variable("exynos_audio", "USE_SITRIL"), {
+        "true": [ "audioril-sit/sitril_interface.c" ],
+        default: [ "audioril-sec/secril_interface.c" ],
+    }),
+
+}

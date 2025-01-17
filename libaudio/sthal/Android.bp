@@ -1,0 +1,57 @@
+soong_namespace {}
+
+soong_config_module_type {
+    name: "sound_trigger_cc_library_shared",
+    module_type: "cc_library_shared",
+    config_namespace: "ANDROID",
+    value_variables: ["target_board_platform"],
+    properties: [
+        "name",
+    ],
+}
+
+sound_trigger_cc_library_shared {
+    name: "sound_trigger.primary.target_board_platform",
+    relative_install_path: "hw",
+    proprietary: true,
+
+    cflags: select(soong_config_variable("exynos_st", "use_soundtrigger_hal_mmap"), {
+        "true": [ "-DMMAP_INTERFACE_ENABLED" ],
+        default: [],
+    }) + select(soong_config_variable("exynos_st", "use_soundtrigger_hal_2_3"), {
+        "true": [ "-DSTHAL_2_3" ],
+        default: [],
+    }),
+
+    shared_libs: [
+        "liblog",
+        "libcutils",
+        "libtinyalsa",
+        "libhardware",
+    ],
+
+    header_libs: [
+        "libhardware_headers",
+    ],
+
+    include_dirs: [
+        "external/tinyalsa/include",
+    ] + select(soong_config_variable("exynos_st", "soundtrigger_config_path"), {
+        any @ flag_val: [ flag_val ],
+        default: [],
+    }),
+
+    srcs: [
+        "sound_trigger_hw.c",
+    ],
+
+    soong_config_variables: {
+        target_board_platform: {
+            name: "sound_trigger.primary.%s",
+            conditions_default: {
+                name: "sound_trigger.primary.target_board_platform",
+            },
+        },
+    },
+
+}

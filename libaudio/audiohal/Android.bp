@@ -1,0 +1,113 @@
+soong_namespace {}
+
+soong_config_module_type {
+    name: "audio_cc_library_shared",
+    module_type: "cc_library_shared",
+    config_namespace: "ANDROID",
+    value_variables: ["target_board_platform"],
+    properties: [
+        "name",
+    ],
+}
+
+cc_library_shared {
+    name: "libaudio-ril",
+    proprietary: true,
+
+    shared_libs: [
+        "liblog",
+        "libcutils",
+        "libutils",
+        "libc",
+    ],
+
+    header_libs: [
+        "libhardware_headers",
+    ],
+
+    include_dirs: [
+        "hardware/samsung_slsi-linaro/exynos/include/libaudio/audiohal",
+    ],
+
+    local_include_dirs: select(soong_config_variable("exynos_audio", "USE_SITRIL"), {
+        "true": [ "audioril-sit/include" ],
+        default: [ "audioril-sec/include" ],
+    }),
+ 
+    srcs: select(soong_config_variable("exynos_audio", "USE_SITRIL"), {
+        "true": [ "audioril-sit/sitril_interface.c" ],
+        default: [ "audioril-sec/secril_interface.c" ],
+    }),
+
+}
+
+audio_cc_library_shared {
+    name: "audio.primary.target_board_platform",
+    relative_install_path: "hw",
+    proprietary: true,
+
+    cflags: [
+        "-Wno-unused-parameter",
+        "-Wno-unused-variable",
+        "-Wno-unused-function",
+    ] + select(soong_config_variable("exynos_audio", "USE_SITRIL"), {
+        "true": ["-DUSE_SITRIL"],
+        default: [],
+    }) + select(soong_config_variable("exynos_audio", "SUPPORT_SPEECH_PARAM"), {
+        "true": ["-DSUPPORT_SPEECH_PARAM"],
+        default: [],
+    }) + select(soong_config_variable("exynos_audio", "PREDEFINED_LOW_CAPTURE_DURATION"), {
+        any @ flag_val: ["-DPREDEFINED_LOW_CAPTURE_DURATION=" + flag_val],
+        default: [],
+    }) + select(soong_config_variable("exynos_audio", "SUPPORT_STHAL_INTERFACE"), {
+        "true": ["-DSUPPORT_STHAL_INTERFACE"],
+        default: [],
+    }),
+
+    shared_libs: [
+        "liblog",
+        "libcutils",
+        "libprocessgroup",
+        "libaudio-ril",
+    ] + select(soong_config_variable("exynos_audio", "PROXY_LIBRARY"), {
+        any @ flag_val: [ flag_val ],
+        default: [],
+    }),
+
+    header_libs: [
+        "libhardware_headers",
+    ],
+
+    include_dirs: [
+        "hardware/samsung_slsi-linaro/exynos/include/libaudio/audiohal",
+    ],
+
+    local_include_dirs: select(soong_config_variable("exynos_audio", "USE_SITRIL"), {
+        "true": [
+            "audioril-sit",
+            "audioril-sit/include",
+        ],
+        default: [
+            "audioril-sec",
+            "audioril-sec/include",
+        ],
+    }),
+ 
+    srcs:[
+        "audio_hw.c",
+        "factory_manager.c",
+    ] + select(soong_config_variable("exynos_audio", "USE_SITRIL"), {
+        "true": [ "voice_manager_sit.c" ],
+        default: [ "voice_manager_sec.c" ],
+    }),
+
+  soong_config_variables: {
+        target_board_platform: {
+            name: "audio.primary.%s",
+            conditions_default: {
+                name: "audio.primary.target_board_platform",
+            },
+        },
+    },
+
+}
