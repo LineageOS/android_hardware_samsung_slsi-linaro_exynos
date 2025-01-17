@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1d9d80df_330f02a4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 17401
+      },
+      "writtenOn": "2025-01-17T15:51:15Z",
+      "side": 1,
+      "message": "this /should/ work, imported the 9820 aidoproxy to get around build errors, would need to figure out how to have a valid audioproxy target for devices that do not build this hal (soong is picky :/)",
+      "revId": "8e60798d20bd475ee75399ccf0ccbcbb4e980034",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
