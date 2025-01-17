@@ -64,7 +64,7 @@ exynosgraphicbuffercore_cc_defaults {
             three: {
                 include_dirs: [
                     "hardware/samsung_slsi-linaro/exynos/include",
-                    "hardware/samsung_slsi-linaro/exynos/gralloc3/src",
+                    "hardware/samsung_slsi-linaro/exynos/gralloc/gralloc3",
                 ],
 
                 srcs: [
@@ -74,7 +74,7 @@ exynosgraphicbuffercore_cc_defaults {
             four: {
                 include_dirs: [
                     "hardware/samsung_slsi-linaro/exynos/include",
-                    "hardware/samsung_slsi-linaro/exynos/gralloc4/src",
+                    "hardware/samsung_slsi-linaro/exynos/gralloc/gralloc4/src",
                                 ],
 
                                 srcs: [
