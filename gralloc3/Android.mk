@@ -43,22 +43,4 @@ $(info Build gralloc API tests.)
 include $(TOP_LOCAL_PATH)/api_tests/Android.mk
 endif
 
-####################################################################################################
-
-include $(CLEAR_VARS)
-
-LOCAL_SHARED_LIBRARIES := liblog libcutils libutils android.hardware.graphics.allocator@2.0 android.hardware.graphics.mapper@2.0 \
-	libsync libhardware libhidlbase
-
-LOCAL_C_INCLUDES := \
-    $(TOP)/hardware/samsung_slsi-linaro/exynos/include
-
-LOCAL_SRC_FILES := 	\
-	GrallocWrapper.cpp
-
-LOCAL_PROPRIETARY_MODULE := true
-LOCAL_MODULE := libGrallocWrapper
-
-include $(BUILD_SHARED_LIBRARY)
-
 endif
