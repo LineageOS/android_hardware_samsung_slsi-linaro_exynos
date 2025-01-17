@@ -1,0 +1,26 @@
+cc_library_static {
+    name: "libVendorVideoApi",
+    proprietary: true,
+    cflags: [
+        "-Werror",
+        "-Wno-unused-parameter",
+        "-Wno-unused-function",
+    ] + select(soong_config_variable("openmax", "USE_FULL_ST2094_40"), {
+        "true": ["-DUSE_FULL_ST2094_40"],
+        default: [],
+    }),
+
+    srcs: [
+        "VendorVideoAPI.cpp",
+        "GenerateSei.cpp",
+    ],
+
+    include_dirs: [
+        "hardware/samsung_slsi-linaro/exynos/include",
+    ],
+
+    shared_libs: [
+        "liblog",
+        "libutils",
+    ],
+}

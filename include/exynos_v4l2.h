@@ -127,7 +127,7 @@ int exynos_subdev_s_frame_interval(int fd, struct v4l2_subdev_frame_interval *fr
 int exynos_subdev_enum_mbus_code(int fd, struct v4l2_subdev_mbus_code_enum *mbus_code_enum);
 
 /* MEDIA CONTORLLER */
-#include <media.h>
+#include <linux/media.h>
 
 /*! media_link
  * \ingroup exynos_v4l2
