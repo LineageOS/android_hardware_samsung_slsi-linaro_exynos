@@ -1,0 +1,140 @@
+/*
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#ifndef __SITRIL_CLIENT_H__
+#define __SITRIL_CLIENT_H__
+
+
+/*
+ * These enumerations are from \vendor\samsung_slsi\telephony\exynos-ril\external\libsitril-audiorilaudioapi.h
+ */
+
+// error codes
+enum {
+    RILAUDIO_ERROR_NONE,
+    RILAUDIO_ERROR_NO_FILE,
+    RILAUDIO_ERROR_NO_LIB_OPEN_FAIL,
+    RILAUDIO_ERROR_SEND_FAIL,
+    RILAUDIO_ERROR_NO_DEVICE,
+    RILAUDIO_ERROR_INVALID_PARAM,
+    RILAUDIO_ERROR_REGISTERATION_FAIL,
+    RILAUDIO_ERROR_ALREADY_REGISTERD,
+    RILAUDIO_ERROR_MAX
+};
+
+// audio path
+enum
+{
+    RILAUDIO_PATH_NONE = 0,
+    RILAUDIO_PATH_HANDSET = 1,
+    RILAUDIO_PATH_HEADSET = 2,
+    RILAUDIO_PATH_HANDSFREE = 3,
+    RILAUDIO_PATH_BLUETOOTH = 4,
+    RILAUDIO_PATH_STEREO_BLUETOOTH = 5,
+    RILAUDIO_PATH_SPEAKRERPHONE = 6,
+    RILAUDIO_PATH_35PI_HEADSET = 7,
+    RILAUDIO_PATH_BT_NS_EC_OFF = 8,
+    RILAUDIO_PATH_WB_BLUETOOTH = 9,
+    RILAUDIO_PATH_WB_BT_NS_EC_OFF = 10,
+    RILAUDIO_PATH_HANDSET_HAC = 11,
+    RILAUDIO_PATH_LINEOUT = 12,
+    RILAUDIO_PATH_VOLTE_HANDSET = 65,
+    RILAUDIO_PATH_VOLTE_HEADSET = 66,
+    RILAUDIO_PATH_VOLTE_HFK = 67,
+    RILAUDIO_PATH_VOLTE_BLUETOOTH = 68,
+    RILAUDIO_PATH_VOLTE_STEREO_BLUETOOTH = 69,
+    RILAUDIO_PATH_VOLTE_SPEAKRERPHONE = 70,
+    RILAUDIO_PATH_VOLTE_35PI_HEADSET = 71,
+    RILAUDIO_PATH_VOLTE_BT_NS_EC_OFF = 72,
+    RILAUDIO_PATH_VOLTE_WB_BLUETOOTH = 73,
+    RILAUDIO_PATH_VOLTE_WB_BT_NS_EC_OFF = 74,
+    RILAUDIO_PATH_VOLTE_HANDSET_HAC = 75,
+    RILAUDIO_PATH_VOLTE_LINEOUT = 76,
+    RILAUDIO_PATH_MAX
+};
+
+// Multi MIC control
+enum {
+    RILAUDIO_MULTI_MIC_OFF,
+    RILAUDIO_MULTI_MIC_ON,
+};
+
+// Volume
+enum {
+    RILAUDIO_VOLUME_INVALID = -1,
+    RILAUDIO_VOLUME_LEVEL0 = 0,
+    RILAUDIO_VOLUME_LEVEL1,
+    RILAUDIO_VOLUME_LEVEL2,
+    RILAUDIO_VOLUME_LEVEL3,
+    RILAUDIO_VOLUME_LEVEL4,
+    RILAUDIO_VOLUME_LEVEL5,
+    RILAUDIO_VOLUME_LEVEL_MAX = RILAUDIO_VOLUME_LEVEL5,
+};
+
+// Mute
+enum {
+    RILAUDIO_MUTE_DISABLED,
+    RILAUDIO_MUTE_ENABLED,
+};
+
+// Audio clock
+enum {
+    RILAUDIO_TURN_OFF_I2S,
+    RILAUDIO_TURN_ON_I2S,
+};
+
+// Audio loopback
+enum {
+    RILAUDIO_LOOPBACK_STOP,
+    RILAUDIO_LOOPBACK_START,
+};
+
+enum {
+    RILAUDIO_LOOPBACK_PATH_NA = 0,    //0: N/A
+    RILAUDIO_LOOPBACK_PATH_HANDSET = 1,    //1: handset
+    RILAUDIO_LOOPBACK_PATH_HEADSET = 2,    //2: headset
+    RILAUDIO_LOOPBACK_PATH_HANDSFREE = 3,    //3: handsfree
+    RILAUDIO_LOOPBACK_PATH_BT = 4,    //4: Bluetooth
+    RILAUDIO_LOOPBACK_PATH_STEREO_BT = 5,    //5: stereo Bluetooth
+    RILAUDIO_LOOPBACK_PATH_SPK = 6,    //6: speaker phone
+    RILAUDIO_LOOPBACK_PATH_35PI_HEADSET = 7,    //7: 3.5pi headset
+    RILAUDIO_LOOPBACK_PATH_BT_NS_EC_OFF = 8,    //8: BT NS/EC off
+    RILAUDIO_LOOPBACK_PATH_WB_BT = 9,    //9: WB Bluetooth
+    RILAUDIO_LOOPBACK_PATH_WB_BT_NS_EC_OFF = 10,    //10: WB BT NS/EC
+    RILAUDIO_LOOPBACK_PATH_HANDSET_HAC = 11,    //11: handset HAC
+
+    RILAUDIO_LOOPBACK_PATH_VOLTE_HANDSET = 65,  //65: VOLTE handset
+    RILAUDIO_LOOPBACK_PATH_VOLTE_HEADSET = 66,  //66: VOLTE headset
+    RILAUDIO_LOOPBACK_PATH_VOLTE_HANDSFREE = 67,    //67: VOLTE hands
+    RILAUDIO_LOOPBACK_PATH_VOLTE_BT = 68,   //68: VOLTE Bluetooth
+    RILAUDIO_LOOPBACK_PATH_VOLTE_STEREO_BT = 69,    //69: VOLTE stere
+    RILAUDIO_LOOPBACK_PATH_VOLTE_SPK = 70,  //70: VOLTE speaker phone
+    RILAUDIO_LOOPBACK_PATH_VOLTE_35PI_HEADSET = 71, //71: VOLTE 3.5pi
+    RILAUDIO_LOOPBACK_PATH_VOLTE_BT_NS_EC_OFF = 72, //72: VOLTE BT NS
+    RILAUDIO_LOOPBACK_PATH_VOLTE_WB_BT = 73,    //73: VOLTE WB Blueto
+    RILAUDIO_LOOPBACK_PATH_VOLTE_WB_BT_NS_EC_OFF = 74,  //74: VOLTE W
+
+    RILAUDIO_LOOPBACK_PATH_HEADSET_MIC1 = 129,  //129: Headset ? MIC1
+    RILAUDIO_LOOPBACK_PATH_HEADSET_MIC2 = 130,  //130: Headset ? MIC2
+    RILAUDIO_LOOPBACK_PATH_HEADSET_MIC3 = 131,  //131: Headset ? MIC3
+};
+
+// event
+#define RILAUDIO_EVENT_BASE                     10000
+#define RILAUDIO_EVENT_RINGBACK_STATE_CHANGED   (RILAUDIO_EVENT_BASE + 1)
+#define RILAUDIO_EVENT_IMS_SRVCC_HANDOVER       (RILAUDIO_EVENT_BASE + 2)
+
+#endif // __SITRIL_CLIENT_H__
