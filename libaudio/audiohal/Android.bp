@@ -1,0 +1,111 @@
+soong_namespace {}
+
+soong_config_module_type {
+    name: "audio_cc_library_shared",
+    module_type: "cc_library_shared",
+    config_namespace: "ANDROID",
+    value_variables: ["target_board_platform"],
+    properties: [
+        "name",
+    ],
+}
+audio_cc_library_shared {
+    name: "audio.target_board_platform",
+
+    cflags: [
+        "-Wno-unused-parameter",
+        "-Wno-unused-variable",
+        "-Wno-unused-function",
+    ] + select(soong_config_variable("exynos_audio", "USE_SITRIL"), {
+        "true": ["-DUSE_SITRIL"],
+        default: [],
+    }) + select(soong_config_variable("exynos_audio", "SUPPORT_SPEECH_PARAM"), {
+        "true": ["-DSUPPORT_SPEECH_PARAM"],
+        default: [],
+    }) + select(soong_config_variable("exynos_audio", "PREDEFINED_LOW_CAPTURE_DURATION"), {
+        any @ flag_val: ["-DPREDEFINED_LOW_CAPTURE_DURATION=" + flag_val],
+        default: [],
+    }) + select(soong_config_variable("exynos_audio", "SUPPORT_BTA2DP_OFFLOAD"), {
+        "true": ["-DSUPPORT_BTA2DP_OFFLOAD"],
+        default: [],
+    }) + select(soong_config_variable("exynos_audio", "SUPPORT_STHAL_INTERFACE"), {
+        "true": ["-DSUPPORT_STHAL_INTERFACE"],
+        default: [],
+    }) + select(soong_config_variable("exynos_audio", "SUPPORT_USB_OFFLOAD"), {
+        "true": ["-DSUPPORT_USB_OFFLOAD"],
+        default: [],
+    }) + select(soong_config_variable("exynos_audio", "SUPPORT_MMAP_HW_VOLUME_CONTROL"), {
+        "true": ["-DSUPPORT_MMAP_HW_VOLUME_CONTROL"],
+        default: [],
+    }) + select(soong_config_variable("exynos_audio", "SUPPORT_DIRECT_MULTI_CHANNEL_STREAM"), {
+        "true": ["-DSUPPORT_DIRECT_MULTI_CHANNEL_STREAM"],
+        default: [],
+    }) + select(soong_config_variable("exynos_audio", "PREDEFINED_USB_PLAYBACK_DURATION"), {
+        any @ flag_val: ["-DPREDEFINED_USB_PLAYBACK_DURATION=" + flag_val],
+        default: [],
+    }),
+
+    shared_libs: [
+        "liblog",
+        "libcutils",
+        "libprocessgroup",
+        "libaudio-ril",
+    ] + select(soong_config_variable("exynos_audio", "USE_AUDIOHAL"), {
+        "true": [ "libaudioproxy" ],
+        default: [],
+    }) + select(soong_config_variable("exynos_audio", "USE_AUDIOHAL_COMV1"), {
+        "true": [ "libaudioproxy" ],
+        default: [],
+    }),
+
+    header_libs: [
+        "libhardware_headers",
+    ],
+
+    include_dirs: [
+    ] + select(soong_config_variable("exynos_audio", "USE_AUDIOHAL_COMV1"), {
+        "true": [
+            "hardware/samsung_slsi-linaro/exynos/libaudio/audiohal/audiohal_comv1",
+            "hardware/samsung_slsi-linaro/exynos/libaudio/audiohal/audiohal_comv1/odm_specific",
+            "system/media/audio_utils/include",
+        ],
+        default: [
+            "hardware/samsung_slsi-linaro/exynos/include/libaudio/audiohal",
+        ],
+    })+ select(soong_config_variable("exynos_audio", "USE_SITRIL"), {
+        "true": [
+            "hardware/samsung_slsi-linaro/exynos/libaudio/audiohal/audiohal_comv1/odm_specific/audioril-sit",
+            "hardware/samsung_slsi-linaro/exynos/libaudio/audiohal/audiohal_comv1/odm_specific/audioril-sit/include",
+        ],
+        default: [
+            "hardware/samsung_slsi-linaro/exynos/libaudio/audiohal/audiohal_comv1/odm_specific/audioril-sec",
+            "hardware/samsung_slsi-linaro/exynos/libaudio/audiohal/audiohal_comv1/odm_specific/audioril-sec/include",
+        ],
+    }),
+ 
+    srcs: select(soong_config_variable("exynos_audio", "USE_AUDIOHAL_COMV1"), {
+        "true": [
+            "audiohal_comv1/audio_hw.c",
+            "audiohal_comv1/odm_specific/factory_manager.c",
+            "audiohal_comv1/odm_specific/audio_odm_impl.c",
+        ],
+        default: [
+            "audio_hw.c",
+            "factory_manager.c",
+        ],
+    }) + select(soong_config_variable("exynos_audio", "USE_SITRIL"), {
+        "true": [ "audiohal_comv1/odm_specific/voice_manager_sit.c" ],
+        default: [ "audiohal_comv1/odm_specific/voice_manager_sec.c" ],
+    }),
+
+  soong_config_variables: {
+        target_board_platform: {
+            name: "audio.primary.%s",
+            conditions_default: {
+                name: "audio.primary.target_board_platform",
+            },
+        },
+    },
+
+    proprietary: true,
+}
