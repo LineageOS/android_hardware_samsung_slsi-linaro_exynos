@@ -157,3 +157,31 @@ cc_library_shared {
     ],
 
 }
+
+cc_library_shared {
+    name: "libGrallocWrapper",
+    vendor: true,
+    enabled: select(soong_config_variable("exynosgraphicbuffer", "gralloc_version"), {
+        "three": true,
+        default: false,
+    }),
+
+    srcs: [
+        "GrallocWrapper.cpp",
+    ],
+
+    shared_libs: [
+        "liblog",
+        "libcutils",
+        "libutils",
+        "android.hardware.graphics.allocator@2.0",
+        "android.hardware.graphics.mapper@2.0",
+        "libsync",
+        "libhardware",
+        "libhidlbase",
+    ],
+
+    include_dirs: [
+        "hardware/samsung_slsi-linaro/exynos/include",
+    ],
+}
