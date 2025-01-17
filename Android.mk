@@ -35,21 +35,6 @@ ifeq ($(TARGET_USES_EVF), true)
 #common_exynos_dirs += libvision
 endif
 
-ifeq ($(BOARD_USES_EXYNOS5_COMMON_GRALLOC), true)
-ifeq ($(BOARD_USES_EXYNOS_GRALLOC_VERSION), 0)
-common_exynos_dirs += \
-    gralloc
-endif
-ifeq ($(BOARD_USES_EXYNOS_GRALLOC_VERSION), 1)
-common_exynos_dirs += \
-    gralloc1
-endif
-ifeq ($(BOARD_USES_EXYNOS_GRALLOC_VERSION), 3)
-common_exynos_dirs += \
-    gralloc3
-endif
-endif
-
 ifeq ($(BOARD_USE_COMMON_AUDIOHAL), true)
 common_exynos_dirs += libaudio
 ifneq ($(filter true, $(BOARD_USE_AUDIOHAL) $(BOARD_USE_AUDIOHAL_COMV1) $(BOARD_USE_ABOX_DAEMON_SERVICE)),)
@@ -85,22 +70,6 @@ common_exynos_dirs := \
 ifeq ($(TARGET_USES_EVF), true)
 #common_exynos_dirs += libvision
 endif
-
-ifeq ($(BOARD_USES_EXYNOS5_COMMON_GRALLOC), true)
-ifeq ($(BOARD_USES_EXYNOS_GRALLOC_VERSION), 0)
-common_exynos_dirs += \
-    gralloc
-endif
-ifeq ($(BOARD_USES_EXYNOS_GRALLOC_VERSION), 1)
-common_exynos_dirs += \
-    gralloc1
-endif
-ifeq ($(BOARD_USES_EXYNOS_GRALLOC_VERSION), 3)
-common_exynos_dirs += \
-    gralloc3
-endif
-endif
-
 
 
 ifeq ($(BOARD_USE_COMMON_AUDIOHAL), true)
