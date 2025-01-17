@@ -71,27 +71,6 @@ grallocwrapper_defaults {
     name: "grallocwrapper_defaults",
     soong_config_variables: {
         gralloc_version: {
-            none: {
-                srcs: [
-                    "gralloc/GrallocWrapper.cpp",
-                ],
-                include_dirs: [
-                    "hardware/samsung_slsi-linaro/exynos/include",
-                    "hardware/samsung_slsi-linaro/exynos5/include",
-                    "system/core/libsync/include",
-                ],
-                shared_libs: [
-                    "liblog",
-                    "libcutils",
-                    "libion_exynos",
-                    "libutils",
-                    "android.hardware.graphics.allocator@2.0",
-                    "android.hardware.graphics.mapper@2.0",
-                    "libsync",
-                    "libhardware",
-                    "libhidlbase",
-                ],
-            },
             one: {
                 srcs: [
                     "gralloc1/GrallocWrapper.cpp",
