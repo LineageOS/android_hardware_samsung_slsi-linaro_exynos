@@ -12,3 +12,17 @@ cc_library_headers {
     export_header_lib_headers: ["libhdr10p_meta_interface_header_test"],
     export_include_dirs: ["include"],
 }
+
+cc_library_headers {
+    name: "libhdrinterface_header",
+    proprietary: true,
+    header_libs: [ "libhdrinterface_header_default" ],
+    export_header_lib_headers: ["libhdrinterface_header_default"],
+    export_include_dirs: ["include"],
+}
+
+cc_library_headers {
+    name: "libhdrInterface_headers",
+    proprietary: true,
+    export_include_dirs: ["exynos9630/include"],
+}
