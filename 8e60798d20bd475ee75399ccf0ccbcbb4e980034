@@ -20,6 +20,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "5386f283_c32b4b35",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 17401
+      },
+      "writtenOn": "2025-01-18T01:18:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0a1d41b5_058d999e",
+      "revId": "8e60798d20bd475ee75399ccf0ccbcbb4e980034",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "1d9d80df_330f02a4",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 1
@@ -52,6 +70,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "49231ef0_5dce4934",
+        "filename": "libaudio/audiohal/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 17401
+      },
+      "writtenOn": "2025-01-18T01:18:56Z",
+      "side": 1,
+      "message": "https://review.lineageos.org/c/LineageOS/android_hardware_samsung_slsi-linaro_graphics/+/415827/2 for an explanation what it does",
+      "parentUuid": "b18f2761_bc74fdb9",
+      "revId": "8e60798d20bd475ee75399ccf0ccbcbb4e980034",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "85a63540_098ab6b6",
@@ -65,6 +101,24 @@
       "writtenOn": "2025-01-17T16:59:32Z",
       "side": 1,
       "message": "this just sounds a little off, shouldn\u0027t it just be audio.primary.exynos?",
+      "revId": "8e60798d20bd475ee75399ccf0ccbcbb4e980034",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d4676bab_f5d090e7",
+        "filename": "libaudio/audiohal/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 17401
+      },
+      "writtenOn": "2025-01-18T01:18:56Z",
+      "side": 1,
+      "message": "https://review.lineageos.org/c/LineageOS/android_hardware_samsung_slsi-linaro_graphics/+/415827/2 for an explanation what it does",
+      "parentUuid": "85a63540_098ab6b6",
       "revId": "8e60798d20bd475ee75399ccf0ccbcbb4e980034",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
