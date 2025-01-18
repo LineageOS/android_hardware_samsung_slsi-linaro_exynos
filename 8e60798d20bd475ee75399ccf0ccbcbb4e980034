@@ -89,6 +89,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f088148f_c549afd5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 17401
+      },
+      "writtenOn": "2025-01-18T15:27:25Z",
+      "side": 1,
+      "message": "PS5: with `$(call soong_config_set,exynos_audio,PROXY_LIBRARY,\"//device/samsung/exynos9820-common:libaudioproxy\")` one can specify the libaudioproxy lib to be used, also avoids issues with the namespacing",
+      "parentUuid": "6c371450_26716483",
+      "revId": "8e60798d20bd475ee75399ccf0ccbcbb4e980034",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b18f2761_bc74fdb9",
