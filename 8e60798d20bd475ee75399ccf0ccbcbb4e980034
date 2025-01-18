@@ -53,6 +53,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "018a99b0_129e4072",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25925
+      },
+      "writtenOn": "2025-01-18T11:00:25Z",
+      "side": 1,
+      "message": "Maybe we could work around that by not including libaudioproxy in shared_libs when USE_AUDIOHAL flag is not set, to make soong happy (assuming simply disabling the module wouldn\u0027t work already)",
+      "parentUuid": "1d9d80df_330f02a4",
+      "revId": "8e60798d20bd475ee75399ccf0ccbcbb4e980034",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b18f2761_bc74fdb9",
