@@ -18,7 +18,7 @@
 soong_config_module_type {
     name: "exynosgraphicbuffercore_cc_defaults",
     module_type: "cc_defaults",
-    config_namespace: "exynosgraphicbuffer",
+    config_namespace: "arm_gralloc",
     variables: [
         "gralloc_version",
     ],
@@ -30,7 +30,7 @@ soong_config_module_type {
 soong_config_module_type {
     name: "exynosgraphicbuffer_cc_defaults",
     module_type: "cc_defaults",
-    config_namespace: "exynosgraphicbuffer",
+    config_namespace: "arm_gralloc",
     variables: [
         "gralloc_version",
     ],
@@ -41,7 +41,7 @@ soong_config_module_type {
 
 soong_config_string_variable {
     name: "gralloc_version",
-    values: ["three", "four", "four_sgr"],
+    values: ["none", "one", "three", "four", "four_sgr"],
 }
 
 exynosgraphicbuffercore_cc_defaults {
