@@ -3,19 +3,19 @@ cc_library_shared {
     name: "libGrallocWrapper",
     vendor: true,
 
-    srcs: select(soong_config_variable("libgrallocwrapper", "gralloc_version"), {
+    srcs: select(soong_config_variable("arm_gralloc", "gralloc_version"), {
         "one": ["gralloc1/GrallocWrapper.cpp"],
-        "tree": ["gralloc3/GrallocWrapper.cpp"],
+        "three": ["gralloc3/GrallocWrapper.cpp"],
         default: [],
     }),
 
-    include_dirs: select(soong_config_variable("libgrallocwrapper", "gralloc_version"), {
+    include_dirs: select(soong_config_variable("arm_gralloc", "gralloc_version"), {
         "one": [
             "hardware/samsung_slsi-linaro/exynos/include",
             "hardware/samsung_slsi-linaro/exynos5/include",
             "system/core/libsync/include",
         ],
-        "tree": [
+        "three": [
             "hardware/samsung_slsi-linaro/exynos/includee",
         ],
         default: [],
