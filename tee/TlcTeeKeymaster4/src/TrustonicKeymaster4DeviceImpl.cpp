@@ -91,6 +91,7 @@ void TrustonicKeymaster4DeviceImpl::get_hardware_info(
     *keymaster_author_name = km_author_name;
 }
 
+#if KEYMASTER_WANTED_VERSION == 4
 keymaster_error_t TrustonicKeymaster4DeviceImpl::get_hmac_sharing_parameters(
     keymaster_hmac_sharing_parameters_t *params)
 {
@@ -119,6 +120,7 @@ keymaster_error_t TrustonicKeymaster4DeviceImpl::verify_authorization(
                                    hw_auth_token,
                                    verification_token);
 }
+#endif
 
 keymaster_error_t TrustonicKeymaster4DeviceImpl::add_rng_entropy(
     const uint8_t* data,
@@ -243,6 +245,7 @@ keymaster_error_t TrustonicKeymaster4DeviceImpl::abort(
     return TEE_Abort(session_handle_, operation_handle);
 }
 
+#if KEYMASTER_WANTED_VERSION == 4
 keymaster_error_t TrustonicKeymaster4DeviceImpl::import_wrapped_key(
     const keymaster_blob_t* wrapped_key_data,
     const keymaster_key_blob_t* wrapping_key_blob,
@@ -258,6 +261,7 @@ keymaster_error_t TrustonicKeymaster4DeviceImpl::import_wrapped_key(
         wrapping_key_blob, masking_key, unwrapping_params, password_sid,
         biometric_sid, key_blob, key_characteristics);
 }
+#endif
 
 keymaster_error_t TrustonicKeymaster4DeviceImpl::destroy_attestation_ids(void)
 {

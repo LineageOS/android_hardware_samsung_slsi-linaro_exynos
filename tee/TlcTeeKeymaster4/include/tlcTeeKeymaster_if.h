@@ -187,6 +187,7 @@ keymaster_error_t TEE_Abort(
     TEE_SessionHandle session_handle,
     keymaster_operation_handle_t operation_handle);
 
+#if KEYMASTER_WANTED_VERSION == 4
 keymaster_error_t TEE_ImportWrappedKey(
     TEE_SessionHandle session_handle,
     const keymaster_blob_t* wrapped_key_data,
@@ -213,6 +214,7 @@ keymaster_error_t TEE_VerifyAuthorization(
     const keymaster_key_param_set_t* parameters_to_verify,
     const keymaster_hw_auth_token_t* hw_auth_token,
     keymaster_verification_token_t* verification_token);
+#endif
 
 keymaster_error_t TEE_DestroyAttestationIds(
     TEE_SessionHandle session_handle);

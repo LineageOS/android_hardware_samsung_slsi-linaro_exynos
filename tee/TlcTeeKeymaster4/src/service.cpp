@@ -16,9 +16,16 @@
 */
 
 #include <android-base/logging.h>
-#include <android/hardware/keymaster/4.0/IKeymasterDevice.h>
 #include <hidl/HidlTransportSupport.h>
-//#include <AndroidKeymaster4Device.h>
+
+#if KEYMASTER_WANTED_VERSION == 4
+#include <android/hardware/keymaster/4.0/IKeymasterDevice.h>
+#define HIDL_VER V4_0
+#else
+#include <android/hardware/keymaster/3.0/IKeymasterDevice.h>
+#define HIDL_VER V3_0
+#endif
+
 #include <TrustonicKeymaster4Device.h>
 
 //using android::hardware::keymaster::V4_0::SecurityLevel;
@@ -28,7 +35,7 @@ int main() {
 
     TrustonicKeymaster4DeviceImpl *impl = new TrustonicKeymaster4DeviceImpl();
 
-    android::sp <::android::hardware::keymaster::V4_0::IKeymasterDevice> keymaster = new ::android::hardware::keymaster::V4_0::implementation::TrustonicKeymaster4Device(impl);
+    android::sp <::android::hardware::keymaster::HIDL_VER::IKeymasterDevice> keymaster = new ::android::hardware::keymaster::HIDL_VER::implementation::TrustonicKeymaster4Device(impl);
 
     //auto keymaster = ::keymaster::V4_0::ng::CreateKeymasterDevice(SecurityLevel::SOFTWARE);
     auto status = keymaster->registerAsService();

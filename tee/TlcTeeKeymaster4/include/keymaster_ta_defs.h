@@ -25,10 +25,15 @@
 #include <string.h>
 #include <stdbool.h>
 
+#if KEYMASTER_WANTED_VERSION == 3
+#include "hardware/keymaster_defs.h"
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif  // __cplusplus
 
+#if KEYMASTER_WANTED_VERSION == 4
 /**
  * Authorization tags each have an associated type.  This enumeration facilitates tagging each with
  * a type, by using the high four bits (of an implied 32-bit unsigned enum value) to specify up to
@@ -499,6 +504,7 @@ typedef struct {
     keymaster_blob_t* entries;
     size_t entry_count;
 } keymaster_cert_chain_t;
+#endif
 
 typedef struct {
     keymaster_blob_t seed;
@@ -510,6 +516,7 @@ typedef struct {
     size_t length;
 } keymaster_hmac_sharing_parameters_set_t;
 
+#if KEYMASTER_WANTED_VERSION == 4
 typedef enum {
     KM_VERIFIED_BOOT_VERIFIED = 0,    /* Full chain of trust extending from the bootloader to
                                        * verified partitions, including the bootloader, boot
@@ -567,6 +574,7 @@ typedef enum {
      */
     KM_SECURITY_LEVEL_STRONGBOX = 2,              /* See IKeymaster::isStrongBox */
 } keymaster_security_level_t;
+#endif
 
 typedef enum {
     KM_HW_AUTH_TYPE_NONE = 0,
@@ -594,6 +602,15 @@ typedef struct {
 } keymaster_hw_auth_token_t;
 
 /**
+ * The keymaster operation API consists of begin, update, finish and abort. This is the type of the
+ * handle used to tie the sequence of calls together.  A 64-bit value is used because it's important
+ * that handles not be predictable.  Implementations must use strong random numbers for handle
+ * values.
+ */
+typedef uint64_t keymaster_operation_handle_t;
+
+#if KEYMASTER_WANTED_VERSION == 4
+/**
  * Formats for key import and export.
  */
 typedef enum {
@@ -601,14 +618,6 @@ typedef enum {
     KM_KEY_FORMAT_PKCS8 = 1, /* for asymmetric key pair import */
     KM_KEY_FORMAT_RAW = 3,   /* for symmetric key import and export*/
 } keymaster_key_format_t;
-
-/**
- * The keymaster operation API consists of begin, update, finish and abort. This is the type of the
- * handle used to tie the sequence of calls together.  A 64-bit value is used because it's important
- * that handles not be predictable.  Implementations must use strong random numbers for handle
- * values.
- */
-typedef uint64_t keymaster_operation_handle_t;
 
 typedef enum {
     KM_ERROR_OK = 0,
@@ -826,6 +835,7 @@ inline int keymaster_param_compare(const keymaster_key_param_t* a, const keymast
     return 0;
 }
 #undef KEYMASTER_SIMPLE_COMPARE
+#endif
 
 inline void keymaster_free_param_values(keymaster_key_param_t* param, size_t param_count) {
     while (param_count > 0) {

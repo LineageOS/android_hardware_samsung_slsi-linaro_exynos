@@ -40,7 +40,11 @@
 namespace android {
 namespace hardware {
 namespace keymaster {
+#if KEYMASTER_WANTED_VERSION == 4
 namespace V4_0 {
+#else
+namespace V3_0 {
+#endif
 namespace implementation {
 
 TrustonicKeymaster4Device::~TrustonicKeymaster4Device() {}
@@ -65,8 +69,10 @@ inline Tag convert_tag(const keymaster_tag_t value) {
         case KM_TAG_INCLUDE_UNIQUE_ID: return Tag::INCLUDE_UNIQUE_ID;
         case KM_TAG_BLOB_USAGE_REQUIREMENTS: return Tag::BLOB_USAGE_REQUIREMENTS;
         case KM_TAG_BOOTLOADER_ONLY: return Tag::BOOTLOADER_ONLY;
+#if KEYMASTER_WANTED_VERSION == 4
         case KM_TAG_ROLLBACK_RESISTANCE: return Tag::ROLLBACK_RESISTANCE;
         case KM_TAG_HARDWARE_TYPE: return Tag::HARDWARE_TYPE;
+#endif
         case KM_TAG_ACTIVE_DATETIME: return Tag::ACTIVE_DATETIME;
         case KM_TAG_ORIGINATION_EXPIRE_DATETIME: return Tag::ORIGINATION_EXPIRE_DATETIME;
         case KM_TAG_USAGE_EXPIRE_DATETIME: return Tag::USAGE_EXPIRE_DATETIME;
@@ -78,9 +84,11 @@ inline Tag convert_tag(const keymaster_tag_t value) {
         case KM_TAG_USER_AUTH_TYPE: return Tag::USER_AUTH_TYPE;
         case KM_TAG_AUTH_TIMEOUT: return Tag::AUTH_TIMEOUT;
         case KM_TAG_ALLOW_WHILE_ON_BODY: return Tag::ALLOW_WHILE_ON_BODY;
+#if KEYMASTER_WANTED_VERSION == 4
         case KM_TAG_TRUSTED_USER_PRESENCE_REQUIRED: return Tag::TRUSTED_USER_PRESENCE_REQUIRED;
         case KM_TAG_TRUSTED_CONFIRMATION_REQUIRED: return Tag::TRUSTED_CONFIRMATION_REQUIRED;
         case KM_TAG_UNLOCKED_DEVICE_REQUIRED: return Tag::UNLOCKED_DEVICE_REQUIRED;
+#endif
         case KM_TAG_APPLICATION_ID: return Tag::APPLICATION_ID;
         case KM_TAG_APPLICATION_DATA: return Tag::APPLICATION_DATA;
         case KM_TAG_CREATION_DATETIME: return Tag::CREATION_DATETIME;
@@ -99,13 +107,17 @@ inline Tag convert_tag(const keymaster_tag_t value) {
         case KM_TAG_ATTESTATION_ID_MEID: return Tag::ATTESTATION_ID_MEID;
         case KM_TAG_ATTESTATION_ID_MANUFACTURER: return Tag::ATTESTATION_ID_MANUFACTURER;
         case KM_TAG_ATTESTATION_ID_MODEL: return Tag::ATTESTATION_ID_MODEL;
+#if KEYMASTER_WANTED_VERSION == 4
         case KM_TAG_VENDOR_PATCHLEVEL: return Tag::VENDOR_PATCHLEVEL;
         case KM_TAG_BOOT_PATCHLEVEL: return Tag::BOOT_PATCHLEVEL;
+#endif
         case KM_TAG_ASSOCIATED_DATA: return Tag::ASSOCIATED_DATA;
         case KM_TAG_NONCE: return Tag::NONCE;
         case KM_TAG_MAC_LENGTH: return Tag::MAC_LENGTH;
         case KM_TAG_RESET_SINCE_ID_ROTATION: return Tag::RESET_SINCE_ID_ROTATION;
+#if KEYMASTER_WANTED_VERSION == 4
         case KM_TAG_CONFIRMATION_TOKEN: return Tag::CONFIRMATION_TOKEN;
+#endif
         default: return Tag::INVALID;
     }
 }
@@ -201,9 +213,11 @@ static inline hidl_vec<KeyParameter> convert_key_param_set(const keymaster_key_p
                 case KM_TAG_USER_AUTH_TYPE:
                     r->f.hardwareAuthenticatorType = HardwareAuthenticatorType(v);
                     break;
+#if KEYMASTER_WANTED_VERSION == 4
                 case KM_TAG_HARDWARE_TYPE:
                     r->f.hardwareType = SecurityLevel(v);
                     break;
+#endif
                 default:
                     /* Shouldn't get here. */
                     break;
@@ -284,8 +298,10 @@ class KmKeyParamSet : public keymaster_key_param_set_t {
                         case KM_TAG_USER_AUTH_TYPE:
                             q->enumerated = uint32_t(p.f.hardwareAuthenticatorType);
                             break;
+#if KEYMASTER_WANTED_VERSION == 4
                         case KM_TAG_HARDWARE_TYPE:
                             q->enumerated = keymaster_security_level_t(p.f.hardwareType);
+#endif
                             break;
                         default:
                             break;
@@ -327,7 +343,7 @@ class KmKeyParamSet : public keymaster_key_param_set_t {
 };
 
 // -- Other conversions
-
+#if KEYMASTER_WANTED_VERSION == 4
 inline HmacSharingParameters convert_hmac_sharing_parameters(
     const keymaster_hmac_sharing_parameters_t& params)
 {
@@ -348,16 +364,22 @@ inline VerificationToken convert_verification_token(
     result.mac = convert_from_blob(token.mac);
     return result;
 }
+#endif
 
 inline KeyCharacteristics convert_key_characteristics(
     const keymaster_key_characteristics_t& characteristics)
 {
     KeyCharacteristics result;
     result.softwareEnforced = convert_key_param_set(characteristics.sw_enforced);
+#if KEYMASTER_WANTED_VERSION == 4
     result.hardwareEnforced = convert_key_param_set(characteristics.hw_enforced);
+#else
+    result.teeEnforced = convert_key_param_set(characteristics.hw_enforced);
+#endif
     return result;
 }
 
+#if KEYMASTER_WANTED_VERSION == 4
 class KmHwAuthToken : public keymaster_hw_auth_token_t {
 public:
     KmHwAuthToken(const HardwareAuthToken& authToken) {
@@ -397,9 +419,11 @@ public:
         delete[] params;
     }
 };
+#endif
 
 // Methods from ::android::hardware::keymaster::V4_0::IKeymasterDevice
 
+#if KEYMASTER_WANTED_VERSION == 4
 Return<void> TrustonicKeymaster4Device::getHardwareInfo(
     IKeymasterDevice::getHardwareInfo_cb _hidl_cb)
 {
@@ -464,6 +488,25 @@ Return<void> TrustonicKeymaster4Device::verifyAuthorization(
     keymaster_free_param_set(&_token.parameters_verified);
     return Void();
 }
+#else
+Return<void> TrustonicKeymaster4Device::getHardwareFeatures(
+    IKeymasterDevice::getHardwareFeatures_cb _hidl_cb)
+{
+    keymaster_security_level_t _security_level = KM_SECURITY_LEVEL_SOFTWARE;
+    const char *_keymaster_name = 0;
+    const char *_keymaster_author_name = 0;
+    impl_->get_hardware_info(
+        &_security_level, &_keymaster_name, &_keymaster_author_name);
+    const SecurityLevel securityLevel = SecurityLevel(_security_level);
+    const hidl_string keymasterName(_keymaster_name);
+    const hidl_string keymasterAuthorName(_keymaster_author_name);
+
+    _hidl_cb(true /* is_secure */, true /* supports_ec */,
+             true /* supports_symmetric_cryptography */, true /* supports_attestation */,
+             true /* supportsAllDigests */, keymasterName, keymasterAuthorName);
+    return Void();
+}
+#endif
 
 Return<ErrorCode> TrustonicKeymaster4Device::addRngEntropy(
     const hidl_vec<uint8_t>& data)
@@ -513,6 +556,7 @@ Return<void> TrustonicKeymaster4Device::importKey(
     return Void();
 }
 
+#if KEYMASTER_WANTED_VERSION == 4
 Return<void> TrustonicKeymaster4Device::importWrappedKey(
     const hidl_vec<uint8_t>& wrappedKeyData,
     const hidl_vec<uint8_t>& wrappingKeyBlob,
@@ -543,6 +587,7 @@ Return<void> TrustonicKeymaster4Device::importWrappedKey(
     keymaster_free_characteristics(&_characteristics);
     return Void();
 }
+#endif
 
 Return<void> TrustonicKeymaster4Device::getKeyCharacteristics(
     const hidl_vec<uint8_t>& keyBlob,
@@ -634,6 +679,7 @@ Return<ErrorCode> TrustonicKeymaster4Device::destroyAttestationIds()
     return ErrorCode(impl_->destroy_attestation_ids());
 }
 
+#if KEYMASTER_WANTED_VERSION == 4
 Return<void> TrustonicKeymaster4Device::begin(
     KeyPurpose purpose,
     const hidl_vec<uint8_t>& keyBlob,
@@ -706,6 +752,70 @@ Return<void> TrustonicKeymaster4Device::finish(
     _output.data_length = 0;
     return Void();
 }
+#else
+Return<void> TrustonicKeymaster4Device::begin(
+    KeyPurpose purpose,
+    const hidl_vec<uint8_t>& keyBlob,
+    const hidl_vec<KeyParameter>& inParams,
+    IKeymasterDevice::begin_cb _hidl_cb)
+{
+    const keymaster_key_blob_t _key = convert_to_key_blob(keyBlob);
+    const KmKeyParamSet _in_params(inParams);
+    keymaster_key_param_set_t _out_params = {};
+    uint64_t operation_handle = 0;
+    keymaster_error_t ret = impl_->begin(
+        keymaster_purpose_t(purpose), &_key, &_in_params, NULL, &_out_params, &operation_handle);
+    hidl_vec<KeyParameter> outParams = convert_key_param_set(_out_params);
+    _hidl_cb(ErrorCode(ret), outParams, operation_handle);
+    keymaster_free_param_set(&_out_params);
+    return Void();
+}
+
+Return<void> TrustonicKeymaster4Device::update(
+    uint64_t operationHandle,
+    const hidl_vec<KeyParameter>& inParams,
+    const hidl_vec<uint8_t>& input,
+    IKeymasterDevice::update_cb _hidl_cb)
+{
+    const KmKeyParamSet _in_params(inParams);
+    const keymaster_blob_t _input = convert_to_blob(input);
+    size_t input_consumed = 0;
+    keymaster_key_param_set_t _out_params = {};
+    keymaster_blob_t _output = {};
+    keymaster_error_t ret = impl_->update(
+        operationHandle, &_in_params, &_input, NULL, NULL, &input_consumed, &_out_params, &_output);
+    hidl_vec<KeyParameter> outParams = convert_key_param_set(_out_params);
+    hidl_vec<uint8_t> output = convert_from_blob(_output);
+    _hidl_cb(ErrorCode(ret), input_consumed, outParams, output);
+    free((void*)_output.data);
+    _output.data = NULL;
+    _output.data_length = 0;
+    return Void();
+}
+
+Return<void> TrustonicKeymaster4Device::finish(
+    uint64_t operationHandle,
+    const hidl_vec<KeyParameter>& inParams,
+    const hidl_vec<uint8_t>& input,
+    const hidl_vec<uint8_t>& signature,
+    IKeymasterDevice::finish_cb _hidl_cb)
+{
+    const KmKeyParamSet _in_params(inParams);
+    const keymaster_blob_t _input = convert_to_blob(input);
+    const keymaster_blob_t _signature = convert_to_blob(signature);
+    keymaster_key_param_set_t _out_params = {};
+    keymaster_blob_t _output = {};
+    keymaster_error_t ret = impl_->finish(
+        operationHandle, &_in_params, &_input, &_signature, NULL, NULL, &_out_params, &_output);
+    hidl_vec<KeyParameter> outParams = convert_key_param_set(_out_params);
+    hidl_vec<uint8_t> output = convert_from_blob(_output);
+    _hidl_cb(ErrorCode(ret), outParams, output);
+    free((void*)_output.data);
+    _output.data = NULL;
+    _output.data_length = 0;
+    return Void();
+}
+#endif
 
 Return<ErrorCode> TrustonicKeymaster4Device::abort(
     uint64_t operationHandle)

@@ -45,6 +45,7 @@ class TrustonicKeymaster4DeviceImpl {
         const char **keymaster_name,
         const char **keymaster_author_name);
 
+#if KEYMASTER_WANTED_VERSION == 4
     keymaster_error_t get_hmac_sharing_parameters(
         keymaster_hmac_sharing_parameters_t *params);
 
@@ -57,6 +58,7 @@ class TrustonicKeymaster4DeviceImpl {
         const keymaster_key_param_set_t* parameters_to_verify,
         const keymaster_hw_auth_token_t *auth_token,
         keymaster_verification_token_t *token);
+#endif
 
     keymaster_error_t add_rng_entropy(
         const uint8_t* data,
@@ -128,6 +130,7 @@ class TrustonicKeymaster4DeviceImpl {
     keymaster_error_t abort(
         keymaster_operation_handle_t operation_handle);
 
+#if KEYMASTER_WANTED_VERSION == 4
     keymaster_error_t import_wrapped_key(
         const keymaster_blob_t* wrapped_key_data,
         const keymaster_key_blob_t* wrapping_key_blob,
@@ -137,6 +140,7 @@ class TrustonicKeymaster4DeviceImpl {
         uint64_t biometric_sid,
         keymaster_key_blob_t* key_blob,
         keymaster_key_characteristics_t* key_characteristics);
+#endif
 
     keymaster_error_t destroy_attestation_ids(void);
 

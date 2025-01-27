@@ -182,7 +182,9 @@ static int snprint_param_set(
                 PARAM_CASE_ENUM(KM_TAG_EC_CURVE)
                 PARAM_CASE_BOOL(KM_TAG_ECIES_SINGLE_HASH_MODE)
                 PARAM_CASE_BOOL(KM_TAG_EXPORTABLE)
+#if KEYMASTER_WANTED_VERSION == 4
                 PARAM_CASE_ENUM(KM_TAG_HARDWARE_TYPE)
+#endif
                 PARAM_CASE_BOOL(KM_TAG_INCLUDE_UNIQUE_ID)
                 PARAM_CASE_ENUM(KM_TAG_KDF)
                 PARAM_CASE_UINT(KM_TAG_KEY_SIZE)
@@ -288,6 +290,7 @@ extern inline void keymaster_free_characteristics(keymaster_key_characteristics_
     KM_TAG_APPLICATION_DATA
 
 /* Acceptable params for generate_key() and import_key() */
+#if KEYMASTER_WANTED_VERSION == 4
 #define KEY_CREATION_ALLOWED_TAGS \
     AUTH_TAGS, \
     KM_TAG_PURPOSE, \
@@ -316,6 +319,29 @@ extern inline void keymaster_free_characteristics(keymaster_key_characteristics_
     KM_TAG_UNLOCKED_DEVICE_REQUIRED, \
     KM_TAG_EARLY_BOOT_ONLY, \
     KM_TAG_STORAGE_KEY
+#else
+#define KEY_CREATION_ALLOWED_TAGS \
+    AUTH_TAGS, \
+    KM_TAG_PURPOSE, \
+    KM_TAG_ALGORITHM, \
+    KM_TAG_KEY_SIZE, \
+    KM_TAG_BLOCK_MODE, \
+    KM_TAG_DIGEST, \
+    KM_TAG_PADDING, \
+    KM_TAG_CALLER_NONCE, \
+    KM_TAG_MIN_MAC_LENGTH, \
+    KM_TAG_EC_CURVE, \
+    KM_TAG_RSA_PUBLIC_EXPONENT, \
+    KM_TAG_ACTIVE_DATETIME, \
+    KM_TAG_ORIGINATION_EXPIRE_DATETIME, \
+    KM_TAG_USAGE_EXPIRE_DATETIME, \
+    KM_TAG_MIN_SECONDS_BETWEEN_OPS, \
+    KM_TAG_MAX_USES_PER_BOOT, \
+    KM_TAG_INCLUDE_UNIQUE_ID, \
+    KM_TAG_BOOTLOADER_ONLY, \
+    KM_TAG_BLOB_USAGE_REQUIREMENTS, \
+    KM_TAG_ALLOW_WHILE_ON_BODY
+#endif
 
 static const keymaster_tag_t key_creation_allowed_params [] = {
     KEY_CREATION_ALLOWED_TAGS
@@ -1786,6 +1812,7 @@ keymaster_error_t TEE_Begin(
         tci->begin.out_params.data = 0;
         tci->begin.out_params.data_length = 0;
     }
+#if KEYMASTER_WANTED_VERSION == 4
     tci->begin.auth_challenge = auth_token ? auth_token->challenge : 0;
     tci->begin.auth_user_id = auth_token ? auth_token->user_id : 0;
     tci->begin.auth_authenticator_id = auth_token ? auth_token->authenticator_id :  0;
@@ -1797,6 +1824,7 @@ keymaster_error_t TEE_Begin(
             auth_token->mac.data_length == 32);
         memcpy(tci->begin.auth_mac, auth_token->mac.data, 32);
     }
+#endif
 
     CHECK_RESULT_OK( transact(session_handle, tci) );
 
@@ -1878,6 +1906,7 @@ static keymaster_error_t update_chunk(
     tci->update.input.data_length = input_map->sVirtualLen;
     tci->update.output.data = (uint32_t)output_map->sVirtualAddr;
     tci->update.output.data_length = output_map->sVirtualLen;
+#if KEYMASTER_WANTED_VERSION == 4
     tci->update.auth_challenge = auth_token ? auth_token->challenge : 0;
     tci->update.auth_user_id = auth_token ? auth_token->user_id : 0;
     tci->update.auth_authenticator_id = auth_token ? auth_token->authenticator_id :  0;
@@ -1889,6 +1918,7 @@ static keymaster_error_t update_chunk(
             auth_token->mac.data_length == 32);
         memcpy(tci->update.auth_mac, auth_token->mac.data, 32);
     }
+#endif
 
     CHECK_RESULT_OK( transact(session_handle, tci) );
 
@@ -1940,6 +1970,7 @@ static keymaster_error_t final_chunk(
     tci->finish.signature.data_length = fin->signature_map.sVirtualLen;
     tci->finish.output.data = (uint32_t)output_map->sVirtualAddr;
     tci->finish.output.data_length = output_map->sVirtualLen;
+#if KEYMASTER_WANTED_VERSION == 4
     tci->finish.auth_challenge = auth_token ? auth_token->challenge : 0;
     tci->finish.auth_user_id = auth_token ? auth_token->user_id : 0;
     tci->finish.auth_authenticator_id = auth_token ? auth_token->authenticator_id :  0;
@@ -1951,6 +1982,7 @@ static keymaster_error_t final_chunk(
             auth_token->mac.data_length == 32);
         memcpy(tci->finish.auth_mac, auth_token->mac.data, 32);
     }
+#endif
 
     CHECK_RESULT_OK( transact(session_handle, tci) );
 
@@ -2492,6 +2524,7 @@ end:
     return ret;
 }
 
+#if KEYMASTER_WANTED_VERSION == 4
 keymaster_error_t TEE_ImportWrappedKey(
     TEE_SessionHandle sessionHandle,
     const keymaster_blob_t* wrapped_key_data,
@@ -2653,6 +2686,7 @@ end:
     LOG_D("TEE_ImportWrappedKey exiting with %d", ret);
     return ret;
 }
+#endif
 
 #ifndef NDEBUG
 keymaster_error_t tee__set_debug_lies(
@@ -2680,6 +2714,7 @@ end:
 }
 #endif /* #ifndef NDEBUG */
 
+#if KEYMASTER_WANTED_VERSION == 4
 keymaster_error_t TEE_GetHmacSharingParameters(
     TEE_SessionHandle sessionHandle,
     keymaster_hmac_sharing_parameters_t *out_params)
@@ -2885,6 +2920,7 @@ end:
     LOG_D("TEE_VerifyAuthorization exiting with %d", ret);
     return ret;
 }
+#endif
 
 keymaster_error_t TEE_DestroyAttestationIds(
     TEE_SessionHandle sessionHandle)

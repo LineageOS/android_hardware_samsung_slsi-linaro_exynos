@@ -39,7 +39,11 @@
 #include "cust_tee_keymaster_utils.h"
 
 /* ExySp */
+#if KEYMASTER_WANTED_VERSION == 4
 #define DEFAULT_OBJECT_FILE_OLD "/mnt/vendor/persist/keybox_sample.so"
+#else
+#define DEFAULT_OBJECT_FILE_OLD "/mnt/vendor/persist/security/attest_keybox.so"
+#endif
 #define DEFAULT_OBJECT_FILE_NEW "/mnt/vendor/efs/keybox_sample.so"
 #define DEFAULT_ATTESTATION_IDS_FILE_OLD "/mnt/vendor/persist/attestation_ids.so"
 #define DEFAULT_ATTESTATION_IDS_FILE_NEW "/mnt/vendor/efs/attestation_ids.so"
@@ -74,7 +78,6 @@ int HAL_Configure(TEE_SessionHandle sessionHandle)
     };
     keymaster_key_param_set_t params = {param, 3};
 
-
     /* TODO Reference implementation rely on attestation data is stored in
        FileSystem. If the attestation data is stored in RPMB, this part
        should be removed, and add the RPMB read/write interface in
@@ -107,6 +110,7 @@ int HAL_Configure(TEE_SessionHandle sessionHandle)
     free(so_p);
     so_p = NULL;
 
+#if KEYMASTER_WANTED_VERSION == 4
     /* ExySp */
     /* Load the secure object with the attestation ids if any. */
     so_len = getFileContent(DEFAULT_ATTESTATION_IDS_FILE_OLD, &so_p);
@@ -129,6 +133,7 @@ int HAL_Configure(TEE_SessionHandle sessionHandle)
     else {
         LOG_D("%s(): could not load %s now", __func__, DEFAULT_ATTESTATION_IDS_FILE_NEW);
     }
+#endif
 
     ret = TEE_Configure(sessionHandle, &params);
     if (ret) {
