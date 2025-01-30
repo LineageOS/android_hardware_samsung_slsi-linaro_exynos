@@ -16,6 +16,24 @@
       "message": "three?",
       "revId": "d156d97796899e669cf22db11aca13ed0b62856f",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0f4859a6_215cb423",
+        "filename": "gralloc/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 17401
+      },
+      "writtenOn": "2025-01-30T14:42:33Z",
+      "side": 1,
+      "message": "got fixed in this one https://review.lineageos.org/c/LineageOS/android_hardware_samsung_slsi-linaro_exynos/+/416010/6 prolly a good idea to rebase that to here",
+      "parentUuid": "f052fe2a_15896c1c",
+      "revId": "d156d97796899e669cf22db11aca13ed0b62856f",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
