@@ -34,6 +34,24 @@
       "parentUuid": "f052fe2a_15896c1c",
       "revId": "d156d97796899e669cf22db11aca13ed0b62856f",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f60772ba_5af5150a",
+        "filename": "gralloc/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 25925
+      },
+      "writtenOn": "2025-01-30T17:58:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0f4859a6_215cb423",
+      "revId": "d156d97796899e669cf22db11aca13ed0b62856f",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
