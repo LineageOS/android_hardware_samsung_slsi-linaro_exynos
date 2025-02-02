@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4171e3a8_0079ea1c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 17401
+      },
+      "writtenOn": "2025-02-02T18:55:19Z",
+      "side": 1,
+      "message": "could you mention in the commit message where exactly they were taken from (e.g. from which device and kernel release or something)",
+      "revId": "0dd1911663cafcbdfc9ff0197294a76fdfe49336",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
