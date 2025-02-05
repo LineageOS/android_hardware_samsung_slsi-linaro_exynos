@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "980a7d6c_a148a17b",
+        "filename": "tee/TlcTeeKeymaster4/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-02-05T18:14:15Z",
+      "side": 1,
+      "message": "use cc_defaults?\nwill avoid duplicating stuff",
+      "revId": "c7d18c9384f8e6d816a11790857cc46d32e402e6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
