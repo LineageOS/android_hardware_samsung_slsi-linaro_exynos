@@ -31,7 +31,8 @@
 #include "audio_proxy_interface.h"
 
 #define VOLUME_STEPS_DEFAULT  "5"
-#define VOLUME_STEPS_PROPERTY "ro.vendor.config.vc_call_vol_steps"
+#define VOLUME_STEPS_PROPERTY "ro.config.vc_call_vol_steps"
+#define VOLUME_STEPS_PROPERTY_VENDOR "ro.vendor.config.vc_call_vol_steps"
 
 
 #define DEVICE_INVALID           -1
@@ -483,7 +484,9 @@ struct voice_manager* voice_init(void)
         voice->volte_status = VOLTE_OFF;
         voice->previous_volte_status = VOLTE_OFF;
 
-        property_get(VOLUME_STEPS_PROPERTY, property, VOLUME_STEPS_DEFAULT);
+        if (property_get(VOLUME_STEPS_PROPERTY_VENDOR, property, NULL) == 0)
+            property_get(VOLUME_STEPS_PROPERTY, property, VOLUME_STEPS_DEFAULT);
+
         voice->volume_steps_max = atoi(property);
         /* this catches the case where VOLUME_STEPS_PROPERTY does not contain an integer */
         if (voice->volume_steps_max == 0)
