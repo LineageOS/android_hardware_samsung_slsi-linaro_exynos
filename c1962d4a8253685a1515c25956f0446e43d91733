@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5bbc711b_ba28ba2b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 17401
+      },
+      "writtenOn": "2025-02-09T17:01:39Z",
+      "side": 1,
+      "message": "stock is doing something similar ```  property_get(\"ro.vendor.config.vc_call_vol_steps\",acStack136,\u0026DAT_00013b15);\n  uVar4 \u003d atoi(acStack136);\n  property_get(\"ro.config.vc_call_vol_steps\",acStack136,\u0026DAT_00013b15);\n  uVar5 \u003d atoi(acStack136);\n  if (uVar5 \u003d\u003d 0) {\n    if (uVar4 \u003d\u003d 0) {\n      uVar5 \u003d 5;```",
+      "revId": "c1962d4a8253685a1515c25956f0446e43d91733",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
