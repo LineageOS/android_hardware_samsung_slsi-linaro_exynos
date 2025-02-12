@@ -15,35 +15,6 @@
  * limitations under the License.
  */
 
-soong_config_module_type {
-    name: "exynosgraphicbuffercore_cc_defaults",
-    module_type: "cc_defaults",
-    config_namespace: "arm_gralloc",
-    variables: [
-        "gralloc_version",
-    ],
-    properties: [
-        "srcs", "include_dirs",
-    ],
-}
-
-soong_config_module_type {
-    name: "exynosgraphicbuffer_cc_defaults",
-    module_type: "cc_defaults",
-    config_namespace: "arm_gralloc",
-    variables: [
-        "gralloc_version",
-    ],
-    properties: [
-        "srcs", "include_dirs", "shared_libs", "static_libs",
-    ],
-}
-
-soong_config_string_variable {
-    name: "gralloc_version",
-    values: ["none", "one", "three", "four", "four_sgr"],
-}
-
 exynosgraphicbuffercore_cc_defaults {
     name: "exynosgraphicbuffercore_defaults",
     shared_libs: [
@@ -59,40 +30,29 @@ exynosgraphicbuffercore_cc_defaults {
     defaults: [
         "libexynos_headers_c2_defaults",
     ],
-    soong_config_variables: {
-        gralloc_version: {
-            three: {
-                include_dirs: [
-                    "hardware/samsung_slsi-linaro/exynos/include",
-                    "hardware/samsung_slsi-linaro/exynos/gralloc/gralloc3",
-                ],
+    
+    srcs: select(soong_config_variable("arm_gralloc", "gralloc_version"), {
+        "three": ["gralloc3/exynos_graphicbuffer_meta.cpp"],
+        "four": ["gralloc4/exynos_graphicbuffer_meta.cpp"],
+        "four_sgr": ["sgr/exynos_graphicbuffer_meta.cpp"],
+        default: [],
+    }),
 
-                srcs: [
-                    "gralloc3/exynos_graphicbuffer_meta.cpp",
-                ],
-            },
-            four: {
-                include_dirs: [
-                    "hardware/samsung_slsi-linaro/exynos/include",
-                    "hardware/samsung_slsi-linaro/exynos/gralloc/gralloc4/src",
-                                ],
-
-                                srcs: [
-                                    "gralloc4/exynos_graphicbuffer_meta.cpp",
-                ],
-            },
-            four_sgr: {
-                include_dirs: [
-                    "hardware/samsung_slsi-linaro/exynos/include",
-                    "hardware/samsung_slsi-linaro/sgpu/sgpu_gralloc/src/interface",
-                ],
-
-                srcs: [
-                    "sgr/exynos_graphicbuffer_meta.cpp",
-                ],
-            },
-        },
-    },
+    include_dirs: select(soong_config_variable("arm_gralloc", "gralloc_version"), {
+        "three": [
+            "hardware/samsung_slsi-linaro/exynos/include",
+            "hardware/samsung_slsi-linaro/exynos/gralloc/gralloc3",
+        ],
+        "four": [
+            "hardware/samsung_slsi-linaro/exynos/include",
+            "hardware/samsung_slsi-linaro/exynos/gralloc/gralloc4/src",
+        ],
+        "four_sgr": [
+            "hardware/samsung_slsi-linaro/exynos/include",
+            "hardware/samsung_slsi-linaro/sgpu/sgpu_gralloc/src/interface",
+        ],
+        default: [],
+    }),
 }
 
 exynosgraphicbuffer_cc_defaults {
@@ -111,54 +71,21 @@ exynosgraphicbuffer_cc_defaults {
         "android.hardware.graphics.mapper@3.0",
         "android.hardware.graphics.mapper@4.0",
     ],
-    soong_config_variables: {
-        gralloc_version: {
-            three: {
-                srcs: [
-                    "gralloc3/exynos_graphicbuffer_mapper.cpp",
-                    "gralloc3/ion_helper.cpp",
-                ],
-            },
-            four: {
-                srcs: [
-                    "gralloc4/exynos_graphicbuffer_mapper.cpp",
-                    "gralloc4/ion_helper.cpp",
-                ],
-            },
-            four_sgr: {
-                srcs: [
-                    "sgr/exynos_graphicbuffer_mapper.cpp",
-                ],
-            },
-        },
-    },
-}
 
-exynosgraphicbuffer_cc_defaults {
-    name: "exynosgraphicbuffer_mali_defaults",
-    soong_config_variables: {
-        gralloc_version: {
-            three: {
-                srcs: [
-                    "gralloc3/exynos_graphicbuffer_mali.cpp",
-                ],
-                static_libs: [
-                    "libgralloc3_drmutils",
-                ],
-            },
-            four: {
-                srcs: [
-                    "gralloc4/exynos_graphicbuffer_mali.cpp",
-                ],
-                static_libs: [
-                    "libgralloc_drmutils",
-                ],
-                shared_libs: [
-                    "android.hardware.graphics.mapper@4.0-impl",
-                ],
-            },
-        },
-    },
+    srcs: select(soong_config_variable("arm_gralloc", "gralloc_version"), {
+        "three": [
+            "gralloc3/exynos_graphicbuffer_mapper.cpp",
+            "gralloc3/ion_helper.cpp",
+        ],
+        "four": [
+            "gralloc4/exynos_graphicbuffer_mapper.cpp",
+            "gralloc4/ion_helper.cpp",
+        ],
+        "four_sgr": [
+            "sgr/exynos_graphicbuffer_mapper.cpp",
+        ],
+        default: [],
+    }),
 }
 
 cc_library_shared {
@@ -168,6 +95,20 @@ cc_library_shared {
         "exynosgraphicbuffer_mali_defaults",
     ],
     vendor: true,
+    srcs: select(soong_config_variable("arm_gralloc", "gralloc_version"), {
+        "three": ["gralloc3/exynos_graphicbuffer_mali.cpp"],
+        "four": ["gralloc4/exynos_graphicbuffer_mali.cpp"],
+        default: [],
+    }),
+    shared_libs: select(soong_config_variable("arm_gralloc", "gralloc_version"), {
+        "four": ["android.hardware.graphics.mapper@4.0-impl"],
+        default: [],
+    }),
+    static_libs: select(soong_config_variable("arm_gralloc", "gralloc_version"), {
+        "three": ["libgralloc3_drmutils"],
+        "four": ["libgralloc_drmutils"],
+        default: [],
+    }),
 }
 
 cc_library_shared {
