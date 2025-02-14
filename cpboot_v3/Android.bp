@@ -38,8 +38,8 @@ cc_defaults {
     ],
 }
 
-cc_binary {
-    name: "cbd_v3.sit",
+cc_defaults {
+    name: "cbd_v3.sit.defaults",
     defaults: ["cbd_v3.defaults"],
     cflags: [
         "-DCONFIG_PROTOCOL_SIT",
@@ -47,6 +47,19 @@ cc_binary {
     srcs: [
         "ProtocolSit.cpp",
         "SrinfoSit2.cpp",
+    ],
+}
+
+cc_binary {
+    name: "cbd_v3.sit",
+    defaults: ["cbd_v3.sit.defaults"],
+}
+
+cc_binary {
+    name: "cbd_v3.sit.legacy",
+    defaults: ["cbd_v3.sit.defaults"],
+    cflags: [
+        "-DLEGACY_IOCTL",
     ],
 }
 cc_binary {

@@ -39,6 +39,9 @@ int BootDumpModap::boot()
 	int spin = 50;
 	int boot_once = 0;
 	char prop_buf[PROPERTY_VALUE_MAX] = {0, };
+#ifdef LEGACY_IOCTL
+	struct sec_info info;
+#endif
 
 	cbd_info("CP boot device = %s\n", Container::getCbdArgs()->cpn.node_boot);
 	cbd_info("CP binary file = %s\n", Container::getCbdArgs()->cpn.path_bin);
@@ -102,6 +105,29 @@ int BootDumpModap::boot()
 		}
 	}
 
+#ifdef LEGACY_IOCTL
+	cbd_info("Send CP image\n");
+	ret = load_cp_images(CP_BOOT_MODE_NORMAL);
+	if (ret < 0) {
+		cbd_info("ERR! BOOT_STAGE fail\n");
+		goto exit;
+	}
+	boot_once = ret;
+
+
+	info.bmode = CP_BOOT_MODE_NORMAL;
+	info.boot_size = std_boot.dl_ctrl[TOC_BOOT].b_size;
+	info.main_size = std_boot.dl_ctrl[TOC_MAIN].b_size;
+
+	cbd_info("IOCTL_CHECK_SECURITY bmode=%d, boot_size=%d, main_size=%d",
+			info.bmode, info.boot_size, info.main_size);
+	ret = ioctl(getStdBoot()->fds[FD_DEV], IOCTL_CHECK_SECURITY, &info);
+	if (ret < 0) {
+		cbd_err("modem_request_security failed!!!\n");
+		goto exit;
+	}
+#endif
+
 	cbd_info("Power on CP\n");
 	ret = std_boot_power_on();
 	if (ret < 0) {
@@ -109,6 +135,7 @@ int BootDumpModap::boot()
 		goto exit;
 	}
 
+#ifndef LEGACY_IOCTL
 	cbd_info("Request security : non-secure mode\n");
 	ret = std_security_req(CP_BOOT_RE_INIT, 0, 0);
 	if (ret < 0) {
@@ -165,6 +192,7 @@ int BootDumpModap::boot()
 		cbd_info("ERR! security check fail for BOOT/MAIN\n");
 		goto exit;
 	}
+#endif
 
 	/* set SIM configuration using /efs/factory.prop */
 	set_sim_configuration();
@@ -175,6 +203,14 @@ int BootDumpModap::boot()
 		cbd_info("ERR! std_boot_start_cp_bootloader fail\n");
 		goto exit;
 	}
+
+#ifdef LEGACY_IOCTL
+	ret = ioctl(getStdBoot()->fds[FD_DEV], IOCTL_MODEM_DL_START, NULL);
+	if (ret < 0) {
+		cbd_err("modem_request_security failed!!!\n");
+		goto exit;
+	}
+#endif
 
 	cbd_info("Handshake\n");
 	ret = Container::getProtocol()->std_boot_finish_handshake();
@@ -257,6 +293,7 @@ int BootDumpModap::dump()
 		goto exit;
 	}
 
+#ifndef LEGACY_IOCTL
 	cbd_info("Request security : dump mode\n");
 	ret = std_security_req(CP_BOOT_MODE_DUMP,
 				   std_boot.dl_ctrl[TOC_BOOT].b_size,
@@ -265,6 +302,7 @@ int BootDumpModap::dump()
 		cbd_info("ERR! security check fail\n");
 		goto exit;
 	}
+#endif
 
 	cbd_info("Start CP bootloader for crash dump\n");
 	ret = std_boot_start_cp_bootloader(CP_BOOT_MODE_DUMP);
@@ -498,11 +536,15 @@ int BootDumpModap::load_cp_image_by_stage(u32 stage, enum cp_boot_mode mode)
 	img.size = dlc->b_size;
 	img.m_offset = dlc->m_offset;
 	img.b_offset = dlc->b_offset;
+#ifdef LEGACY_IOCTL
+	img.stage = stage - 1; /* kernel enum skips the TOC entry, therefore we are off by one */
+#else
 	img.mode = mode;
+#endif
 	img.len = EXYNOS_PAYLOAD_LEN;
 
 	cbd_info("stage=%u(%u), b_off=0x%08x, m_off=0x%08x, b_size=0x%08x, mode=0x%08x\n",
-		stage, dlc->stage, dlc->b_offset, dlc->m_offset, dlc->b_size, img.mode);
+		stage, dlc->stage, dlc->b_offset, dlc->m_offset, dlc->b_size, mode);
 
 	ret = lseek(dlc->b_fd, img.b_offset, SEEK_SET);
 	if (ret < 0) {
@@ -531,7 +573,11 @@ int BootDumpModap::load_cp_image_by_stage(u32 stage, enum cp_boot_mode mode)
 			goto exit;
 		}
 
+#ifdef LEGACY_IOCTL
+		ret = ioctl(std_boot.fds[FD_DEV], IOCTL_XMIT_BIN, &img);
+#else
 		ret = ioctl(std_boot.fds[FD_DEV], IOCTL_LOAD_CP_IMAGE, &img);
+#endif
 		if (ret) {
 			cbd_err("ERR! IOCTL_LOAD_CP_IMAGE fail (%u,%d)\n", stage, ret);
 			goto exit;

@@ -50,6 +50,7 @@ exit:
 }
 #endif
 
+#ifndef LEGACY_IOCTL
 /*Read the property set by APK, and then set the btl size*/
 static int adjust_btl_ramsize()
 {
@@ -94,6 +95,7 @@ exit:
 
 	return ret;
 }
+#endif
 
 static int status_loop()
 {
@@ -352,11 +354,13 @@ int main(int argc, char **argv)
 	else
 		Util::switch_user();
 
+#ifndef LEGACY_IOCTL
 	err = adjust_btl_ramsize();
 	if (err < 0) {
 		cbd_err("adjust btl ramsize fail\n");
 		goto exit;
 	}
+#endif
 
 __cpboot_retry:
 #ifndef CONFIG_PROTOCOL_SIT
