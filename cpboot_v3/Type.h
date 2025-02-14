@@ -64,18 +64,29 @@ struct boot_mode {
 } __attribute__((__packed__));
 #define IOCTL_POWER_RESET		_IOW(IOCTL_MAGIC, 0x21, struct boot_mode)
 #define IOCTL_START_CP_BOOTLOADER	_IOW(IOCTL_MAGIC, 0x22, struct boot_mode)
+#define IOCTL_MODEM_BOOT_ON		_IO('o', 0x22)
 #define IOCTL_COMPLETE_NORMAL_BOOTUP	_IO(IOCTL_MAGIC, 0x23)
 #define IOCTL_GET_CP_STATUS		_IO(IOCTL_MAGIC, 0x27)
+#define IOCTL_MODEM_DL_START            _IO('o', 0x28)
 #define IOCTL_TRIGGER_CP_CRASH		_IO(IOCTL_MAGIC, 0x34)
 #define IOCTL_TRIGGER_KERNEL_PANIC	_IO(IOCTL_MAGIC, 0x35)
 
 struct cp_image {
+#ifdef LEGACY_IOCTL
+	u32 stage;
+	u32 m_offset;
+	u8 *binary;
+	u32 size;
+	u32 b_offset;
+	u32 len;
+#else
 	u8 *binary;
 	u32 size;
 	u32 m_offset;
 	u32 b_offset;
 	u32 mode;
 	u32 len;
+#endif
 } __attribute__((__packed__));
 #define IOCTL_LOAD_CP_IMAGE		_IOW(IOCTL_MAGIC, 0x40, struct cp_image)
 
@@ -147,6 +158,14 @@ struct cpif_version {
 	char string[CPIF_VERSION_SIZE];
 } __attribute__((__packed__));
 #define IOCTL_GET_CPIF_VERSION		_IOR('o', 0x56, struct cpif_version)
+
+struct sec_info {
+    int bmode;
+    u32 boot_size;
+    u32 main_size;
+};
+#define IOCTL_CHECK_SECURITY            _IO('o', 0x62)
+#define IOCTL_XMIT_BIN                  _IO('o', 0x63)
 
 #define CPDUMP_PATH		"/data/vendor/log/cbd"
 

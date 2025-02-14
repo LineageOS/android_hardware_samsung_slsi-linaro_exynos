@@ -177,7 +177,12 @@ int BootDump::std_boot_power_on()
 {
 	int ret;
 
+#ifdef LEGACY_IOCTL
+	int sim_slot_cnt = 2;
+	ret = ioctl(getStdBoot()->fds[FD_DEV], IOCTL_POWER_ON, &sim_slot_cnt);
+#else
 	ret = ioctl(getStdBoot()->fds[FD_DEV], IOCTL_POWER_ON, NULL);
+#endif
 	if (ret < 0) {
 		cbd_err("ERR! IOCTL_POWER_ON fail (%d)\n", ret);
 		goto exit;
@@ -213,7 +218,11 @@ int BootDump::std_boot_start_cp_bootloader(enum cp_boot_mode mode_idx)
 	struct boot_mode mode = {.idx = mode_idx};
 	int ret;
 
+#ifdef LEGACY_IOCTL
+	ret = ioctl(getStdBoot()->fds[FD_DEV], IOCTL_MODEM_BOOT_ON, NULL);
+#else
 	ret = ioctl(getStdBoot()->fds[FD_DEV], IOCTL_START_CP_BOOTLOADER, &mode);
+#endif
 	if (ret < 0) {
 		cbd_err("ERR! IOCTL_START_CP_BOOTLOADER fail\n");
 		goto exit;
