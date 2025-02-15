@@ -1,11 +1,9 @@
 soong_namespace {}
 
-cc_defaults {
-    name: "cbd_v3.defaults",
-    static_executable: false,
+cc_binary {
+    name: "cbd",
     proprietary: true,
     cpp_std: "c++17",
-    stem: "cbd",
 
     include_dirs: [
         "bionic/libc/bionic",
@@ -17,7 +15,14 @@ cc_defaults {
         "-D_GNU_SOURCE",
         "-DCONFIG_TYPE_MODAP",
         "-DCONFIG_TYPE_EXT",
-    ],
+    ] + select(soong_config_variable("cbd", "protocol"), {
+        "sit": ["-DCONFIG_PROTOCOL_SIT"],
+        "sipc": ["-DCONFIG_SEC_CP_VERIFYING_ALL"],
+        default: [],
+    }) + select(soong_config_variable("cbd", "use_legacy_ioctl"), {
+        "true": ["-DLEGACY_IOCTL"],
+        default: [],
+    }),
 
     srcs: [
         "main.cpp",
@@ -29,7 +34,17 @@ cc_defaults {
         "Srinfo.cpp",
         "Util.cpp",
         "Log.cpp",
-    ],
+    ] + select(soong_config_variable("cbd", "protocol"), {
+        "sit": [
+            "ProtocolSit.cpp",
+            "SrinfoSit2.cpp",
+        ],
+        "sipc": [
+            "ProtocolSipc.cpp",
+            "SrinfoSipc.cpp",
+        ],
+        default: [],
+    }),
 
     shared_libs: [
         "liblog",
@@ -39,48 +54,14 @@ cc_defaults {
     ],
 }
 
-cc_defaults {
-    name: "cbd_v3.sit.defaults",
-    defaults: ["cbd_v3.defaults"],
-    cflags: [
-        "-DCONFIG_PROTOCOL_SIT",
-    ],
-    srcs: [
-        "ProtocolSit.cpp",
-        "SrinfoSit2.cpp",
-    ],
-}
-
 cc_binary {
-    name: "cbd_v3.sit",
-    defaults: ["cbd_v3.sit.defaults"],
-}
-
-cc_binary {
-    name: "cbd_v3.sit.legacy",
-    defaults: ["cbd_v3.sit.defaults"],
-    cflags: [
-        "-DLEGACY_IOCTL",
-    ],
-}
-cc_binary {
-    name: "cbd_v3.sipc",
-    defaults: ["cbd_v3.defaults"],
-    cflags: [
-        "-DCONFIG_SEC_CP_VERIFYING_ALL",
-    ],
-    srcs: [
-        "ProtocolSipc.cpp",
-        "SrinfoSipc.cpp",
-    ],
-}
-
-cc_defaults {
-    name: "cld_v3.defaults",
+    name: "cld",
     static_executable: false,
     proprietary: true,
     stem: "cld",
 
+    srcs: ["lb_main.c"],
+    
     include_dirs: ["bionic/libc/bionic"],
 
     shared_libs: [
@@ -88,14 +69,4 @@ cc_defaults {
         "libcutils",
         "libc",
     ],
-}
-
-cc_binary {
-    name: "cld_v3.sit",
-    defaults: ["cld_v3.defaults"],
-}
-cc_binary {
-    name: "cld_v3.sipc",
-    defaults: ["cld_v3.defaults"],
-    srcs: ["lb_main.c"],
 }
