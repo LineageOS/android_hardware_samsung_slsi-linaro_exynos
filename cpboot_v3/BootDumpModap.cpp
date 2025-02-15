@@ -192,10 +192,10 @@ int BootDumpModap::boot()
 		cbd_info("ERR! security check fail for BOOT/MAIN\n");
 		goto exit;
 	}
-#endif
 
 	/* set SIM configuration using /efs/factory.prop */
 	set_sim_configuration();
+#endif
 
 	cbd_info("Start CP bootloader\n");
 	ret = std_boot_start_cp_bootloader(CP_BOOT_MODE_NORMAL);
