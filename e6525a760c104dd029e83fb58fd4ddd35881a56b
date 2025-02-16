@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e5f7c1eb_be26c5cb",
+        "filename": "cpboot_v3/Type.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 17401
+      },
+      "writtenOn": "2025-02-16T10:02:52Z",
+      "side": 1,
+      "message": "this ifdef seems unnecessary? neither the struct nor the code calling the ioctl changed",
+      "revId": "e6525a760c104dd029e83fb58fd4ddd35881a56b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5489a081_e6f164b6",
+        "filename": "cpboot_v3/Type.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 17401
+      },
+      "writtenOn": "2025-02-16T10:02:52Z",
+      "side": 1,
+      "message": "this ifdef seems unnecessary? neither the struct nor the code calling the ioctl changed",
+      "revId": "e6525a760c104dd029e83fb58fd4ddd35881a56b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
