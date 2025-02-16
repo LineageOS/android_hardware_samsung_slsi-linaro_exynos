@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8f699807_ed0e2e37",
+        "filename": "cpboot_v3/Type.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 25925
+      },
+      "writtenOn": "2025-02-16T10:30:34Z",
+      "side": 1,
+      "message": "The difference is that here the ioctl is defined without any parameters, resulting in a different magic number. Without this change it\u0027d give -EINVAL.",
+      "parentUuid": "e5f7c1eb_be26c5cb",
+      "revId": "e6525a760c104dd029e83fb58fd4ddd35881a56b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5489a081_e6f164b6",
         "filename": "cpboot_v3/Type.h",
         "patchSetId": 1
@@ -31,6 +49,24 @@
       "writtenOn": "2025-02-16T10:02:52Z",
       "side": 1,
       "message": "this ifdef seems unnecessary? neither the struct nor the code calling the ioctl changed",
+      "revId": "e6525a760c104dd029e83fb58fd4ddd35881a56b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8fd12814_f8828121",
+        "filename": "cpboot_v3/Type.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 25925
+      },
+      "writtenOn": "2025-02-16T10:30:34Z",
+      "side": 1,
+      "message": "Same as above.",
+      "parentUuid": "5489a081_e6f164b6",
       "revId": "e6525a760c104dd029e83fb58fd4ddd35881a56b",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
