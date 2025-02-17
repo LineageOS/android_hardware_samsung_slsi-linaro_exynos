@@ -1,0 +1,76 @@
+//
+// Copyright (C) The LineageOS Project
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+soong_namespace {
+    imports: [
+        "hardware/samsung_slsi-linaro/exynos/tee/kinibi520",
+        "hardware/samsung_slsi-linaro/exynos/tee/kinibi510",
+        "hardware/samsung_slsi-linaro/exynos/tee/kinibi500",
+        "hardware/samsung_slsi-linaro/exynos/tee/kinibi410",
+    ],
+}
+
+soong_config_module_type {
+    name: "gatekeeper_cc_library_shared",
+    module_type: "cc_library_shared",
+    config_namespace: "ANDROID",
+    value_variables: ["target_board_platform"],
+    properties: [
+        "name",
+    ],
+}
+
+gatekeeper_cc_library_shared {
+    name: "gatekeeper.target_board_platform",
+    relative_install_path: "hw",
+    proprietary: true,
+
+    srcs: [
+      "src/*.cpp",
+      "src/*.c"
+    ],
+
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wmissing-field-initializers",
+        "-Wunused-parameter",
+        "-DUSE_VENDOR_PARTITION"
+    ],
+    cppflags: ["-std=c++11"] + [
+        "-fpermissive",
+        "-Wall",
+        "-Werror",
+        "-D__STDC_LIMIT_MACROS",
+        "-D__FAILURE_RECORD_STORAGE_IN_SECURE_OBJECT__"
+    ],
+
+    local_include_dirs: ["include"],
+
+    include_dirs: [
+      "hardware/libhardware/include/",
+      "system/core/libsystem/include/",
+      "system/core/libcutils/include_outside_system/"
+    ],
+
+    shared_libs: [
+        "liblog",
+        "libcutils",
+        "libutils",
+        "libdl",
+        "libgatekeeper",
+        "libMcClient"
+    ],
+
+  soong_config_variables: {
+        target_board_platform: {
+            name: "gatekeeper.%s",
+            conditions_default: {
+                name: "gatekeeper.target_board_platform",
+            },
+        },
+    },
+}
