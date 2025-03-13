@@ -19,8 +19,8 @@ bool debugLogEnable = true;
 
 int main(int argc, char *argv[])
 {
-	string confPath = "/vendor/exynos-thermal.conf";
-	string envPath = "/vendor/exynos-thermal.env";
+	string confPath = "/vendor/etc/exynos-thermal.conf";
+	string envPath = "/vendor/etc/exynos-thermal.env";
 
 	if (argc == 2) {
 		string arg(argv[1]);
