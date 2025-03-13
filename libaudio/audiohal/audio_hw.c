@@ -28,6 +28,7 @@
 #include <log/log.h>
 #include <cutils/str_parms.h>
 #include <cutils/sched_policy.h>
+#include <cutils/properties.h>
 
 #include "audio_hw.h"
 #include "audio_tables.h"
@@ -992,9 +993,22 @@ static bool adev_init_route(struct audio_device *adev)
     }
 
     if (use_default) {
-        memset(mixer_path, 0, MAX_MIXER_LENGTH);
-        strcpy(mixer_path, DEFAULT_MIXER_PATH);
-        strcat(mixer_path, DEFAULT_MIXER_FILE);
+        bool use_carrier_config = false;
+        char carrier_property[PROPERTY_VALUE_MAX];
+        if(property_get("ro.carrier", carrier_property, "") > 0){
+            memset(mixer_path, 0, MAX_MIXER_LENGTH);
+            strcpy(mixer_path, DEFAULT_MIXER_PATH);
+            strcat(mixer_path, "mixer_paths.");
+            strcat(mixer_path, carrier_property);
+            strcat(mixer_path, ".xml");
+            if (access(mixer_path, 0) == 0)
+                use_carrier_config = true;
+        }
+        else {
+            memset(mixer_path, 0, MAX_MIXER_LENGTH);
+            strcpy(mixer_path, DEFAULT_MIXER_PATH);
+            strcat(mixer_path, DEFAULT_MIXER_FILE);
+        }
 
         ALOGI("proxy-%s: no mixer_info or there is error, will use default mixer file(%s)",
                          __func__, mixer_path);
