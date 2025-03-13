@@ -209,6 +209,7 @@ int main(int argc, char* args[]) {
         registry_paths.push_back("/data/vendor/mcRegistry");
         registry_paths.push_back("/vendor/app/mcRegistry");
         registry_paths.push_back("/system/app/mcRegistry");
+        registry_paths.push_back("/vendor/firmware/mcRegistry");
     }
     setSearchPaths(registry_paths);
     LOG_I("Registry search paths:");

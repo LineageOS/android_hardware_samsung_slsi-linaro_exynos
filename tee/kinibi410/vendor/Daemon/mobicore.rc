@@ -10,7 +10,7 @@ on property:vold.decrypt=trigger_restart_framework
     mkdir /mnt/vendor/persist/mobicore 0775 system drmrpc
     mkdir /data/vendor/mcRegistry 0775 system drmrpc
 
-service mobicore /vendor/bin/mcDriverDaemon -r FFFFFFFF000000000000000000000001 -r /vendor/app/mcRegistry/FFFFFFFFD00000000000000000000016.tlbin
+service mobicore /vendor/bin/mcDriverDaemon -r FFFFFFFF000000000000000000000001 -r /vendor/firmware/mcRegistry/FFFFFFFFD00000000000000000000016.tlbin
     user drmrpc
     group system drmrpc
     class core
