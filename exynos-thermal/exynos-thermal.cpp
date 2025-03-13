@@ -15,12 +15,34 @@
  */
 
 #include "exynos-thermal.h"
+#include <cutils/properties.h>
 bool debugLogEnable = true;
 
 int main(int argc, char *argv[])
 {
 	string confPath = "/vendor/etc/exynos-thermal.conf";
 	string envPath = "/vendor/etc/exynos-thermal.env";
+	char carrier_property[PROPERTY_VALUE_MAX] = {0};
+	char device_property[PROPERTY_VALUE_MAX] = {0};
+	char real_config_path[50] = {0};
+
+	if (property_get("ro.boot.device", device_property, "") > 0) {
+		if (strlen(device_property) > 0) {
+			if(property_get("ro.carrier", carrier_property, "") > 0) {
+				if (strlen(carrier_property) > 0) {
+					memset(real_config_path, 0, 50);
+					sprintf(real_config_path,"/vendor/exynos-thermal-%s-%s.conf", device_property, carrier_property);
+					if (access(real_config_path, 0) == 0)
+						confPath = real_config_path;
+				}
+			} else {
+				memset(real_config_path, 0, 50);
+				sprintf(real_config_path,"/vendor/exynos-thermal-%s.conf", device_property);
+				if (access(real_config_path, 0) == 0)
+					confPath = real_config_path;
+			}
+		}
+	}
 
 	if (argc == 2) {
 		string arg(argv[1]);
