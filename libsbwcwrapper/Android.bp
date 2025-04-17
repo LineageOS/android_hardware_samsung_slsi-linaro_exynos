@@ -14,73 +14,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-soong_config_module_type {
-    name: "libsbwcwrapper_cc_defaults",
-    module_type: "cc_defaults",
-    config_namespace: "sbwcwrapper",
-    variables: [ "sbwcwrapper_priority", ],
-    properties: [ "cflags", ],
-}
-
-soong_config_string_variable {
-    name: "sbwcwrapper_priority",
-    values: [
-        "mscl",
-        "dpuMscl",
-    ],
-}
-
-libsbwcwrapper_cc_defaults {
-    name: "libsbwcwrapper_defaults",
-    soong_config_variables: {
-        sbwcwrapper_priority: {
-            mscl: {
-                cflags: ["-DLIBSBWC_DECODER_PRIORITY=\"Mscl\""],
-            },
-            dpuMscl: {
-                cflags: ["-DLIBSBWC_DECODER_PRIORITY=\"DpuMscl\""],
-            },
-            conditions_default: {
-                cflags: ["-DLIBSBWC_DECODER_PRIORITY=\"Dummy\""],
-            },
-        },
-    },
-}
-
-soong_config_module_type {
-    name: "libsbwcdpu_cc_defaults",
-    module_type: "cc_defaults",
-    config_namespace: "sbwcdpu",
-    bool_variables: ["enabled"],
-    properties: ["cflags", "static_libs"],
-}
-
-soong_config_bool_variable {
-    name: "enabled",
-}
-
-libsbwcdpu_cc_defaults {
-    name:"sbwcdpu_defaults",
-    soong_config_variables: {
-        enabled: {
-            cflags: ["-DLIBSBWC_DPU_ENABLED"],
-            static_libs: ["libsbwc-dpu"],
-	},
-    },
-}
-
 cc_library_shared {
 
-    cflags: ["-DLOG_TAG=\"sbwcwrapper\""],
     name: "libsbwcwrapper",
 
     proprietary: true,
 
     defaults: [
-        "sbwcdpu_defaults",
-        "libsbwcwrapper_defaults",
         "libexynos_headers_c2_defaults",
     ],
+
+    cflags: [
+        "-DLOG_TAG=\"sbwcwrapper\"",
+    ] + select(soong_config_variable("sbwcwrapper", "sbwcwrapper_priority"), {
+        "mscl": ["-DLIBSBWC_DECODER_PRIORITY=\"Mscl\""],
+        "dpuMscl": ["-DLIBSBWC_DECODER_PRIORITY=\"DpuMscl\""],
+        default: ["-DLIBSBWC_DECODER_PRIORITY=\"Dummy\""],
+    }) + select(soong_config_variable("sbwcdpu", "enabled"), {
+        true: ["-DLIBSBWC_DPU_ENABLED"],
+        default: [],
+    }),
 
     shared_libs: [
         "liblog",
@@ -95,7 +48,11 @@ cc_library_shared {
     ],
     static_libs: [
         "libsbwc",
-    ],
+    ] + select(soong_config_variable("sbwcdpu", "enabled"), {
+        true: ["libsbwc-dpu"],
+        default: [],
+    }),
+
     header_libs: ["libexynos_headers"],
 
     export_include_dirs: ["include"],
