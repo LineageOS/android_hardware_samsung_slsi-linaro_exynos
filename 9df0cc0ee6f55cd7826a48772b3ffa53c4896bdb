@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b196dbd7_d3103a8f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 34512
+      },
+      "writtenOn": "2025-05-02T21:35:49Z",
+      "side": 1,
+      "message": "will likely be able to drop all kernel specific headers later for device specific ones",
+      "revId": "9df0cc0ee6f55cd7826a48772b3ffa53c4896bdb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
