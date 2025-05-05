@@ -16,6 +16,24 @@
       "message": "(please make sure to CR when you\u0027re ready for merge, and V+ to state it was built/tested)",
       "revId": "899921ec27c9dbfe709f92c6ba88167101de0097",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f2eec1f8_c4266187",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 34207
+      },
+      "writtenOn": "2025-05-05T09:18:43Z",
+      "side": 1,
+      "message": "Waiting for someone to test, as i can\u0027t test on my device.",
+      "parentUuid": "d0578f17_5ced4851",
+      "revId": "899921ec27c9dbfe709f92c6ba88167101de0097",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
