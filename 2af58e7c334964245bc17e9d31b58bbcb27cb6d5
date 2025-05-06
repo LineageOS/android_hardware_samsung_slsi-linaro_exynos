@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "39a566af_c96c866e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2025-05-06T18:55:53Z",
+      "side": 1,
+      "message": "a. merge conflict\nb. I have no device I can test this on\n\nSo I\u0027ll need external V+.",
+      "revId": "2af58e7c334964245bc17e9d31b58bbcb27cb6d5",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
