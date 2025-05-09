@@ -16,6 +16,23 @@
       "message": "No official devices use this lib, and only some 2021 and newer ones have it on stock. I\u0027m not sure if it\u0027s even needed.",
       "revId": "d1e2cd962d2774427c6941731d1d2ce10fcee0fe",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e7f8f058_ace9d58b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2025-05-09T00:14:22Z",
+      "side": 1,
+      "message": "the lets just drop this?",
+      "revId": "d1e2cd962d2774427c6941731d1d2ce10fcee0fe",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
