@@ -1,14 +1,5 @@
-cc_defaults {
-	name: "exynos_bootctrl_1.2_defaults",
-
-	relative_install_path: "hw",
-	vendor: true,
-	recovery_available: true,
-}
-
 cc_library_static {
 	name: "exynos_bootctrl_1.2_lib",
-	defaults: ["exynos_bootctrl_1.2_defaults"],
 	static_libs: [
 		"exsl.v1_2.defaults",
 		"lib_exbc.v1",
@@ -37,4 +28,7 @@ cc_library_static {
 	srcs: [
 		"exynos_bootctrl.cpp"
 	],
+	relative_install_path: "hw",
+	vendor: true,
+	recovery_available: true,
 }

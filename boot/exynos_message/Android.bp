@@ -1,5 +1,5 @@
-cc_defaults {
-	name: "lib_exynos_message_defaults",
+cc_library_static {
+	name: "lib_exynos_message",
 	srcs: [
 		"exynos_message.cpp"
 	],
@@ -17,13 +17,6 @@ cc_defaults {
 	],
 	export_include_dirs: [
 		"include",
-	],
-}
-
-cc_library_static {
-	name: "lib_exynos_message",
-	defaults: [
-		"lib_exynos_message_defaults",
 	],
 	relative_install_path: "hw",
 	vendor: true,
