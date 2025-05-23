@@ -6,11 +6,13 @@ cc_library_shared {
         "jni/*.cpp",
     ],
 
-    cflags: ["-fvisibility=hidden"] + ["-DTBASE_API_LEVEL=9"] + [
+    cpp_std: "c++11",
+    cflags: [
+        "-fvisibility=hidden",
+        "-DTBASE_API_LEVEL=9",
         "-Wall",
         "-Wextra",
         "-Werror",
-    ] + ["-std=c++11"] + [
         "-DLOG_ANDROID",
         "-DDYNAMIC_LOG",
     ],
@@ -21,10 +23,6 @@ cc_library_shared {
         "jni",
     ],
 
-    // ANDROIDMK TRANSLATION ERROR: unsupported non-const variable name
-    // LOCAL_SRC_FILES := $(FILE_LIST:$(LOCAL_PATH)/%=%)
-
-    //host_ldlibs: ["-llog"],
     shared_libs: [
         "liblog",
         "libnativehelper",
@@ -45,7 +43,6 @@ java_library {
     },
     srcs: ["java/**/*.java"],
 
-    //certificate: "platform",
     dex_preopt: {
         enabled: false,
     },

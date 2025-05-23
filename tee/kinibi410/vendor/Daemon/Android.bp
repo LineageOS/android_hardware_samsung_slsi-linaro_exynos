@@ -1,27 +1,27 @@
 cc_library_shared {
-	name: "libMcRegistry",
-	proprietary: true,
+    name: "libMcRegistry",
+    proprietary: true,
 
-	cflags: [
+    cflags: [
         "-Wall",
         "-Wextra",
         "-Werror",
     ],
 
-	local_include_dirs: ["include"],
-	shared_libs: [
-		"liblog",
-		"libMcClient",
-	],
+    local_include_dirs: ["include"],
+    shared_libs: [
+        "liblog",
+        "libMcClient",
+    ],
 
-	srcs: [
+    srcs: [
         "src/registry_log.cpp",
         "src/Connection.cpp",
         "src/Registry.cpp",
     ],
 
-	export_include_dirs: [
-         "include",
+    export_include_dirs: [
+        "include",
     ],
 }
 
@@ -29,25 +29,29 @@ cc_binary {
     name: "mcDriverDaemon",
     proprietary: true,
 
-    cflags: ["-DTBASE_API_LEVEL=5"] + [
+    cflags: [
+        "-DTBASE_API_LEVEL=5",
         "-Wall",
         "-Wextra",
         "-Werror",
-		"-Wno-type-limits",
-    ] + ["-std=c++11"] + [
+        "-Wno-type-limits",
+        "-std=c++11",
         "-DLOG_ANDROID",
         "-DDYNAMIC_LOG",
     ],
 
-	init_rc: ["mobicore.rc"],
+    init_rc: ["mobicore.rc"],
 
     local_include_dirs: ["include"],
-    static_libs: ["libc++_static", "libMcClient_static"],
+    static_libs: [
+        "libc++_static",
+        "libMcClient_static",
+    ],
 
     shared_libs: [
-		"liblog",
-		"libcutils",
-	],
+        "liblog",
+        "libcutils",
+    ],
 
     srcs: [
         "src/daemon_log.cpp",

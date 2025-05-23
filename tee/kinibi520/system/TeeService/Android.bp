@@ -45,7 +45,7 @@ cc_library_static {
         "-Wall",
         "-Wextra",
         "-Werror",
-        "-DTBASE_API_LEVEL=11"
+        "-DTBASE_API_LEVEL=11",
     ],
 
     header_libs: [
@@ -83,7 +83,7 @@ cc_library_shared {
         "-Wall",
         "-Wextra",
         "-Werror",
-        "-DTBASE_API_LEVEL=11"
+        "-DTBASE_API_LEVEL=11",
     ],
 
     header_libs: [

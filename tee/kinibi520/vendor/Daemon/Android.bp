@@ -17,7 +17,7 @@ cc_binary {
     ],
 
     local_include_dirs: [
-        "include"
+        "include",
     ],
 
     shared_libs: [
@@ -73,5 +73,5 @@ cc_library_shared {
 
     export_header_lib_headers: [
         "trustonic-api-headers",
-    ]
+    ],
 }

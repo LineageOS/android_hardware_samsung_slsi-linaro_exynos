@@ -28,21 +28,21 @@ cc_defaults {
     relative_install_path: "hw",
     vendor: true,
     srcs: [
-            "src/service.cpp",
-            "src/authlist.cpp",
-            "src/cust_tee_keymaster_impl.cpp",
-            "src/cust_tee_keymaster_utils.cpp",
-            "src/km_encodings.cpp",
-            "src/km_shared_util.cpp",
-            "src/serialization.cpp",
-            "src/tlcTeeKeymaster_if.cpp",
-            "src/TrustonicKeymaster4DeviceImpl.cpp",
-            "src/TrustonicKeymaster4Device.cpp",
-            //ExySp
-            "src/exynos_ssp_hwctl.cpp"
+        "src/service.cpp",
+        "src/authlist.cpp",
+        "src/cust_tee_keymaster_impl.cpp",
+        "src/cust_tee_keymaster_utils.cpp",
+        "src/km_encodings.cpp",
+        "src/km_shared_util.cpp",
+        "src/serialization.cpp",
+        "src/tlcTeeKeymaster_if.cpp",
+        "src/TrustonicKeymaster4DeviceImpl.cpp",
+        "src/TrustonicKeymaster4Device.cpp",
+        //ExySp
+        "src/exynos_ssp_hwctl.cpp",
     ],
     local_include_dirs: [
-         "include"
+        "include",
     ],
     shared_libs: [
         "libbase",
@@ -53,7 +53,7 @@ cc_defaults {
         "liblog",
         "libutils",
         "libMcClient",
-        "libcrypto"
+        "libcrypto",
     ],
 }
 

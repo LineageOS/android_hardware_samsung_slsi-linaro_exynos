@@ -29,8 +29,8 @@ gatekeeper_cc_library_shared {
     proprietary: true,
 
     srcs: [
-      "src/*.cpp",
-      "src/*.c"
+        "src/*.cpp",
+        "src/*.c",
     ],
 
     cflags: [
@@ -38,22 +38,22 @@ gatekeeper_cc_library_shared {
         "-Werror",
         "-Wmissing-field-initializers",
         "-Wunused-parameter",
-        "-DUSE_VENDOR_PARTITION"
     ],
-    cppflags: ["-std=c++11"] + [
+    cpp_std: "c++11",
+    cppflags: [
         "-fpermissive",
         "-Wall",
         "-Werror",
         "-D__STDC_LIMIT_MACROS",
-        "-D__FAILURE_RECORD_STORAGE_IN_SECURE_OBJECT__"
+        "-D__FAILURE_RECORD_STORAGE_IN_SECURE_OBJECT__",
     ],
 
     local_include_dirs: ["include"],
 
     include_dirs: [
-      "hardware/libhardware/include/",
-      "system/core/libsystem/include/",
-      "system/core/libcutils/include_outside_system/"
+        "hardware/libhardware/include/",
+        "system/core/libsystem/include/",
+        "system/core/libcutils/include_outside_system/",
     ],
 
     shared_libs: [
@@ -62,10 +62,10 @@ gatekeeper_cc_library_shared {
         "libutils",
         "libdl",
         "libgatekeeper",
-        "libMcClient"
+        "libMcClient",
     ],
 
-  soong_config_variables: {
+    soong_config_variables: {
         target_board_platform: {
             name: "gatekeeper.%s",
             conditions_default: {

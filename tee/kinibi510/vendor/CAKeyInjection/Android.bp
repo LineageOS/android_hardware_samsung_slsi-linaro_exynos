@@ -4,16 +4,16 @@ cc_binary {
 
     srcs: [
         "src/*.c",
-        "src/*.cpp"
+        "src/*.cpp",
     ],
 
     local_include_dirs: [
-        "src"
+        "src",
     ],
 
     shared_libs: [
         "liblog",
-        "libMcClient"
+        "libMcClient",
     ],
 
     cflags: [
@@ -22,6 +22,6 @@ cc_binary {
         "-Wextra",
         "-DLOG_ANDROID",
         "-DTBASE_API_LEVEL=11",
-        "-DLOG_TAG=\"caKeyInjectionTool\""
-    ]
+        "-DLOG_TAG=\"caKeyInjectionTool\"",
+    ],
 }

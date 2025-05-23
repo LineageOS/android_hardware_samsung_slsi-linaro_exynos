@@ -16,8 +16,14 @@ cc_binary {
         "-Wall",
         "-Wextra",
         "-Werror",
-    ] + ["-DTBASE_API_LEVEL=11"] + ["-DLOG_ANDROID"] + ["-DLOG_TAG=\"caKeyInjectionTool\""], // Enable logging to logcat by default
+        "-DTBASE_API_LEVEL=11",
+        "-DLOG_ANDROID", // Enable logging to logcat by default
+        "-DLOG_TAG=\"caKeyInjectionTool\"",
+    ],
 
-    shared_libs: ["libMcClient"] + ["liblog"],
+    shared_libs: [
+        "libMcClient",
+        "liblog",
+    ],
 
 }

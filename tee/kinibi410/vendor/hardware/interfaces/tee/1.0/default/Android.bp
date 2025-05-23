@@ -29,7 +29,7 @@ cc_library_static {
         "-Wall",
         "-Wextra",
         "-Werror",
-        "-DTBASE_API_LEVEL=5"
+        "-DTBASE_API_LEVEL=5",
     ],
 }
 

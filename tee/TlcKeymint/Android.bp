@@ -31,7 +31,7 @@ soong_namespace {
     imports: [
         "hardware/samsung_slsi-linaro/exynos/tee/kinibi520",
         "hardware/samsung_slsi-linaro/exynos/tee/kinibi510",
-        "hardware/samsung_slsi-linaro/exynos/tee/kinibi500"
+        "hardware/samsung_slsi-linaro/exynos/tee/kinibi500",
     ],
 }
 
@@ -53,7 +53,7 @@ cc_defaults {
         "src/tlcKeymint_if.cpp",
         "src/TrustonicKeymintDeviceImpl.cpp",
         //ExySp
-        "src/exynos_ssp_hwctl.cpp"
+        "src/exynos_ssp_hwctl.cpp",
     ],
     shared_libs: [
         "libhidlbase",
@@ -74,15 +74,16 @@ cc_defaults {
         "trustonic-api-headers",
     ],
     local_include_dirs: [
-     "include",
+        "include",
     ],
 }
 
 cc_binary {
     name: "android.hardware.security.keymint@1.0_tee-service",
     relative_install_path: "hw",
-    defaults: ["hidl_defaults",
-	"libkeymint.trustonic.default",
+    defaults: [
+        "hidl_defaults",
+        "libkeymint.trustonic.default",
     ],
     init_rc: ["android.hardware.security.keymint@1.0_tee-service.rc"],
 
@@ -108,6 +109,6 @@ cc_binary {
         "trustonic-api-headers",
     ],
     required: [
-	"android.hardware.hardware_keystore.xml",
+        "android.hardware.hardware_keystore.xml",
     ],
 }
