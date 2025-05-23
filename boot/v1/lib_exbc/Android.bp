@@ -1,5 +1,5 @@
-cc_defaults {
-	name: "lib_exbc.v1.defaults",
+cc_library_static {
+	name: "lib_exbc.v1",
 	srcs: [
 		"lib_exbc.cpp"
 	],
@@ -19,13 +19,6 @@ cc_defaults {
 	],
 	export_include_dirs: [
 		"include",
-	],
-}
-
-cc_library_static {
-	name: "lib_exbc.v1",
-	defaults: [
-		"lib_exbc.v1.defaults",
 	],
 	relative_install_path: "hw",
 	vendor: true,

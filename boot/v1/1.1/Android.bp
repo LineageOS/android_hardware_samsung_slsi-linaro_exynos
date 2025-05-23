@@ -15,6 +15,16 @@ cc_defaults {
 	static_libs: [
 		"libfstab",
 		"exynos_bootctrl_1.1_lib",
+		"exsl.v1_1.defaults",
+		"lib_exynos_message",
+		"lib_exbc.v1",
+	],
+	relative_install_path: "hw",
+	vendor: true,
+	recovery_available: true,
+
+	srcs: [
+		"BootControl.cpp"
 	],
 }
 
@@ -22,37 +32,9 @@ cc_library_shared {
 	name: "android.hardware.boot@1.1-impl-exynos",
 	stem: "android.hardware.boot@1.0-impl-1.1-exynos",
 	defaults: ["bootctrl@1.1.defaults"],
-
-	relative_install_path: "hw",
-	vendor: true,
-	recovery_available: true,
-
-	static_libs: [
-		"exsl.v1_1.defaults",
-		"lib_exynos_message",
-		"lib_exbc.v1",
-	],
-
-    srcs: [
-		"BootControl.cpp"
-	],
 }
 
 cc_library_shared {
 	name: "android.hardware.boot@1.1-impl-exynos-type2",
 	defaults: ["bootctrl@1.1.defaults"],
-
-	relative_install_path: "hw",
-	vendor: true,
-	recovery_available: true,
-
-	static_libs: [
-		"exsl.v1_1.defaults",
-		"lib_exynos_message",
-		"lib_exbc.v1",
-	],
-
-	srcs: [
-		"BootControl.cpp"
-	],
 }

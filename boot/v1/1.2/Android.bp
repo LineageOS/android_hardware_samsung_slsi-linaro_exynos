@@ -1,8 +1,14 @@
-cc_defaults {
-	name: "bootctrl@1.2.defaults",
+cc_library_shared {
+	name: "android.hardware.boot@1.2-impl-exynos",
+	stem: "android.hardware.boot@1.0-impl-1.2-exynos",
 	defaults: [
-		"hidl_defaults",
+		"hidl_defaults"
 	],
+
+	relative_install_path: "hw",
+	vendor: true,
+	recovery_available: true,
+
 	shared_libs: [
 		"liblog",
 		"libbase",
@@ -14,24 +20,11 @@ cc_defaults {
 		"android.hardware.boot@1.2",
 	],
 	static_libs: [
-		"libfstab",
-		"exynos_bootctrl_1.2_lib",
-	],
-}
-
-cc_library_shared {
-	name: "android.hardware.boot@1.2-impl-exynos",
-	stem: "android.hardware.boot@1.0-impl-1.2-exynos",
-	defaults: ["bootctrl@1.2.defaults"],
-
-	relative_install_path: "hw",
-	vendor: true,
-	recovery_available: true,
-
-	static_libs: [
 		"exsl.v1_2.defaults",
+		"exynos_bootctrl_1.2_lib",
 		"lib_exynos_message",
 		"lib_exbc.v1",
+		"libfstab",
 	],
 
     srcs: [
