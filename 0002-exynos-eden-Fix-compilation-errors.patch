@@ -1,0 +1,64 @@
+From 65065387bf4e77e204d90567b43d32c81a81400c Mon Sep 17 00:00:00 2001
+From: ExtremeXT <extremext@lineageos.org>
+Date: Sun, 22 Feb 2026 21:22:37 +0200
+Subject: [PATCH 2/3] exynos: eden: Fix compilation errors
+
+Change-Id: Ie584abd387226381aa6c77851264b9a6fa6f68eb
+Signed-off-by: ExtremeXT <extremext@lineageos.org>
+---
+ eden/eden_nn_api.cpp                     | 4 ++--
+ eden_runtime/1.0/default/Edenruntime.cpp | 6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/eden/eden_nn_api.cpp b/eden/eden_nn_api.cpp
+index 1a718e1..f163d88 100644
+--- a/eden/eden_nn_api.cpp
++++ b/eden/eden_nn_api.cpp
+@@ -163,7 +163,7 @@ NnRet LoadInputBuffers(uint32_t modelId, UserBuffer* userBuffers, int32_t numOfB
+ 
+     if ((modelId == INVALID_MODEL_ID) || (userBuffers == nullptr) ||
+             (numOfBuffers == 0) || edenBuffers == nullptr) {
+-        LOGE(EDEN_NN, "Given modelId=[%d], userBuffers=[%p], numOfBuffers=[%d] is invalid! please, check argument\n", modelId, userBuffers, numOfBuffers, edenBuffers);
++        LOGE(EDEN_NN, "Given modelId=[%d], userBuffers=[%p], numOfBuffers=[%d] is invalid! please, check argument\n", modelId, userBuffers, numOfBuffers);
+         return RET_PARAM_INVALID;
+     }
+     ret = edenNN->LoadInputBuffers(modelId, userBuffers, numOfBuffers, edenBuffers);
+@@ -188,7 +188,7 @@ NnRet LoadOutputBuffers(uint32_t modelId, UserBuffer* userBuffers, int32_t numOf
+     if ((modelId == INVALID_MODEL_ID) || (userBuffers == nullptr) ||
+             (numOfBuffers == 0) || edenBuffers == nullptr) {
+         LOGE(EDEN_NN, "Given modelId=[%d], userBuffers=[%p], numOfBuffers=[%d] is invalid! please,"
+-             "check argument\n", modelId, userBuffers, numOfBuffers, edenBuffers);
++             "check argument\n", modelId, userBuffers, numOfBuffers);
+         return RET_PARAM_INVALID;
+     }
+     ret = edenNN->LoadOutputBuffers(modelId, userBuffers, numOfBuffers, edenBuffers);
+diff --git a/eden_runtime/1.0/default/Edenruntime.cpp b/eden_runtime/1.0/default/Edenruntime.cpp
+index 95a8775..419976d 100644
+--- a/eden_runtime/1.0/default/Edenruntime.cpp
++++ b/eden_runtime/1.0/default/Edenruntime.cpp
+@@ -250,7 +250,7 @@ void processAliveMointorMain() {
+                         int64_t pid = iter->first;
+                         auto pidData = iter->second;
+ 
+-                        LOGI(EDEN_HIDL, "Try to check pid=(%lld)...\n", pid);
++                        LOGI(EDEN_HIDL, "Try to check pid=(%ld)...\n", pid);
+                         //if (CheckCallerIsAlive(pid) {
+                         if (IsValidPID(pid) == true) {
+                             // Keep alive pid data
+@@ -454,11 +454,11 @@ class EdenruntimeDeathRecipient : public android::hardware::hidl_death_recipient
+     EdenruntimeDeathRecipient(const sp<IEdenruntime> rt) : mRt_(rt), has_died_(false) {}
+ 
+     virtual void serviceDied(uint64_t cookie, const android::wp<::android::hidl::base::V1_0::IBase>& /*who*/) {
+-        LOGI(EDEN_HIDL, "(Not service)User Process of cookie[pid=%llu] DIED \n", cookie);
++        LOGI(EDEN_HIDL, "(Not service)User Process of cookie[pid=%lu] DIED \n", cookie);
+         has_died_ = true;
+         // Clean up resources
+         int64_t pid = (int64_t)cookie;
+-        LOGD(EDEN_HIDL, "Set mapPidAlive[%lld] to false\n", pid);
++        LOGD(EDEN_HIDL, "Set mapPidAlive[%ld] to false\n", pid);
+         mapPidAlive[pid] = false;
+         cond_monitorThread.notify_all();
+     }
+-- 
+2.53.0
+
