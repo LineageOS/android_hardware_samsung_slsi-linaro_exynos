@@ -16,6 +16,11 @@
  */
 
 cc_library_shared {
+    name: "libeden_profiler",
+    vendor: true,
+}
+
+cc_library_shared {
     name: "vendor.samsung_slsi.hardware.eden_runtime@1.0-impl",
     proprietary: true,
     srcs: ["Edenruntime.cpp"],
