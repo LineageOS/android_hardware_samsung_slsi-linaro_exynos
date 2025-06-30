@@ -8,6 +8,85 @@
 // electronic, mechanical, manual or otherwise, or disclosed
 // to third parties without the express written permission of Samsung Electronics.
 
+cc_library_shared {
+    name: "libenn_common_utils",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libenn_engine_lib",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libenn_model",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libenn_profiler",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libenn_public_api_cpp_lib",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libenn_user_driver_cpu",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libenn_user_driver_gpu_lib",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libenn_user_driver_unified",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libenn_user_lib",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libgraphgen_ann_import_s",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libcommon_graphgen_export",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libtoco_graphgen_export",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libdove_compiler",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libisa",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libisa_generator",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libncp_wrapper",
+    vendor: true,
+}
 
 cc_defaults {
    name: "enn_driver_dynamic_libs",
