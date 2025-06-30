@@ -15,6 +15,152 @@
  */
 
 /* Eden driver */
+
+cc_library_shared {
+    name: "libeden_nn",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libeden_rt",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libeden_model",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libeden_osal",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libeden_ud_cpu",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libeden_ud_npu",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libeden_ud_gpu",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libeden_xtool",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libnpuc_api",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libnpuc_backend",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libnpuc_cmdq",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libnpuc_common",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libnpuc_controller",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libnpuc_frontend",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libnpuc_graph",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libnpuc_template",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libgraphgen_api",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libgraphgen_import",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libgraphgen_ann_import",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libgraphgen_ann_nnc",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libgraphgen_misc",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libgraphgen_network",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libgraphgen_intermediate_process",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libgraphgen_export",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libcommon",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libcrane_compiler",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libir",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libnpu_compiler",
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libsait_npu_compiler",
+    vendor: true,
+}
+
 cc_defaults {
     name: "NeuralNetworksEdenDriver_defaults",
     // openmp: true,
