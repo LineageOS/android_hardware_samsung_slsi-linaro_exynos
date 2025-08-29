@@ -34,6 +34,24 @@
       "parentUuid": "e0633365_97188949",
       "revId": "2327e8e30c82d316c25af6d5a745c5db7568872c",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "25c79807_9ea46dcb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2025-08-29T22:24:24Z",
+      "side": 1,
+      "message": "I\u0027m saying set up a soong_select that lets you trigger a cflags -DUSE_LEGACY_SIPC_IOCTL or whatever",
+      "parentUuid": "c171075f_08f3f7af",
+      "revId": "2327e8e30c82d316c25af6d5a745c5db7568872c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
