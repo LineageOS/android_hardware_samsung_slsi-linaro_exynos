@@ -70,6 +70,24 @@
       "parentUuid": "25c79807_9ea46dcb",
       "revId": "2327e8e30c82d316c25af6d5a745c5db7568872c",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1487b402_3d192667",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2025-08-29T23:23:24Z",
+      "side": 1,
+      "message": "Sure, wire it up so that if the legacy flag is set, use the current handling, else if YOUR_FLAG, else the current values.\n\nSorry, on mobile, so can\u0027t type out - but think you\u0027ll get what I mean",
+      "parentUuid": "c92cbb48_248e9c3c",
+      "revId": "2327e8e30c82d316c25af6d5a745c5db7568872c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
