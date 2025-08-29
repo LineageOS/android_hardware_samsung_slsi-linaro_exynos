@@ -52,6 +52,24 @@
       "parentUuid": "c171075f_08f3f7af",
       "revId": "2327e8e30c82d316c25af6d5a745c5db7568872c",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c92cbb48_248e9c3c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 35850
+      },
+      "writtenOn": "2025-08-29T22:37:29Z",
+      "side": 1,
+      "message": "Well, there is one already. But the legacy SIPC ioctl changes a lot more of the code, not just the payload segment size, hence it will not function on 9830, I have tried it. Maybe we could make a separate config for the segment size?",
+      "parentUuid": "25c79807_9ea46dcb",
+      "revId": "2327e8e30c82d316c25af6d5a745c5db7568872c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
