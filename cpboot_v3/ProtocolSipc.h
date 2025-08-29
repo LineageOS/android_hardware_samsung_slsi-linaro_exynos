@@ -18,6 +18,9 @@
 
 #include "Protocol.h"
 
+/* Maximum Segment Size for payload */
+#define STD_UDL_MSS		(2 * 1024)
+
 struct std_udl_frame {
 	u32 cmd;
 	u32 num_frames;
