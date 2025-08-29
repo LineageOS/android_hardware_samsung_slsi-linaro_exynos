@@ -16,6 +16,24 @@
       "message": "my other question here, why are you moving the declare out of Protocol.h? You could just as well leave it there?\n\nAlso, why would you not just set up CFLag handling to set LEGACY_SIPC_IOCTL, which would solve your problem without changing the default for every other SOC?",
       "revId": "2327e8e30c82d316c25af6d5a745c5db7568872c",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c171075f_08f3f7af",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 35850
+      },
+      "writtenOn": "2025-08-29T20:39:40Z",
+      "side": 1,
+      "message": "Well I personally agree with the first point. Not sure what you mean for the second though. Do you mean to enable LEGACY_SIPC_IOCTL for our platform?",
+      "parentUuid": "e0633365_97188949",
+      "revId": "2327e8e30c82d316c25af6d5a745c5db7568872c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
