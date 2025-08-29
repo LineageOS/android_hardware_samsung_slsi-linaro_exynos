@@ -25,13 +25,6 @@
 #define CP_WDT_RESET_STR	"CP WDOG Reset"
 #define CP_CRASH_BY_STR		": CP Crash by"
 
-/* Maximum Segment Size for payload */
-#ifdef LEGACY_SIPC_IOCTL
-#define STD_UDL_MSS		(2 * 1024)
-#else
-#define STD_UDL_MSS		(16 * 1024)
-#endif
-
 /* cmd (4) + num_frames (4) + curr_frame (4) + len (4) */
 #define STD_UDL_HDR_LEN		16
 /* Maximum Transmission Unit = Header + Payload */

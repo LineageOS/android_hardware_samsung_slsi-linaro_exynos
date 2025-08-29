@@ -18,6 +18,9 @@
 
 #include "Protocol.h"
 
+/* Maximum Segment Size for payload */
+#define STD_UDL_MSS		(16 * 1024)
+
 /* Direction */
 #define MSG_AP2CP			(0xA)
 #define MSG_CP2AP			(0xC)
