@@ -159,6 +159,24 @@
       "parentUuid": "a867cbd1_ac206ba1",
       "revId": "2327e8e30c82d316c25af6d5a745c5db7568872c",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b610651e_01f3ed35",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32712
+      },
+      "writtenOn": "2025-08-30T14:01:31Z",
+      "side": 1,
+      "message": "\u003e my other question here, why are you moving the declare out of Protocol.h? You could just as well leave it there?\n\u003e\n@johnsonnolen@gmail.com Would you still prefer keeping the declaration inside Protocol.h? Imho, since the macro is indeed protocol-specific, we should move it to protocol-specific header files rather than keeping it guarded in the common protocol header.",
+      "parentUuid": "299e25cf_55d95024",
+      "revId": "2327e8e30c82d316c25af6d5a745c5db7568872c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
