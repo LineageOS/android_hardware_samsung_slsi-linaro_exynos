@@ -106,6 +106,24 @@
       "parentUuid": "1487b402_3d192667",
       "revId": "2327e8e30c82d316c25af6d5a745c5db7568872c",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a867cbd1_ac206ba1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32712
+      },
+      "writtenOn": "2025-08-30T02:23:30Z",
+      "side": 1,
+      "message": "9820 is the only platform that uses BootDumpExt with legacy sipc protocol, is what I meant. This only changes the behaviour in BootDumpExt.",
+      "parentUuid": "fc093d38_d79667e9",
+      "revId": "2327e8e30c82d316c25af6d5a745c5db7568872c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
