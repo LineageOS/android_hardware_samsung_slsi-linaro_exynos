@@ -141,6 +141,24 @@
       "message": "My device (exynos 850, which is very similar to exynos9830) used\n\n$(call soong_config_set,cbd,protocol,sipc)\n\nAnd RIL works with this change.",
       "revId": "2327e8e30c82d316c25af6d5a745c5db7568872c",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "299e25cf_55d95024",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32712
+      },
+      "writtenOn": "2025-08-30T13:40:47Z",
+      "side": 1,
+      "message": "Devices using BootDumpExt are all linked using pcie, while Modap ones are linked using shmem. So by checking the kernel defconfig, CONFIG_LINK_DEVICE_PCIE or CONFIG_LINK_DEVICE_SHMEM, we know whether the device uses Ext or Modap.\n\nIn this case I can only find 9830 family (non-legacy sipc) and 9820 5g devices (legacy sipc) using pcie (BootDumpExt), which means all sipc protocol devices that use BootDumpExt should use the smaller payload size. So we could merge this safely.",
+      "parentUuid": "a867cbd1_ac206ba1",
+      "revId": "2327e8e30c82d316c25af6d5a745c5db7568872c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
