@@ -124,6 +124,23 @@
       "parentUuid": "fc093d38_d79667e9",
       "revId": "2327e8e30c82d316c25af6d5a745c5db7568872c",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9b9c47b8_f4193d60",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 34512
+      },
+      "writtenOn": "2025-08-30T12:29:25Z",
+      "side": 1,
+      "message": "My device (exynos 850, which is very similar to exynos9830) used\n\n$(call soong_config_set,cbd,protocol,sipc)\n\nAnd RIL works with this change.",
+      "revId": "2327e8e30c82d316c25af6d5a745c5db7568872c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
