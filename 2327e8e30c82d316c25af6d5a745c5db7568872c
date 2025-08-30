@@ -88,6 +88,24 @@
       "parentUuid": "c92cbb48_248e9c3c",
       "revId": "2327e8e30c82d316c25af6d5a745c5db7568872c",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fc093d38_d79667e9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32712
+      },
+      "writtenOn": "2025-08-30T02:20:17Z",
+      "side": 1,
+      "message": "As far as I know, 9820 is the only platform that uses legacy sipc protocol and it needs the smaller payload size (I did the commit). And on 9830 we\u0027re using non-legacy sipc while the only change needed is the payload size too, so I was thinking all sipc (both legacy and non-legacy) need the change.\nThere\u0027s no official device that can verify this though. We\u0027ll try to figure this out and update accordingly.",
+      "parentUuid": "1487b402_3d192667",
+      "revId": "2327e8e30c82d316c25af6d5a745c5db7568872c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
