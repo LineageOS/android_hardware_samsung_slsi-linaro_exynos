@@ -182,6 +182,10 @@ int HAL_PIXEL_FORMAT_2_V4L2_PIX(
         v4l2_pixel_format = V4L2_PIX_FMT_NV12M_SBWCL_10B;
         break;
 
+    case HAL_PIXEL_FORMAT_EXYNOS_GREY:
+        v4l2_pixel_format = V4L2_PIX_FMT_GREY;
+        break;
+
     default:
         ALOGE("%s:: unmatched HAL_PIXEL_FORMAT color_space(0x%x)\n",
                 __func__, hal_pixel_format);
@@ -320,6 +324,10 @@ int V4L2_PIX_2_HAL_PIXEL_FORMAT(
 
     case V4L2_PIX_FMT_NV12M_SBWCL_10B:
         hal_pixel_format = HAL_PIXEL_FORMAT_EXYNOS_YCbCr_420_SP_M_10B_SBWC_L40;
+        break;
+
+    case V4L2_PIX_FMT_GREY:
+        hal_pixel_format = HAL_PIXEL_FORMAT_EXYNOS_GREY;
         break;
 
     default:
