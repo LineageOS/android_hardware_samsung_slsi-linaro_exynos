@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a950fc96_71315bae",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 34512
+      },
+      "writtenOn": "2025-09-29T13:05:16Z",
+      "side": 1,
+      "message": "Nolen was saying to keep exy linaro changes on 22.2 for now, and then they can be picked over to 23.0 afterwards",
+      "revId": "43fc08007dbd441aef659ceaa9d789fc493a06f6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7c78ebbe_dce99264",
