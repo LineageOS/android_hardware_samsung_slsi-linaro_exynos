@@ -39,6 +39,30 @@
       },
       "revId": "43fc08007dbd441aef659ceaa9d789fc493a06f6",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b6ee27f0_8510ea9e",
+        "filename": "libgdc/ExynosGDC.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2025-09-29T17:51:10Z",
+      "side": 1,
+      "message": "eh, if stock has it, lets match them and follow up if it\u0027s problematic.",
+      "parentUuid": "7c78ebbe_dce99264",
+      "range": {
+        "startLine": 65,
+        "startChar": 21,
+        "endLine": 65,
+        "endChar": 38
+      },
+      "revId": "43fc08007dbd441aef659ceaa9d789fc493a06f6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
