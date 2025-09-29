@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7c78ebbe_dce99264",
+        "filename": "libgdc/ExynosGDC.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 34207
+      },
+      "writtenOn": "2025-09-29T09:53:52Z",
+      "side": 1,
+      "message": "Is it correct to do this? Stock seems to have this logic, but i can\u0027t tell if it makes sense to write it this way.",
+      "range": {
+        "startLine": 65,
+        "startChar": 21,
+        "endLine": 65,
+        "endChar": 38
+      },
+      "revId": "43fc08007dbd441aef659ceaa9d789fc493a06f6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
