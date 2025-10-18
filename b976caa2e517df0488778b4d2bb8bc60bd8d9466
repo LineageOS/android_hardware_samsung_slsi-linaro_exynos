@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5aabdca7_adae33d5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 34207
+      },
+      "writtenOn": "2025-10-18T12:27:36Z",
+      "side": 1,
+      "message": "ExynosGDC is not used by external libraries AFAIK, so we don\u0027t have to guard that internally.",
+      "revId": "b976caa2e517df0488778b4d2bb8bc60bd8d9466",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
