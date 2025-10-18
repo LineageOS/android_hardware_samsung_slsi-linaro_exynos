@@ -45,11 +45,13 @@ ExynosGDCInterface::~ExynosGDCInterface()
 }
 
 status_t ExynosGDCInterface::create()
+#ifndef GDC_USE_OLD_FUNCTION_ALIGNMENT
 {
     return create(GDC_VIDEO_NUM);
 }
 
 status_t ExynosGDCInterface::create(int videoNum)
+#endif
 {
     GDC_LOGI("%s: Inst: 0x%p", __FUNCTION__, this);
 
