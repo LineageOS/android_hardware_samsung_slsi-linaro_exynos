@@ -33,7 +33,9 @@ class ExynosGDCInterface
         virtual ~ExynosGDCInterface();
 
         virtual status_t create();
+#ifndef USE_LEGACY_FUNCTION_ALIGNMENT
         virtual status_t create(int videoNum);
+#endif
         virtual status_t init();
         virtual status_t destroy();
 
