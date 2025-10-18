@@ -46,11 +46,15 @@ ExynosGDCInterface::~ExynosGDCInterface()
 
 status_t ExynosGDCInterface::create()
 {
+#ifndef USE_LEGACY_FUNCTION_ALIGNMENT
     return create(GDC_VIDEO_NUM);
 }
 
 status_t ExynosGDCInterface::create(int videoNum)
 {
+#else
+    int videoNum = GDC_VIDEO_NUM;
+#endif
     GDC_LOGI("%s: Inst: 0x%p", __FUNCTION__, this);
 
     m_state = E_GDC_STATE_CREATE;
