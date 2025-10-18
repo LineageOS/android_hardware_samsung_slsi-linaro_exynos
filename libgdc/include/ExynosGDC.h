@@ -57,7 +57,11 @@ public:
     ExynosGDC();
     virtual ~ExynosGDC();
 
+#ifdef GDC_USE_OLD_FUNCTION_ALIGNMENT
+    virtual status_t open();
+#else
     virtual status_t open(int videoNum);
+#endif
     virtual status_t release();
 
 public: //Data setting functions
