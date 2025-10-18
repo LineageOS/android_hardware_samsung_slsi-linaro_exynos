@@ -17,6 +17,11 @@
 cc_library_shared {
     name: "libexynosgdc",
 
+    cflags: select(soong_config_variable("libexynosgdc", "use_legacy_function_alignment"), {
+        "true": ["-DUSE_LEGACY_FUNCTION_ALIGNMENT"],
+        default: [],
+    }),
+
     srcs: [
         "ExynosGDCInterface.cpp",
         "ExynosGDC.cpp",
