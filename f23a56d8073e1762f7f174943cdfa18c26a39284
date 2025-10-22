@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6214c752_26e4a60d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 35850
+      },
+      "writtenOn": "2025-10-22T17:26:43Z",
+      "side": 1,
+      "message": "Verified on s5e9925 (r0s). Should be OK on s5e9945 as well since only ifndefs have been added.",
+      "revId": "f23a56d8073e1762f7f174943cdfa18c26a39284",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
