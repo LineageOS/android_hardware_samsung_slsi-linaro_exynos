@@ -33,6 +33,23 @@
       "message": "Would it not be more appropriate to take it from a more generic location such as the linaro kernel source here?\n\nhttps://gitlab.com/Linaro/96boards/e850-96/kernel/-/tree/v6.1?ref_type\u003dtags",
       "revId": "dc41acb268da1c188f6f32da8c711809ffa4a85e",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e27ff473_6e2d4f8a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 24387
+      },
+      "writtenOn": "2025-11-02T00:21:30Z",
+      "side": 1,
+      "message": "These headers are not strictly needed when building lineage, are used only if one builds AOSP. Nevertheless,I think it\u0027s more correct to pick these headers from a kernel source drop of an actually shipping device which is actually Building the BSP.",
+      "revId": "dc41acb268da1c188f6f32da8c711809ffa4a85e",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
