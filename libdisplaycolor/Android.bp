@@ -15,7 +15,7 @@ cc_library {
         "libutils",
     ],
     header_libs: ["libdisplaycolor_interface"],
-    cflags: ["-Werror"],
+    cflags: ["-Werror", "-DLOG_TAG=\"libdisplaycolor\"",],
 }
 
 cc_library {
