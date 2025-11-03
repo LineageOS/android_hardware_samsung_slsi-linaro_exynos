@@ -50,6 +50,24 @@
       "message": "These headers are not strictly needed when building lineage, are used only if one builds AOSP. Nevertheless,I think it\u0027s more correct to pick these headers from a kernel source drop of an actually shipping device which is actually Building the BSP.",
       "revId": "dc41acb268da1c188f6f32da8c711809ffa4a85e",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "75253d67_bfcac74f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 24387
+      },
+      "writtenOn": "2025-11-03T09:47:33Z",
+      "side": 1,
+      "message": "Actually the other big issue of this, now that I look at it, is also that it is just an upstream tag which lacks the exynos specific headers.... So it would simply not be possible.",
+      "parentUuid": "2ff86d9e_2749502c",
+      "revId": "dc41acb268da1c188f6f32da8c711809ffa4a85e",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
