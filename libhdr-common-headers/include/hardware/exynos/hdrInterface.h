@@ -68,6 +68,24 @@ struct HdrTargetInfo {
     enum HdrCapa hdr_capa;
 };
 
+struct hdrCoef {
+    unsigned int hdr_en;
+    unsigned int oetf_en;
+    unsigned int oetf_x[33];
+    unsigned int oetf_y[33];
+    unsigned int eotf_en;
+    unsigned int eotf_x[129];
+    unsigned int eotf_y[129];
+    unsigned int gm_en;
+    unsigned int gm_coef[9];
+    unsigned int tm_en;
+    unsigned int tm_coef[3];
+    unsigned int tm_rngx[2];
+    unsigned int tm_rngy[2];
+    unsigned int tm_x[33];
+    unsigned int tm_y[33];
+};
+
 struct HdrLayerInfo {
     int dataspace;
     void *static_metadata;
