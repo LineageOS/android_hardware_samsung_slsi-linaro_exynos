@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4e73ba88_cba2e292",
+        "filename": "libhdr-common-headers/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 34512
+      },
+      "writtenOn": "2025-11-07T10:53:05Z",
+      "side": 1,
+      "message": "since we already have this for the \"include/\" headers couldn\u0027t libhdrInterface_headers just get renamed to have 9630 in the name?",
+      "revId": "b217d7499acffc4f8ebcf0b12a9662aafd07b908",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
