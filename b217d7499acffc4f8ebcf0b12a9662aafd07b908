@@ -18,6 +18,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ade2c0c8_c38036ab",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 24387
+      },
+      "writtenOn": "2025-11-08T11:27:38Z",
+      "side": 1,
+      "message": "I think so. But the bp in hwc must be updated (one is libhdrinterface_header and the other one is libhdrInterface_headers). The original mk file actually was exporting exynos9630 as libhdrInterface_headers and bsp was linking to that... But I think this is wrong, it does not work for exynos 2200 and exynos 2400 at least which are using respectively IF_VER 1.1 and IF_VER 2.1.",
+      "parentUuid": "69bcba43_099e1181",
+      "revId": "b217d7499acffc4f8ebcf0b12a9662aafd07b908",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4e73ba88_cba2e292",
