@@ -36,6 +36,23 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5358c21e_a4f633d3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 34512
+      },
+      "writtenOn": "2025-11-12T17:28:31Z",
+      "side": 1,
+      "message": "so what about having a 9630 specific libhdrInterface_headers and a normal libhdrInterface_headers and then just modifying the bp in hwc accordingly?",
+      "revId": "b217d7499acffc4f8ebcf0b12a9662aafd07b908",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4e73ba88_cba2e292",
