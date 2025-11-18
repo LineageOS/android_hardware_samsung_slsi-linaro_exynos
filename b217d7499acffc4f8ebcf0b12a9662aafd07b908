@@ -53,6 +53,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "87db8e90_e59cbebd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 24387
+      },
+      "writtenOn": "2025-11-18T09:12:18Z",
+      "side": 1,
+      "message": "I think it can work, I will publish a patch set later. Devices whith newer libhdr implementation will need to implement a specific hdr wrapper which maps the new class methrods to IF_VER 1.1 (this one) class methods for having hdr to work, as I did on the 9945.",
+      "parentUuid": "5358c21e_a4f633d3",
+      "revId": "b217d7499acffc4f8ebcf0b12a9662aafd07b908",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4e73ba88_cba2e292",
