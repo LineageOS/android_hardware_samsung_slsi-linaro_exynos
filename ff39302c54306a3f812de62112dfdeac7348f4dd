@@ -16,6 +16,23 @@
       "message": "pls merge on 23.0",
       "revId": "ff39302c54306a3f812de62112dfdeac7348f4dd",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "99028818_c0da262a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2025-11-21T18:38:13Z",
+      "side": 1,
+      "message": "we will fast forward to 23.1 afterwards - no point in diverging this early before things even boot...",
+      "revId": "ff39302c54306a3f812de62112dfdeac7348f4dd",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
