@@ -16,10 +16,10 @@ sound_trigger_cc_library_shared {
     proprietary: true,
 
     cflags: select(soong_config_variable("exynos_st", "use_soundtrigger_hal_mmap"), {
-        "true": [ "-DMMAP_INTERFACE_ENABLED" ],
+        true: [ "-DMMAP_INTERFACE_ENABLED" ],
         default: [],
     }) + select(soong_config_variable("exynos_st", "use_soundtrigger_hal_2_3"), {
-        "true": [ "-DSTHAL_2_3" ],
+        true: [ "-DSTHAL_2_3" ],
         default: [],
     }),
 

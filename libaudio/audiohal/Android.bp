@@ -30,12 +30,12 @@ cc_library_shared {
     ],
 
     local_include_dirs: select(soong_config_variable("exynos_audio", "USE_SITRIL"), {
-        "true": [ "audioril-sit/include" ],
+        true: [ "audioril-sit/include" ],
         default: [ "audioril-sec/include" ],
     }),
  
     srcs: select(soong_config_variable("exynos_audio", "USE_SITRIL"), {
-        "true": [ "audioril-sit/sitril_interface.c" ],
+        true: [ "audioril-sit/sitril_interface.c" ],
         default: [ "audioril-sec/secril_interface.c" ],
     }),
 
@@ -51,16 +51,16 @@ audio_cc_library_shared {
         "-Wno-unused-variable",
         "-Wno-unused-function",
     ] + select(soong_config_variable("exynos_audio", "USE_SITRIL"), {
-        "true": ["-DUSE_SITRIL"],
+        true: ["-DUSE_SITRIL"],
         default: [],
     }) + select(soong_config_variable("exynos_audio", "SUPPORT_SPEECH_PARAM"), {
-        "true": ["-DSUPPORT_SPEECH_PARAM"],
+        true: ["-DSUPPORT_SPEECH_PARAM"],
         default: [],
     }) + select(soong_config_variable("exynos_audio", "PREDEFINED_LOW_CAPTURE_DURATION"), {
         any @ flag_val: ["-DPREDEFINED_LOW_CAPTURE_DURATION=" + flag_val],
         default: [],
     }) + select(soong_config_variable("exynos_audio", "SUPPORT_STHAL_INTERFACE"), {
-        "true": ["-DSUPPORT_STHAL_INTERFACE"],
+        true: ["-DSUPPORT_STHAL_INTERFACE"],
         default: [],
     }),
 
@@ -83,7 +83,7 @@ audio_cc_library_shared {
     ],
 
     local_include_dirs: select(soong_config_variable("exynos_audio", "USE_SITRIL"), {
-        "true": [
+        true: [
             "audioril-sit",
             "audioril-sit/include",
         ],
@@ -97,7 +97,7 @@ audio_cc_library_shared {
         "audio_hw.c",
         "factory_manager.c",
     ] + select(soong_config_variable("exynos_audio", "USE_SITRIL"), {
-        "true": [ "voice_manager_sit.c" ],
+        true: [ "voice_manager_sit.c" ],
         default: [ "voice_manager_sec.c" ],
     }),
 
