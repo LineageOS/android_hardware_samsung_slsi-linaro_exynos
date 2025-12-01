@@ -6,7 +6,7 @@ cc_library_static {
         "-Wno-unused-parameter",
         "-Wno-unused-function",
     ] + select(soong_config_variable("openmax", "USE_FULL_ST2094_40"), {
-        "true": ["-DUSE_FULL_ST2094_40"],
+        true: ["-DUSE_FULL_ST2094_40"],
         default: [],
     }),
 

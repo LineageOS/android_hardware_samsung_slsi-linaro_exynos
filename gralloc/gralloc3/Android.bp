@@ -104,7 +104,7 @@ cc_defaults {
         "-DGRALLOC_USE_ION_DMABUF_SYNC=1",
         "-DGRALLOC_HFR_BATCH_SIZE=8",
     ] + select(soong_config_variable("arm_gralloc", "uses_exynos_afbc_feature"), {
-        "true": [
+        true: [
             "-DGRALLOC_ARM_NO_EXTERNAL_AFBC=0",
             "-DGRALLOC_INIT_AFBC=1",
         ],
@@ -113,31 +113,31 @@ cc_defaults {
             "-DGRALLOC_INIT_AFBC=0",
         ],
     }) + select(soong_config_variable("arm_gralloc", "gralloc_scaler_wfd"), {
-        "true": ["-DGRALLOC_SCALER_WFD=1"],
+        true: ["-DGRALLOC_SCALER_WFD=1"],
         default: ["-DGRALLOC_SCALER_WFD=0"],
     }) + select(soong_config_variable("arm_gralloc", "gralloc_ion_handle_import"), {
-        "false": ["-DGRALLOC_ION_HANDLE_IMPORT=0"],
+        false: ["-DGRALLOC_ION_HANDLE_IMPORT=0"],
         default: ["-DGRALLOC_ION_HANDLE_IMPORT=1"],
     }) + select(soong_config_variable("arm_gralloc", "uses_align_restriction"), {
-        "true": ["-DGRALLOC_MSCL_ALIGN_RESTRICTION"],
+        true: ["-DGRALLOC_MSCL_ALIGN_RESTRICTION"],
         default: [],
     }) + select(soong_config_variable("arm_gralloc", "exynos_s10b_format_align"), {
         "64": ["-DBOARD_EXYNOS_S10B_FORMAT_ALIGN=64"],
         default: ["-DBOARD_EXYNOS_S10B_FORMAT_ALIGN=16"],
     }) + select(soong_config_variable("arm_gralloc", "gralloc_ion_sync"), {
-        "true": ["-DGRALLOC_ION_SYNC"],
+        true: ["-DGRALLOC_ION_SYNC"],
         default: [],
     }) + select(soong_config_variable("arm_gralloc", "uses_exynos_dataspace_feature"), {
-        "true": [],
+        true: [],
         default: ["-DGRALLOC_FORCE_BT601"],
     }) + select(soong_config_variable("arm_gralloc", "GRALLOC_SECURE_BUFFER_NO_AFBC"), {
-        "true": ["-DGRALLOC_SECURE_BUFFER_NO_AFBC=1"],
+        true: ["-DGRALLOC_SECURE_BUFFER_NO_AFBC=1"],
         default: [],
     }) + select(soong_config_variable("arm_gralloc", "GRALLOC_DPU_SUPPORT_1010102_AFBC"), {
-        "true": ["-DGRALLOC_DPU_SUPPORT_1010102_AFBC=1"],
+        true: ["-DGRALLOC_DPU_SUPPORT_1010102_AFBC=1"],
         default: [],
     }) + select(soong_config_variable("arm_gralloc", "GRALLOC_7885_WA"), {
-        "true": ["-DGRALLOC_7885_WA"],
+        true: ["-DGRALLOC_7885_WA"],
         default: [],
     }) + select(soong_config_variable("arm_gralloc", "MFC_CHROMA_VALIGN"), {
         any @ flag_val: [

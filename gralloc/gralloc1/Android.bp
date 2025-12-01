@@ -32,13 +32,13 @@ cc_defaults {
         "-DLOG_TAG=\"gralloc\"",
         "-Wno-missing-field-initializers",
     ] + select(soong_config_variable("arm_gralloc", "GRALLOC_RANGE_FLUSH"), {
-        "true": ["-DGRALLOC_RANGE_FLUSH"],
+        true: ["-DGRALLOC_RANGE_FLUSH"],
         default: [],
     }) + select(soong_config_variable("arm_gralloc", "uses_align_restriction"), {
-        "true": ["-DGRALLOC_MSCL_ALIGN_RESTRICTION"],
+        true: ["-DGRALLOC_MSCL_ALIGN_RESTRICTION"],
         default: [],
     }) + select(soong_config_variable("arm_gralloc", "uses_10b_align_restriction"), {
-        "true": ["-DGRALLOC_10B_ALIGN_RESTRICTION"],
+        true: ["-DGRALLOC_10B_ALIGN_RESTRICTION"],
         default: [],
     }) + select(soong_config_variable("arm_gralloc", "exynos_s10b_format_align"), {
         "64": ["-DBOARD_EXYNOS_S10B_FORMAT_ALIGN=64"],

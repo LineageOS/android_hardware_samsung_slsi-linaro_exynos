@@ -20,10 +20,10 @@ cc_binary {
         "sipc": ["-DCONFIG_SEC_CP_VERIFYING_ALL"],
         default: [],
     }) + select(soong_config_variable("cbd", "use_legacy_ioctl"), {
-        "true": ["-DLEGACY_IOCTL"],
+        true: ["-DLEGACY_IOCTL"],
         default: [],
     }) + select(soong_config_variable("cbd", "use_legacy_sipc_ioctl"), {
-        "true": ["-DLEGACY_SIPC_IOCTL"],
+        true: ["-DLEGACY_SIPC_IOCTL"],
         default: [],
     }),
 

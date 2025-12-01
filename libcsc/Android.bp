@@ -4,7 +4,7 @@ cc_library_shared {
     cflags: [
         "-DLOG_TAG=\"libcsc\"",
     ] + select(soong_config_variable("libcsc", "USES_FIMC"), {
-        "true": ["-DUSES_FIMC"],
+        true: ["-DUSES_FIMC"],
         default: ["-DUSES_GSCALER"],
     }) + select(soong_config_variable("libcsc", "DEFAULT_CSC_HW"), {
         any @ default_csc_hw: ["-DDEFAULT_CSC_HW=" + default_csc_hw],

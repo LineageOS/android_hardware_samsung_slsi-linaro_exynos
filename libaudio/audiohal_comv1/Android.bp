@@ -23,19 +23,19 @@ audio_cc_library_shared {
         any @ flag_val: ["-DPREDEFINED_LOW_CAPTURE_DURATION=" + flag_val],
         default: [],
     }) + select(soong_config_variable("exynos_audio", "SUPPORT_BTA2DP_OFFLOAD"), {
-        "true": ["-DSUPPORT_BTA2DP_OFFLOAD"],
+        true: ["-DSUPPORT_BTA2DP_OFFLOAD"],
         default: [],
     }) + select(soong_config_variable("exynos_audio", "SUPPORT_STHAL_INTERFACE"), {
-        "true": ["-DSUPPORT_STHAL_INTERFACE"],
+        true: ["-DSUPPORT_STHAL_INTERFACE"],
         default: [],
     }) + select(soong_config_variable("exynos_audio", "SUPPORT_USB_OFFLOAD"), {
-        "true": ["-DSUPPORT_USB_OFFLOAD"],
+        true: ["-DSUPPORT_USB_OFFLOAD"],
         default: [],
     }) + select(soong_config_variable("exynos_audio", "SUPPORT_MMAP_HW_VOLUME_CONTROL"), {
-        "true": ["-DSUPPORT_MMAP_HW_VOLUME_CONTROL"],
+        true: ["-DSUPPORT_MMAP_HW_VOLUME_CONTROL"],
         default: [],
     }) + select(soong_config_variable("exynos_audio", "SUPPORT_DIRECT_MULTI_CHANNEL_STREAM"), {
-        "true": ["-DSUPPORT_DIRECT_MULTI_CHANNEL_STREAM"],
+        true: ["-DSUPPORT_DIRECT_MULTI_CHANNEL_STREAM"],
         default: [],
     }) + select(soong_config_variable("exynos_audio", "PREDEFINED_USB_PLAYBACK_DURATION"), {
         any @ flag_val: ["-DPREDEFINED_USB_PLAYBACK_DURATION=" + flag_val],
