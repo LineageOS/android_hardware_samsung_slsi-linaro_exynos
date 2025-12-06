@@ -16,6 +16,23 @@
       "message": "need V+",
       "revId": "79da8b3f34533292258d1774a277c9431d14a959",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f0c40ba7_343bd92c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 24387
+      },
+      "writtenOn": "2025-12-06T21:25:25Z",
+      "side": 1,
+      "message": "ideally these should be imported with the script in bionic",
+      "revId": "79da8b3f34533292258d1774a277c9431d14a959",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
