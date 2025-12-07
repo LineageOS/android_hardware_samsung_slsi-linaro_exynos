@@ -16,6 +16,24 @@
       "message": "Can\u0027t you just export the headers from kernel?",
       "revId": "194e9cc0a96970f95b39097d88a41b58087ea4de",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "245eb0e1_3934417d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 35850
+      },
+      "writtenOn": "2025-12-07T11:36:06Z",
+      "side": 1,
+      "message": "We are doing this already, these headers are just fallbacks.",
+      "parentUuid": "ee240279_28cd4d35",
+      "revId": "194e9cc0a96970f95b39097d88a41b58087ea4de",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
