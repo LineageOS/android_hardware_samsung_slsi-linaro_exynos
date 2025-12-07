@@ -42,6 +42,7 @@ int ExynosGraphicBufferMeta::is_afbc(buffer_handle_t buffer_hnd_p) {
 GRALLOC_META_NO_IMPL(bool, is_sajc);
 GRALLOC_META_NO_IMPL(int32_t, get_sajc_key_offset);
 GRALLOC_META_NO_IMPL(int32_t, get_sajc_independent_block_size);
+GRALLOC_META_NO_IMPL(int32_t, get_sajc_sw_mode);
 
 GRALLOC_META_NO_IMPL(int32_t, get_sub_format);
 GRALLOC_META_NO_IMPL(int32_t, get_sub_stride);
