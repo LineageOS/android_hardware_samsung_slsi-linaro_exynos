@@ -138,6 +138,7 @@ class ExynosGraphicBufferMeta {
     /* SAJC interface */
     static int32_t get_sajc_independent_block_size(buffer_handle_t);
     static int32_t get_sajc_key_offset(buffer_handle_t);
+    static int32_t get_sajc_sw_mode(buffer_handle_t);
 
     /* Sub-Allocation interface */
     static int32_t get_sub_format(buffer_handle_t);
