@@ -389,6 +389,40 @@ int32_t ExynosGraphicBufferMeta::get_sajc_key_offset(buffer_handle_t hnd) {
     return ret;
 }
 
+int32_t ExynosGraphicBufferMeta::get_sajc_sw_mode(buffer_handle_t hnd) {
+    SGR_LOGD("[%s] entry", __func__);
+
+    const private_handle_t *phnd = static_cast<const private_handle_t *>(hnd);
+    if (phnd == nullptr) {
+        SGR_LOGD("[%s] private_handle is null", __func__);
+        return -EINVAL;
+    }
+
+    int32_t ret = -1;
+    if (phnd->alloc_layout != SGR_ALLOC_LAYOUT_DCC) {
+        SGR_LOGE("[%s] buffer is not SAJC buffer", __func__);
+    } else {
+        struct sgr_metadata_gpu *gpu_meta = (struct sgr_metadata_gpu *)sgr_get_metadata_gpu(hnd);
+        if (gpu_meta == nullptr) {
+            SGR_LOGD("metadata is null(not imported), so mmap gpu metadata");
+
+            gpu_meta = (struct sgr_metadata_gpu *)map_and_get_metadata(hnd, TYPE_GPU, false);
+            if (gpu_meta == nullptr) {
+                SGR_LOGE("[%s] metadata is null", __func__);
+                return ret;
+            }
+
+            ret = gpu_meta->dcc_sw_mode;
+            unmap_metadata((void *)gpu_meta, TYPE_GPU);
+
+            return ret;
+        }
+        ret = gpu_meta->dcc_sw_mode;
+    }
+
+    return ret;
+}
+
 int32_t ExynosGraphicBufferMeta::get_sub_stride(buffer_handle_t hnd) {
     SGR_LOGD("[%s] entry", __func__);
 
