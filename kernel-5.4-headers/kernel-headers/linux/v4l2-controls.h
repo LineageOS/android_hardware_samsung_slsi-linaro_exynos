@@ -1,21 +1,9 @@
-/****************************************************************************
- ****************************************************************************
- ***
- ***   This header was automatically generated from a Linux kernel header
- ***   of the same name, to make information necessary for userspace to
- ***   call into the kernel available to libc.  It contains only constants,
- ***   structures, and macros generated from the original header, and thus,
- ***   contains no copyrightable information.
- ***
- ***   To edit the content of this header, modify the corresponding
- ***   source file (e.g. under external/kernel-headers/original/) then
- ***   run bionic/libc/kernel/tools/update_all.py
- ***
- ***   Any manual change here will be lost the next time this script will
- ***   be run. You've been warned!
- ***
- ****************************************************************************
- ****************************************************************************/
+/*
+ * This file is auto-generated. Modifications will be lost.
+ *
+ * See https://android.googlesource.com/platform/bionic/+/master/libc/kernel/
+ * for more information.
+ */
 #ifndef __LINUX_V4L2_CONTROLS_H
 #define __LINUX_V4L2_CONTROLS_H
 #include <linux/types.h>
@@ -366,6 +354,10 @@ enum v4l2_mpeg_video_h264_level {
   V4L2_MPEG_VIDEO_H264_LEVEL_4_2 = 13,
   V4L2_MPEG_VIDEO_H264_LEVEL_5_0 = 14,
   V4L2_MPEG_VIDEO_H264_LEVEL_5_1 = 15,
+  V4L2_MPEG_VIDEO_H264_LEVEL_5_2 = 16,
+  V4L2_MPEG_VIDEO_H264_LEVEL_6_0 = 17,
+  V4L2_MPEG_VIDEO_H264_LEVEL_6_1 = 18,
+  V4L2_MPEG_VIDEO_H264_LEVEL_6_2 = 19,
 };
 #define V4L2_CID_MPEG_VIDEO_H264_LOOP_FILTER_ALPHA (V4L2_CID_MPEG_BASE + 360)
 #define V4L2_CID_MPEG_VIDEO_H264_LOOP_FILTER_BETA (V4L2_CID_MPEG_BASE + 361)
@@ -394,6 +386,7 @@ enum v4l2_mpeg_video_h264_profile {
   V4L2_MPEG_VIDEO_H264_PROFILE_SCALABLE_HIGH_INTRA = 14,
   V4L2_MPEG_VIDEO_H264_PROFILE_STEREO_HIGH = 15,
   V4L2_MPEG_VIDEO_H264_PROFILE_MULTIVIEW_HIGH = 16,
+  V4L2_MPEG_VIDEO_H264_PROFILE_CONSTRAINED_HIGH = 17,
 };
 #define V4L2_CID_MPEG_VIDEO_H264_VUI_EXT_SAR_HEIGHT (V4L2_CID_MPEG_BASE + 364)
 #define V4L2_CID_MPEG_VIDEO_H264_VUI_EXT_SAR_WIDTH (V4L2_CID_MPEG_BASE + 365)
