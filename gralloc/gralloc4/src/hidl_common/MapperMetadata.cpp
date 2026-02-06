@@ -724,7 +724,6 @@ Error set_metadata(const private_handle_t *handle, const MetadataType &metadataT
 	}
 }
 
-#ifdef GRALLOC_MAPPER_4
 Error getFromBufferDescriptorInfo(IMapper::BufferDescriptorInfo const &description,
                                  MetadataType const &metadataType, std::vector<uint8_t> &outVec)
 {
@@ -915,7 +914,6 @@ Error getFromBufferDescriptorInfo(IMapper::BufferDescriptorInfo const &descripti
 	}
 }
 
-#endif // GRALLOC_MAPPER_4
 } // namespace common
 } // namespace mapper
 } // namespace arm

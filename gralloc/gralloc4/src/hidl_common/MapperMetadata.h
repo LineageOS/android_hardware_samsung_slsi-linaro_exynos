@@ -53,7 +53,6 @@ class MetadataType {
  public:
 	std::string name;
 	uint64_t value;
-#ifdef GRALLOC_MAPPER_4
 	MetadataType(const IMapper::MetadataType &meta) {
 		name = meta.name;
 		value = meta.value;
@@ -64,7 +63,6 @@ class MetadataType {
 		meta.value = value;
 		return meta;
 	}
-#endif
 	MetadataType() {}
 	MetadataType(std::string strname, uint64_t val) {
 		name = strname;
@@ -82,7 +80,6 @@ struct MetadataTypeDescription {
 	const char* description;
 	bool isGettable;
 	bool isSettable;
-#ifdef GRALLOC_MAPPER_4
 	MetadataTypeDescription(const IMapper::MetadataTypeDescription &desc) {
 		metadataType = desc.metadataType;
 		description = (desc.description).c_str();
@@ -97,7 +94,6 @@ struct MetadataTypeDescription {
 		desc.isSettable = isSettable;
 		return desc;
 	}
-#endif
 	MetadataTypeDescription(MetadataType meta, const char* desc, bool gettable, bool settable) {
 		metadataType = meta;
 		description = desc;
@@ -109,7 +105,6 @@ struct MetadataTypeDescription {
 struct MetadataDump {
 	MetadataType metadataType;
 	std::vector<uint8_t> metadata;
-#ifdef GRALLOC_MAPPER_4
 	MetadataDump(const IMapper::MetadataDump &meta) {
 		metadataType = MetadataType(meta.metadataType);
 		metadata = static_cast<std::vector<uint8_t> >(metadata);
@@ -120,7 +115,6 @@ struct MetadataDump {
 		dump.metadata = hidl_vec(metadata);
 		return dump;
 	}
-#endif
 	MetadataDump() {}
 	MetadataDump(MetadataType metaType, std::vector<uint8_t> &meta) {
 		metadataType = metaType;
@@ -130,7 +124,6 @@ struct MetadataDump {
 
 struct BufferDump {
 	std::vector<MetadataDump> metadataDump;
-#ifdef GRALLOC_MAPPER_4
 	BufferDump(const IMapper::BufferDump &dump) {
 		for (auto meta : dump.metadataDump)
 			metadataDump.push_back(MetadataDump(meta));
@@ -144,7 +137,6 @@ struct BufferDump {
 		bufferdump.metadataDump = metaDump;
 		return bufferdump;
 	}
-#endif
 	BufferDump(std::vector<MetadataDump> &meta) { metadataDump = meta; }
 	BufferDump() {}
 };
@@ -192,9 +184,7 @@ Error set_metadata(const private_handle_t *handle, const MetadataType &metadataT
  *                                 UNSUPPORTED on unsupported metadata type.
  *                          metadata: Vector of bytes representing the metadata value.
  */
-#ifdef GRALLOC_MAPPER_4
 Error getFromBufferDescriptorInfo(IMapper::BufferDescriptorInfo const &description, MetadataType const &metadataType, std::vector<uint8_t> &outVec);
-#endif
 
 } // namespace common
 } // namespace mapper

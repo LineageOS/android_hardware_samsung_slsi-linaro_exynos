@@ -313,7 +313,6 @@ Error unlock(buffer_handle_t bufferHandle, int *releaseFence) {
 	const Error error = unlockBuffer(bufferHandle, releaseFence);
 	return error;
 }
-#ifdef GRALLOC_MAPPER_4
 Error validateBufferSize(void* buffer,
                          const IMapper::BufferDescriptorInfo& descriptorInfo,
                          uint32_t in_stride)
@@ -433,7 +432,6 @@ Error validateBufferSize(void* buffer,
 
 	return Error::NONE;
 }
-#endif
 
 Error getTransportSize(buffer_handle_t bufferHandle, uint32_t *outNumFds, uint32_t *outNumInts)
 {
@@ -457,7 +455,6 @@ Error getTransportSize(buffer_handle_t bufferHandle, uint32_t *outNumFds, uint32
 	return Error::NONE;
 }
 
-#ifdef GRALLOC_MAPPER_4
 bool isSupported(const IMapper::BufferDescriptorInfo &description)
 {
 	buffer_descriptor_t grallocDescriptor;
@@ -482,7 +479,6 @@ bool isSupported(const IMapper::BufferDescriptorInfo &description)
 	}
 }
 
-#endif
 Error flushLockedBuffer(buffer_handle_t handle)
 {
 	if (private_handle_t::validate(handle) < 0)

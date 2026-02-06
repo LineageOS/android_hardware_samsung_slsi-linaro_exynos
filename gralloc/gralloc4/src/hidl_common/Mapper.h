@@ -51,14 +51,12 @@ class GrallocRect {
 		right = rect.right;
 		bottom = rect.bottom;
 	}
-#ifdef GRALLOC_MAPPER_4
 	GrallocRect(IMapper::Rect rect) {
 		left = rect.left;
 		top = rect.top;
 		right = rect.left + rect.width;
 		bottom = rect.top + rect.height;
 	}
-#endif
 };
 
 /**
@@ -124,9 +122,7 @@ Error unlock(const native_handle_t *buffer, int *releaseFence);
  *         Error::BAD_BUFFER upon bad buffer input
  *         Error::BAD_VALUE when any of the specified attributes are invalid
  */
-#ifdef GRALLOC_MAPPER_4
 Error validateBufferSize(void *buffer, const IMapper::BufferDescriptorInfo &descriptorInfo, uint32_t stride);
-#endif
 
 /**
  * Get the transport size of a buffer
@@ -149,9 +145,7 @@ Error getTransportSize(buffer_handle_t bufferHandle, uint32_t *outNumFds, uint32
  *                                     BAD_VALUE, Otherwise,
  *                          supported: Whether the description can be allocated
  */
-#ifdef GRALLOC_MAPPER_4
 bool isSupported(const IMapper::BufferDescriptorInfo &description);
-#endif
 /* TODO: implement this feature for exynos */
 /**
  * Flushes the CPU caches of a mapped buffer.

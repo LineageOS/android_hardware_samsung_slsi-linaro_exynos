@@ -24,7 +24,6 @@ using PixelFormat = android::hardware::graphics::common::V1_2::PixelFormat;
 template <typename T>
 using frameworks_vec = android::hardware::hidl_vec<T>;
 
-#ifdef GRALLOC_MAPPER_4
 #include <android/hardware/graphics/mapper/4.0/IMapper.h>
 
 namespace hidl {
@@ -34,6 +33,5 @@ using android::hardware::graphics::mapper::V4_0::BufferDescriptor;
 using android::hardware::graphics::mapper::V4_0::IMapper;
 
 using frameworks_handle = android::hardware::hidl_handle;
-#endif // GRALLOC_MAPPER_4
 
 #endif // HIDL_COMMON
