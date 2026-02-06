@@ -16,21 +16,28 @@
  */
 
 cc_library_shared {
-    name: "android.hardware.graphics.allocator@4.0-impl",
+    name: "android.hardware.graphics.mapper@4.0-impl",
     defaults: [
         "arm_gralloc_api_4x_defaults",
         "libexynos_headers_c2_defaults",
     ],
+    static_libs: [
+        "libgralloc_drmutils",
+    ],
     shared_libs: [
-        "android.hardware.graphics.allocator@4.0",
+        "arm.graphics-V1-ndk",
         "android.hardware.graphics.mapper@4.0",
     ],
     srcs: [
-        "GrallocAllocator.cpp",
-        ":libgralloc_hidl_common_allocator",
+        "GrallocMapper.cpp",
+        ":libgralloc_hidl_common_mapper",
+        ":libgralloc_hidl_common_mapper_metadata",
         ":libgralloc_hidl_common_shared_metadata",
     ],
     include_dirs: [
         "hardware/samsung_slsi-linaro/exynos/include",
+    ],
+    cflags: [
+        "-DGRALLOC_MAPPER_4=1",
     ],
 }

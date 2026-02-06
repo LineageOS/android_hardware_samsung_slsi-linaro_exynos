@@ -15,6 +15,58 @@
  * limitations under the License.
  */
 
+cc_defaults {
+    name: "arm_gralloc_version_defaults",
+    target: {
+        android: {
+            shared_libs: [
+                "android.hardware.graphics.common@1.2",
+            ],
+        },
+    },
+    cflags: [
+        "-DLOG_TAG=\"gralloc4\"",
+        "-DGRALLOC_VERSION_MAJOR=4",
+        "-DHIDL_ALLOCATOR_VERSION_SCALED=400",
+        "-DHIDL_MAPPER_VERSION_SCALED=400",
+        "-DHIDL_COMMON_VERSION_SCALED=120",
+    ],
+}
+
+cc_defaults {
+    name: "arm_gralloc_api_4x_defaults",
+    defaults: [
+        "arm_gralloc_defaults",
+        "arm_gralloc_version_defaults",
+    ],
+    compile_multilib: "both",
+    relative_install_path: "hw/",
+    shared_libs: [
+        "libhardware",
+        "liblog",
+        "libcutils",
+        "libion_exynos",
+        "libsync",
+        "libutils",
+        "libnativewindow",
+        "libhidlbase",
+        "libgralloctypes",
+    ],
+    static_libs: [
+        "libarect",
+        "libgralloc_core",
+        "libgralloc_allocator",
+        "libgralloc_capabilities",
+        "libdrm",
+    ],
+    header_libs: [
+        "libnativebase_headers",
+    ],
+    export_shared_lib_headers: [
+        "libhidlbase",
+    ],
+}
+
 cc_library_headers {
     name: "libgralloc4_headers_exynos",
     vendor: true,
