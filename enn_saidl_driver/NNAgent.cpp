@@ -296,7 +296,7 @@ void NNAgent::initialize(void) {
  * @return error code
  */
 void NNAgent::closeModel(EnnModelId& modelId, NNCBuf& nncBuffer, void* pbuffer_set) {
-    LOGD(ENN_DRIVER, "%s(+) modelId is %u\n", __func__, modelId);
+    LOGD(ENN_DRIVER, "%s(+) modelId is %lu\n", __func__, modelId);
 
     uennServiceDelegator_->uennFreeBuffers(reinterpret_cast<EnnBufferPtr*>(pbuffer_set), modelId);
     graphgenManager_->freeMemory(nncBuffer);

@@ -111,7 +111,7 @@ int32_t UEnnServiceDelegatorLib::uennExecuteModel(const EnnModelId model_id) {
  *  @returns return code
  */
 int32_t UEnnServiceDelegatorLib::uennCloseModel(const EnnModelId modelId) {
-    LOGD(ENN_DRIVER, "%s() is called with modelId : %u\n", __func__, modelId);
+    LOGD(ENN_DRIVER, "%s() is called with modelId : %lu\n", __func__, modelId);
 
     EnnReturn ret = enn::api::EnnCloseModel(modelId);
     if (ret != EnnReturn::ENN_RET_SUCCESS) {
@@ -162,7 +162,7 @@ int32_t UEnnServiceDelegatorLib::uennAllocateAllBuffers(const EnnModelId model_i
         LOGE(ENN_DRIVER, "Invalid Params.\n");
         return INVALID_PARAMS;
     }
-    LOGD(ENN_DRIVER, "Try to allocate buffers, modelId : %u\n", model_id);
+    LOGD(ENN_DRIVER, "Try to allocate buffers, modelId : %lu\n", model_id);
     enn::api::EnnGenerateBufferSpace(model_id);
 
     NumberOfBuffersInfo buffersInfo;
@@ -181,7 +181,7 @@ int32_t UEnnServiceDelegatorLib::uennAllocateAllBuffers(const EnnModelId model_i
            return FAIL_ON_ENN_EXECUTE_REQ;
     }
 
-    LOGD(ENN_DRIVER, "Complete to allocate buffers for inputs, outputs, modelId : %u, numofInBuffers : %u numOfOutBuffers =%u\n",
+    LOGD(ENN_DRIVER, "Complete to allocate buffers for inputs, outputs, modelId : %lu, numofInBuffers : %u numOfOutBuffers =%u\n",
                                                                             model_id, *numOfInputBuffers, *numOfOutputBuffers);
 
     LOGD(ENN_DRIVER, "%s(-)\n", __func__);

@@ -163,7 +163,7 @@ NnRet LoadInputBuffers(uint32_t modelId, UserBuffer* userBuffers, int32_t numOfB
 
     if ((modelId == INVALID_MODEL_ID) || (userBuffers == nullptr) ||
             (numOfBuffers == 0) || edenBuffers == nullptr) {
-        LOGE(EDEN_NN, "Given modelId=[%d], userBuffers=[%p], numOfBuffers=[%d] is invalid! please, check argument\n", modelId, userBuffers, numOfBuffers, edenBuffers);
+        LOGE(EDEN_NN, "Given modelId=[%d], userBuffers=[%p], numOfBuffers=[%d] is invalid! please, check argument\n", modelId, userBuffers, numOfBuffers);
         return RET_PARAM_INVALID;
     }
     ret = edenNN->LoadInputBuffers(modelId, userBuffers, numOfBuffers, edenBuffers);
@@ -188,7 +188,7 @@ NnRet LoadOutputBuffers(uint32_t modelId, UserBuffer* userBuffers, int32_t numOf
     if ((modelId == INVALID_MODEL_ID) || (userBuffers == nullptr) ||
             (numOfBuffers == 0) || edenBuffers == nullptr) {
         LOGE(EDEN_NN, "Given modelId=[%d], userBuffers=[%p], numOfBuffers=[%d] is invalid! please,"
-             "check argument\n", modelId, userBuffers, numOfBuffers, edenBuffers);
+             "check argument\n", modelId, userBuffers, numOfBuffers);
         return RET_PARAM_INVALID;
     }
     ret = edenNN->LoadOutputBuffers(modelId, userBuffers, numOfBuffers, edenBuffers);
