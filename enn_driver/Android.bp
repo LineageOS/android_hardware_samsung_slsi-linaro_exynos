@@ -14,57 +14,6 @@
  * limitations under the License.
  */
 
-/*
-soong_namespace {
-    imports: [
-        "vendor/samsung_slsi/exynos/enn_driver/ofi/converter",
-        "vendor/samsung_slsi/exynos/ofi/2.1",
-        "vendor/samsung_slsi/exynos/ofi/2.1_E9X0",
-    ],
-}
-
-soong_config_module_type {
-    name: "dsp_nnapi_cc_defaults",
-    module_type: "cc_defaults",
-    config_namespace: "dsp",
-    bool_variables: ["nnapi"],
-    properties: [
-        "cflags",
-        "cppflags",
-        "srcs",
-        "header_libs",
-        "shared_libs",
-        "static_libs",
-    ],
-}
-
-dsp_nnapi_cc_defaults {
-    name: "ofi_vendor_defaults",
-    defaults: ["neuralnetworks_defaults"],
-    proprietary: true,
-    soong_config_variables: {
-        nnapi: {
-            cflags: ["-DENABLE_DSP"],
-            cppflags: ["-DENABLE_DSP"],
-            srcs: [
-                "DspCompilerManager.cpp",
-                "DspPreparedModel.cpp",
-            ],
-            header_libs: [
-                "libeden_ofi_rt_framework_user_headers",
-                "libeden_ofi_ann_compiler_headers",
-                "libeden_ofi_graph_api_headers",
-                "pugi_xml_headers",
-            ],
-            shared_libs: [
-                "libofi_rt_framework_user_vendor",
-                "libofi_ann_compiler_shared_vendor",
-            ],
-        },
-    },
-}
-*/
-
 /* Eden driver */
 cc_defaults {
     name: "NeuralNetworksEdenDriver_defaults",
@@ -142,7 +91,6 @@ cc_defaults {
     name: "NeuralNetworksEdenDriver_server_defaults",
     defaults: [
         "NeuralNetworksEdenDriver_defaults",
-       /* "ofi_vendor_defaults", */
     ],
     relative_install_path: "hw",
     proprietary: true,
