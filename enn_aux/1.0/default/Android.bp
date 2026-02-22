@@ -25,7 +25,7 @@ cc_library_shared {
         "-DANDROID_LOG",
     ],
     include_dirs: [
-        "hardware/samsung_slsi/exynos/include",
+        "hardware/samsung_slsi-linaro/exynos/include",
     ],
     header_libs: [
         "eden_headers"
