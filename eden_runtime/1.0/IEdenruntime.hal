@@ -1,0 +1,64 @@
+/*
+ * Copyright (C) 2018 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package vendor.samsung_slsi.hardware.eden_runtime@1.0;
+
+import IEdenruntimeCallback;
+
+interface IEdenruntime {
+    init(int32_t pid, IEdenruntimeCallback callback) generates
+        (uint32_t ret);
+    openModel(int32_t pid, EdenModelHidl eModelHidl, EdenModelOptionsHidl mOptionsHidl) generates
+        (uint32_t ret, uint32_t modelId);
+    openModelFromMemory(int32_t pid, EdenModelFromMemoryHidl eModelfromMemoryHidl, EdenModelOptionsHidl mOptionsHidl) generates
+        (uint32_t ret, uint32_t modelId);
+    openModelFromFd(int32_t pid, EdenModelFromFdHidl eModelfromFdHidl, EdenModelOptionsHidl mOptionsHidl) generates
+        (uint32_t ret, uint32_t modelId);
+    executeReq(int32_t pid, EdenRequestHidl eReqHidl, IEdenruntimeCallback eCallback, EdenRequestOptionsHidl rOptionsHidl) generates
+        (uint32_t ret);
+    closeModel(int32_t pid, uint32_t modelId) generates
+        (uint32_t ret);
+    shutdown(int32_t pid) generates
+        (uint32_t ret);
+
+    allocateInputBuffer(int32_t pid, uint32_t modelId) generates
+        (uint32_t ret, handle hd);
+    allocateOutputBuffer(int32_t pid, uint32_t modelId) generates
+        (uint32_t ret, handle hd);
+
+    freeBuffer(int32_t pid, uint32_t modelId, uint64_t bufferAddr) generates
+        (uint32_t ret, int32_t numOfBuffers);
+    getInputBufferShape(int32_t pid, uint32_t modelId, int32_t inputIndex) generates
+        (uint32_t ret, int32_t width, int32_t height, int32_t channel, int32_t number);
+    getOutputBufferShape(int32_t pid, uint32_t modelId, int32_t outputIndex) generates
+        (uint32_t ret, int32_t width, int32_t height, int32_t channel, int32_t number);
+
+    notifyDead(int32_t pid, int32_t signo) generates
+        (uint32_t ret);
+
+    getEdenVersion(int32_t pid, uint32_t modelId) generates
+        (uint32_t ret, vec<int32_t> v);
+    getCompileVersion(int32_t pid, uint32_t modelId, EdenModelHidl eModelHidl) generates
+        (uint32_t ret, vec<string> v);
+    getCompileVersionFromFd(int32_t pid, EdenModelFromFdHidl eModelfromFdHidl) generates
+        (uint32_t ret, vec<string> v);
+    getCompileVersionFromMemory(int32_t pid, EdenModelFromMemoryHidl eModelfromMemoryHidl) generates
+        (uint32_t ret, vec<string> v);
+    loadInputBuffers(int32_t pid, uint32_t modelId, uint32_t numOfBuffers, vec<UserBufferHidl> userBuffersHidl) generates
+        (uint32_t ret, handle hd);
+    loadOutputBuffers(int32_t pid, uint32_t modelId, uint32_t numOfBuffers, vec<UserBufferHidl> userBuffersHidl) generates
+        (uint32_t ret, handle hd);
+};

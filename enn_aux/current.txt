@@ -1,0 +1,1 @@
+3e839bc963dafe32db860bee84fd3a14dd38348a205a944713b8cb0022666d96 vendor.samsung_slsi.hardware.enn_aux@1.0::IENN_AUX
