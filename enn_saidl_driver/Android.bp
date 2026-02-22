@@ -1,0 +1,339 @@
+
+//  Copyright (C) 2021 Samsung Electronics Co. LTD
+//
+// This software is proprietary of Samsung Electronics.
+// No part of this software, either material or conceptual may be copied or
+// distributed, transmitted, transcribed, stored in a retrieval system or
+// translated into any human or computer language in any form by any means,
+// electronic, mechanical, manual or otherwise, or disclosed
+// to third parties without the express written permission of Samsung Electronics.
+
+
+cc_defaults {
+   name: "enn_driver_dynamic_libs",
+   shared_libs: [
+        "libenn_common_utils",
+        "libenn_engine_lib",
+        "libenn_model",
+        "libenn_profiler",
+        "libenn_public_api_cpp_lib",
+        "libenn_user_driver_cpu",
+        "libenn_user_driver_gpu_lib",
+        "libenn_user_driver_unified",
+        "libenn_user_lib",
+
+        "libgraphgen_api",
+        "libgraphgen_import",
+        "libgraphgen_ann_import",
+        "libgraphgen_ann_import_s",
+        "libgraphgen_ann_nnc",
+        "libgraphgen_misc",
+        "libgraphgen_network",
+        "libgraphgen_intermediate_process",
+        "libgraphgen_export",
+        "libcommon_graphgen_export",
+        "libtoco_graphgen_export",
+        "libcommon",
+        "libcrane_compiler",
+        "libdove_compiler",
+        "libir",
+        "libnpu_compiler",
+        "libsait_npu_compiler",
+        "libisa",
+        "libisa_generator",
+        "libncp_wrapper",
+    ],
+}
+
+cc_library_static {
+   name: "neuralnetworks_gpu_driver_defaults",
+   vendor: true,
+   srcs: [
+        "EnnDevice.cpp",
+        "NNAgent.cpp",
+        "ModelUtils.cpp",
+        "GraphGenManager.cpp",
+        "EnnPreparedModel.cpp",
+        "EnnBurst.cpp",
+        "BufferInfoOnExecute.cpp",
+        "BufferManager.cpp",
+        "ExecutionScheduler.cpp",
+        "UEnnServiceDelegatorLib.cpp",
+    ],
+    shared_libs: [
+        "liblog",
+        "libutils",
+        "libbase",
+        "libcutils",
+        "libnativewindow",
+    ],
+
+    header_libs: [
+        "libneuralnetworks_headers",
+        "graphgen_saidl_headers",
+    ],
+    export_include_dirs: ["."],
+    cflags: [
+        "-DENN64",
+        "-DENN_DEBUG",
+        "-DANDROID_LOG",
+        "-DCONFIG_NPU_MEM_ION",
+    ],
+    cppflags: [
+        "-DENN64",
+        "-DENN_DEBUG",
+        "-DANDROID_LOG",
+        "-DCONFIG_NPU_MEM_ION",
+        "-DGPU_HW",
+    ],
+
+    static_libs: [
+        "libneuralnetworks_common",
+    ],
+    target: {
+        android_x86_64: {
+           enabled: false,
+        },
+        android_x86: {
+           enabled: false,
+        },
+   },
+}
+
+cc_binary {
+    name: "android.hardware.neuralnetworks-service-enn-gpu",
+    srcs: ["EnnDriverAidl.cpp"],
+    defaults: [
+        "neuralnetworks_defaults",
+        "neuralnetworks_use_latest_utils_hal_aidl",
+        "enn_driver_dynamic_libs",
+    ],
+    header_libs: [
+        "libneuralnetworks_headers",
+    ],
+    shared_libs: [
+        "libbase",
+        "libbinder_ndk",
+        "libcutils",
+        "liblog",
+        "libnativewindow",
+        "libtextclassifier_hash",
+        "libutils",
+    ],
+    static_libs: [
+        "libaidlcommonsupport",
+        "libneuralnetworks_common",
+        "neuralnetworks_gpu_driver_defaults",
+        "neuralnetworks_utils_hal_adapter_aidl",
+    ],
+    cppflags: ["-fexceptions"],
+    relative_install_path: "hw",
+    vendor: true,
+    init_rc: ["config/android.hardware.neuralnetworks-service-gpu.rc"],
+    vintf_fragments: ["config/android.hardware.neuralnetworks-service-gpu.xml"],
+
+    target: {
+        android_x86_64: {
+           enabled: false,
+        },
+        android_x86: {
+           enabled: false,
+        },
+   },
+}
+
+cc_library_static {
+   name: "neuralnetworks_npu_driver_defaults",
+   vendor: true,
+   srcs: [
+        "EnnDevice.cpp",
+        "NNAgent.cpp",
+        "ModelUtils.cpp",
+        "GraphGenManager.cpp",
+        "EnnPreparedModel.cpp",
+        "EnnBurst.cpp",
+        "BufferInfoOnExecute.cpp",
+        "BufferManager.cpp",
+        "ExecutionScheduler.cpp",
+        "UEnnServiceDelegatorLib.cpp",
+    ],
+    shared_libs: [
+        "liblog",
+        "libutils",
+        "libbase",
+        "libcutils",
+        "libnativewindow",
+    ],
+
+
+    header_libs: [
+        "libneuralnetworks_headers",
+        "graphgen_saidl_headers",
+    ],
+    export_include_dirs: ["."],
+    cflags: [
+        "-DENN64",
+        "-DENN_DEBUG",
+        "-DANDROID_LOG",
+        "-DCONFIG_NPU_MEM_ION",
+    ],
+    cppflags: [
+        "-DENN64",
+        "-DENN_DEBUG",
+        "-DANDROID_LOG",
+        "-DCONFIG_NPU_MEM_ION",
+        "-DNPU_HW",
+    ],
+
+    static_libs: [
+        "libneuralnetworks_common",
+    ],
+    target: {
+        android_x86_64: {
+           enabled: false,
+        },
+        android_x86: {
+           enabled: false,
+        },
+   },
+}
+
+cc_binary {
+    name: "android.hardware.neuralnetworks-service-enn-npu",
+    srcs: ["EnnDriverAidl.cpp"],
+    defaults: [
+        "neuralnetworks_defaults",
+        "neuralnetworks_use_latest_utils_hal_aidl",
+        "enn_driver_dynamic_libs",
+    ],
+    header_libs: [
+        "libneuralnetworks_headers",
+    ],
+    shared_libs: [
+        "libbase",
+        "libbinder_ndk",
+        "libcutils",
+        "liblog",
+        "libnativewindow",
+        "libtextclassifier_hash",
+        "libutils",
+    ],
+    static_libs: [
+        "libaidlcommonsupport",
+        "libneuralnetworks_common",
+        "neuralnetworks_npu_driver_defaults",
+        "neuralnetworks_utils_hal_adapter_aidl",
+    ],
+    cppflags: ["-fexceptions"],
+    relative_install_path: "hw",
+    vendor: true,
+    init_rc: ["config/android.hardware.neuralnetworks-service-npu.rc"],
+    vintf_fragments: ["config/android.hardware.neuralnetworks-service-npu.xml"],
+
+    target: {
+        android_x86_64: {
+           enabled: false,
+        },
+        android_x86: {
+           enabled: false,
+        },
+   },
+}
+
+cc_library_static {
+   name: "neuralnetworks_enn_driver_defaults",
+   vendor: true,
+   srcs: [
+        "EnnDevice.cpp",
+        "NNAgent.cpp",
+        "ModelUtils.cpp",
+        "GraphGenManager.cpp",
+        "EnnPreparedModel.cpp",
+        "EnnBurst.cpp",
+        "BufferInfoOnExecute.cpp",
+        "BufferManager.cpp",
+        "ExecutionScheduler.cpp",
+        "UEnnServiceDelegatorLib.cpp",
+    ],
+    shared_libs: [
+        "liblog",
+        "libutils",
+        "libbase",
+        "libcutils",
+        "libnativewindow",
+    ],
+
+
+    header_libs: [
+        "libneuralnetworks_headers",
+        "graphgen_saidl_headers",
+    ],
+    export_include_dirs: ["."],
+    cflags: [
+        "-DENN64",
+        "-DENN_DEBUG",
+        "-DANDROID_LOG",
+        "-DCONFIG_NPU_MEM_ION",
+    ],
+    cppflags: [
+        "-DENN64",
+        "-DENN_DEBUG",
+        "-DANDROID_LOG",
+        "-DCONFIG_NPU_MEM_ION",
+        "-DENN_HW",
+    ],
+
+    static_libs: [
+        "libneuralnetworks_common",
+    ],
+    target: {
+        android_x86_64: {
+           enabled: false,
+        },
+        android_x86: {
+           enabled: false,
+        },
+   },
+}
+
+cc_binary {
+    name: "android.hardware.neuralnetworks-service-enn",
+    srcs: ["EnnDriverAidl.cpp"],
+    defaults: [
+        "neuralnetworks_defaults",
+        "neuralnetworks_use_latest_utils_hal_aidl",
+        "enn_driver_dynamic_libs",
+    ],
+    header_libs: [
+        "libneuralnetworks_headers",
+    ],
+    shared_libs: [
+        "libbase",
+        "libbinder_ndk",
+        "libcutils",
+        "liblog",
+        "libnativewindow",
+        "libtextclassifier_hash",
+        "libutils",
+    ],
+    static_libs: [
+        "libaidlcommonsupport",
+        "libneuralnetworks_common",
+        "neuralnetworks_enn_driver_defaults",
+        "neuralnetworks_utils_hal_adapter_aidl",
+    ],
+    cppflags: ["-fexceptions"],
+    relative_install_path: "hw",
+    vendor: true,
+    init_rc: ["config/android.hardware.neuralnetworks-service-enn.rc"],
+    vintf_fragments: ["config/android.hardware.neuralnetworks-service-enn.xml"],
+
+    target: {
+        android_x86_64: {
+           enabled: false,
+        },
+        android_x86: {
+           enabled: false,
+        },
+   },
+}

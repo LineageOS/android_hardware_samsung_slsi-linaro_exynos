@@ -1,0 +1,4 @@
+service enn_aux /vendor/bin/hw/vendor.samsung_slsi.hardware.enn_aux@1.0-service
+    class hal
+    user system
+    group system
