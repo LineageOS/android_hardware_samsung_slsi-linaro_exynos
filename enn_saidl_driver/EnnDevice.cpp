@@ -27,9 +27,6 @@
 #include "Common.h"
 #include "log.h"
 
-
-#define LOG_TAG "EnnDriver::EnnDriver"
-
 using namespace ::android::nn;
 
 namespace android {
