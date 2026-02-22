@@ -255,7 +255,7 @@ int32_t EnnPreparedModel::loadInputData(const Request& request, BufferInfoOnExec
     }
 
     const std::vector<Request::Argument>& inputs = request.inputs;
-    LOGD(ENN_DRIVER, "No of input requests = %d\n", inputs.size());
+    LOGD(ENN_DRIVER, "No of input requests = %zu\n", inputs.size());
     for (int32_t idx = 0; idx < inputs.size(); idx++) {
         int32_t it = idx;
 
@@ -285,7 +285,7 @@ int32_t EnnPreparedModel::loadInputData(const Request& request, BufferInfoOnExec
         int32_t offset = inputArgs.location.offset;
         int32_t length = inputArgs.location.length;
 
-        LOGD(ENN_DRIVER, "inputIndex= [%zu],it = [%d], poolIndex = [%d], offset = [%d], length = [%d]\n", idx, it, poolIndex, offset, length);
+        LOGD(ENN_DRIVER, "inputIndex= [%d],it = [%d], poolIndex = [%d], offset = [%d], length = [%d]\n", idx, it, poolIndex, offset, length);
         if (const auto *sharedMem = std::get_if<SharedMemory>(&request.pools[poolIndex])) {
             char* virtAddr = nullptr;
             uint32_t msize;
