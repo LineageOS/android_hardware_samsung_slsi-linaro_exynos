@@ -250,7 +250,7 @@ void processAliveMointorMain() {
                         int64_t pid = iter->first;
                         auto pidData = iter->second;
 
-                        LOGI(EDEN_HIDL, "Try to check pid=(%lld)...\n", pid);
+                        LOGI(EDEN_HIDL, "Try to check pid=(%ld)...\n", pid);
                         //if (CheckCallerIsAlive(pid) {
                         if (IsValidPID(pid) == true) {
                             // Keep alive pid data
@@ -454,11 +454,11 @@ class EdenruntimeDeathRecipient : public android::hardware::hidl_death_recipient
     EdenruntimeDeathRecipient(const sp<IEdenruntime> rt) : mRt_(rt), has_died_(false) {}
 
     virtual void serviceDied(uint64_t cookie, const android::wp<::android::hidl::base::V1_0::IBase>& /*who*/) {
-        LOGI(EDEN_HIDL, "(Not service)User Process of cookie[pid=%llu] DIED \n", cookie);
+        LOGI(EDEN_HIDL, "(Not service)User Process of cookie[pid=%lu] DIED \n", cookie);
         has_died_ = true;
         // Clean up resources
         int64_t pid = (int64_t)cookie;
-        LOGD(EDEN_HIDL, "Set mapPidAlive[%lld] to false\n", pid);
+        LOGD(EDEN_HIDL, "Set mapPidAlive[%ld] to false\n", pid);
         mapPidAlive[pid] = false;
         cond_monitorThread.notify_all();
     }
