@@ -1,0 +1,7 @@
+#ifndef __SEVA_VERSION_HPP
+#define __SEVA_VERSION_HPP
+
+#define SEVA_VERSION_STRING "1.0.0"
+#define SEVA_VERSION_NUMBER 0x00010000
+
+#endif

@@ -1,0 +1,9 @@
+cc_library_headers {
+    name: "libeden_ofi_rt_framework_user_headers",
+    export_include_dirs: [
+        "include",
+        "memory_manager",
+    ],
+    vendor_available: true,
+}
+
