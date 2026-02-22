@@ -1,0 +1,155 @@
+/*
+ * Copyright (C) 2018 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package vendor.samsung_slsi.hardware.eden_runtime@1.0;
+
+/*! User Preference */
+enum HwPreferenceHidl : int32_t {
+    ALL_HW = 0,
+    NPU_ONLY,
+    GPU_ONLY,
+    CPU_ONLY,
+    HWCOUNT,
+};
+
+enum ModePreferenceHidl : int32_t {
+    NORMAL_MODE,
+    BOOST_MODE,
+    //DIRECT_MODE, // NOT SUPPORTED YET
+    //LOW_POWER_MODE, // NOT SUPPORTED YET
+    //HIGH_ACCURACY, // NOT SUPPORTED YET
+    BOOST_ON_EXECUTE, /* boost device clock when execute request. just execute, exclude open/close */
+    MAX_COUNT_EDEN_MODE, /* set max limit for uninitialized preference */
+    MODECOUNT,
+};
+
+struct InputBufferPreferenceHidl {
+    bool enable;
+    bool setInputAsFloat;
+};
+
+enum ModelPriorityHidl : int32_t {
+    P_DEFAULT,
+    P_LOW,
+    P_MIDDLE,
+    P_HIGH,
+};
+
+struct EdenPreferenceHidl {
+    HwPreferenceHidl hw;
+    ModePreferenceHidl mode;
+    InputBufferPreferenceHidl inputBufferMode;
+};
+
+enum NnApiTypeHidl : int32_t {
+    EDEN_NN_API = 0,
+    ANDROID_NN_API,
+    CAFFE2_NN_API,
+    APICOUNT,
+};
+
+struct ModelPreferenceHidl {
+    EdenPreferenceHidl userPreference;
+    NnApiTypeHidl nnApiType;
+};
+
+struct EdenModelOptionsHidl {
+    ModelPreferenceHidl modelPreference;
+    ModelPriorityHidl priority;
+    uint32_t latency;
+    uint32_t boundCore;
+    uint32_t batchSize;
+    int32_t presetScenarioId;
+    int32_t[30] reserved;
+};
+
+enum RequestModeHidl : int32_t {
+    NONE,
+    BLOCK,
+    NONBLOCK,
+};
+
+struct RequestPreferenceHidl {
+    EdenPreferenceHidl userPreference;
+};
+
+struct EdenRequestOptionsHidl {
+  EdenPreferenceHidl userPreference;
+  RequestModeHidl requestMode;
+  int32_t[32] reserved;
+};
+
+/*! file format */
+enum EdenModelFileHidl : int32_t {
+    NCP = 0,
+    TFLITE = 1,
+    PROTOTXT = 2,
+    ONNX = 3,
+    NNEF = 4,
+};
+
+enum ModelTypeInMemoryHidl : int32_t {
+    MODEL_TYPE_IN_MEMORY_ANDROID_NN = 0,
+    MODEL_TYPE_IN_MEMORY_TENSORFLOW = 1,
+    MODEL_TYPE_IN_MEMORY_CAFFE = 2,
+    MODEL_TYPE_IN_MEMORY_TFLITE = 3,
+    MODEL_TYPE_IN_MEMORY_CAFFE2 = 4,
+};
+
+struct EdenModelHidl {
+    EdenModelFileHidl modelFileFormat;  /*!< model file format (TFLITE etc) */
+    string pathToModelFile;             /*!< path to model file ending with "\0" */
+    int32_t lengthOfPath;               /*!< length of path string */
+    string pathToWeightBiasFile;        /*!< path to weight & bias file ending with "\0" */
+    int32_t lengthOfWeightBias;         /*!< length of path string */
+};
+
+struct EdenModelFromMemoryHidl {
+    ModelTypeInMemoryHidl modelTypeInMemory;
+    memory mem;
+    uint32_t size;
+    bool encrypted;
+};
+
+struct EdenModelFromFdHidl {
+    ModelTypeInMemoryHidl modelTypeInMemory;
+    handle hd;
+    bool encrypted;
+};
+
+struct CallbackValue {
+    uint64_t pollingAddr;
+    uint64_t value;
+    uint64_t outbufAddr;
+};
+
+struct EdenRequestHidl {
+    uint32_t modelId;
+    uint64_t inputAddr;
+    uint64_t outputAddr;
+    CallbackValue cValue;
+};
+
+enum UserBufferTypeHidl : int32_t {
+    VADDR = 0,
+    FD = 1,
+};
+
+struct UserBufferHidl {
+    UserBufferTypeHidl type;
+    handle hd;
+    uint64_t addr;
+    uint32_t size;
+};
