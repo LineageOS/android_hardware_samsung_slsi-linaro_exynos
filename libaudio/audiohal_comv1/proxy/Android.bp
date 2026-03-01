@@ -122,10 +122,7 @@ cc_library_shared {
     include_dirs: [
         "hardware/samsung_slsi-linaro/exynos/include/libaudio/audiohal_comv1",
         "hardware/samsung_slsi-linaro/exynos/libaudio/audiohal_comv1/odm_specific",
-        "external/tinyalsa/include",
-        "external/tinycompress/include",
         "external/kernel-headers/original/uapi/sound",
-        "external/expat/lib",
     ],
 
     header_libs: [
@@ -137,11 +134,11 @@ cc_library_shared {
     shared_libs: [
         "liblog",
         "libcutils",
-        "libtinyalsa",
+        "libtinyalsav2",
         "libtinycompress",
         "libaudioutils",
-        "libaudioroute",
-        "libalsautils",
+        "libaudioroutev2",
+        "libalsautilsv2",
         "libexpat",
         "libhardware",
     ],
