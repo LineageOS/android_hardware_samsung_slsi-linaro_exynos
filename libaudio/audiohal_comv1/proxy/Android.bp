@@ -18,7 +18,7 @@ soong_namespace {}
 soong_config_module_type {
     name: "audioproxy",
     module_type: "cc_defaults",
-    config_namespace: "universal9830AudioVars",
+    config_namespace: "exynos_audio",
     bool_variables: [
         "use_bta2dp_offload",
         "use_camcorder_quad_mic",
