@@ -6236,14 +6236,14 @@ void * proxy_init(void)
 #ifdef SUPPORT_STHAL_INTERFACE
     aproxy->sthal_state = 0;
 
-    snprintf(sound_trigger_hal_path, sizeof(sound_trigger_hal_path),
-        SOUND_TRIGGER_HAL_LIBRARY_PATH,XSTR(TARGET_SOC_NAME));
+    const struct hw_module_t *module = NULL;
 
-    aproxy->sound_trigger_lib = dlopen(sound_trigger_hal_path, RTLD_NOW);
-    if (aproxy->sound_trigger_lib == NULL) {
-        ALOGE("%s: DLOPEN failed for %s", __func__, sound_trigger_hal_path);
+    int ret = hw_get_module_by_class("sound_trigger", "primary", &module);
+    if (ret) {
+        ALOGE("%s: STHAL load failed: %d (%s)", __func__, ret, strerror(-ret));
     } else {
-        ALOGV("%s: DLOPEN successful for %s", __func__, sound_trigger_hal_path);
+        ALOGV("%s: STHAL load successful", __func__);
+        aproxy->sound_trigger_lib = module->dso;
         aproxy->sound_trigger_open_for_streaming =
                     (int (*)(void))dlsym(aproxy->sound_trigger_lib,
                                                     "sound_trigger_open_for_streaming");
@@ -6281,7 +6281,7 @@ void * proxy_init(void)
             !aproxy->sound_trigger_voicecall_status ||
             !aproxy->sound_trigger_notify_ahal_record_status) {
 
-            ALOGE("%s: Error grabbing functions in %s", __func__, sound_trigger_hal_path);
+            ALOGE("%s: Error grabbing functions in", __func__);
             aproxy->sound_trigger_open_for_streaming = 0;
             aproxy->sound_trigger_read_samples = 0;
             aproxy->sound_trigger_close_for_streaming = 0;
