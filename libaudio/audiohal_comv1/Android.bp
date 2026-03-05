@@ -1,4 +1,8 @@
-soong_namespace {}
+soong_namespace {
+	imports: [
+        "hardware/samsung_slsi-linaro/exynos/libaudio/audiohal_comv1/proxy",
+	],
+}
 
 soong_config_module_type {
     name: "audio_cc_library_shared",
@@ -49,7 +53,7 @@ audio_cc_library_shared {
         "libaudio-ril",
     ] + select(soong_config_variable("exynos_audio", "PROXY_LIBRARY"), {
         any @ flag_val: [flag_val],
-        default: [],
+        default: ["libaudioproxy"],
     }),
 
     header_libs: [
