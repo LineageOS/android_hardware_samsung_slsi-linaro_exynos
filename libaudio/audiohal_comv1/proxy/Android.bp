@@ -19,6 +19,7 @@ soong_config_module_type {
     name: "audioproxy",
     module_type: "cc_defaults",
     config_namespace: "exynos_audio",
+    value_variables: ["offload_effect_library_path"],
     bool_variables: [
         "use_bta2dp_offload",
         "use_camcorder_quad_mic",
@@ -57,6 +58,9 @@ audioproxy {
                 "vendor.samsung_slsi.hardware.ExynosA2DPOffload@2.0",
             ],
             srcs: ["audio_a2dp_proxy.cpp"],
+        },
+        offload_effect_library_path: {
+            cflags: ["-DOFFLOAD_EFFECT_LIBRARY_PATH=%s"],
         },
         use_camcorder_quad_mic: {
             cflags: ["-DSUPPORT_CAMCORDER_QUAD_MIC"],
