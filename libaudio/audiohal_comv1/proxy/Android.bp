@@ -124,7 +124,12 @@ cc_library_shared {
         "external/expat/lib",
     ],
 
-    header_libs: ["libhardware_headers"],
+    header_libs: [
+        "libhardware_headers",
+    ] + select(soong_config_variable("exynos_audio", "proxy_header"), {
+        any @ flag_val: [flag_val],
+        default: [],
+    }),
     shared_libs: [
         "liblog",
         "libcutils",
