@@ -20,9 +20,11 @@ soong_config_module_type {
     module_type: "cc_defaults",
     config_namespace: "exynos_audio",
     bool_variables: [
+        "force_dual_speaker",
         "use_bta2dp_offload",
         "use_camcorder_quad_mic",
         "use_direct_rcvspk_path",
+        "use_quad_mic",
         "use_sec_audio_dump",
         "use_sec_audio_dynamic_nrec",
         "use_sec_audio_param_update",
@@ -32,7 +34,6 @@ soong_config_module_type {
         "use_sec_audio_support_listenback_dspeffect",
         "use_soundtrigger_hal",
         "use_usb_offload",
-        "use_quad_mic",
     ],
     properties: [
         "cflags",
@@ -44,6 +45,9 @@ soong_config_module_type {
 audioproxy {
     name: "audioproxy_defaults",
     soong_config_variables: {
+        force_dual_speaker: {
+            cflags: ["-DUSE_DUAL_SPK_HACK"],
+        },
         use_bta2dp_offload: {
             cflags: ["-DSUPPORT_BTA2DP_OFFLOAD"],
             shared_libs: [
