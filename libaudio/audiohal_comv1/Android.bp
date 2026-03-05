@@ -47,10 +47,8 @@ audio_cc_library_shared {
         "libcutils",
         "libprocessgroup",
         "libaudio-ril",
-    ] + select(soong_config_variable("exynos_audio", "PROXY_LIBRARY"), {
-        any @ flag_val: [flag_val],
-        default: [],
-    }),
+        "libaudioproxy"
+    ],
 
     header_libs: [
         "libhardware_headers",
