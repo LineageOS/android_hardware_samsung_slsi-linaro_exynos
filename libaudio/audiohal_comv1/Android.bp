@@ -5,7 +5,15 @@ soong_config_module_type {
     module_type: "cc_library_shared",
     config_namespace: "ANDROID",
     value_variables: ["target_board_platform"],
+    bool_variables: [
+        "use_bta2dp_offload",
+        "use_direct_multi_channel_stream",
+        "use_mmap_hw_volume_control",
+        "use_soundtrigger_hal",
+        "use_usb_offload",
+    ],
     properties: [
+        "cflags",
         "name",
     ],
 }
@@ -21,21 +29,6 @@ audio_cc_library_shared {
         "-Wno-unused-function",
     ] + select(soong_config_variable("exynos_audio", "PREDEFINED_LOW_CAPTURE_DURATION"), {
         any @ flag_val: ["-DPREDEFINED_LOW_CAPTURE_DURATION=" + flag_val],
-        default: [],
-    }) + select(soong_config_variable("exynos_audio", "SUPPORT_BTA2DP_OFFLOAD"), {
-        true: ["-DSUPPORT_BTA2DP_OFFLOAD"],
-        default: [],
-    }) + select(soong_config_variable("exynos_audio", "SUPPORT_STHAL_INTERFACE"), {
-        true: ["-DSUPPORT_STHAL_INTERFACE"],
-        default: [],
-    }) + select(soong_config_variable("exynos_audio", "SUPPORT_USB_OFFLOAD"), {
-        true: ["-DSUPPORT_USB_OFFLOAD"],
-        default: [],
-    }) + select(soong_config_variable("exynos_audio", "SUPPORT_MMAP_HW_VOLUME_CONTROL"), {
-        true: ["-DSUPPORT_MMAP_HW_VOLUME_CONTROL"],
-        default: [],
-    }) + select(soong_config_variable("exynos_audio", "SUPPORT_DIRECT_MULTI_CHANNEL_STREAM"), {
-        true: ["-DSUPPORT_DIRECT_MULTI_CHANNEL_STREAM"],
         default: [],
     }) + select(soong_config_variable("exynos_audio", "PREDEFINED_USB_PLAYBACK_DURATION"), {
         any @ flag_val: ["-DPREDEFINED_USB_PLAYBACK_DURATION=" + flag_val],
@@ -79,6 +72,21 @@ audio_cc_library_shared {
             conditions_default: {
                 name: "audio.primary.target_board_platform",
             },
+        },
+        use_bta2dp_offload: {
+            cflags: ["-DSUPPORT_BTA2DP_OFFLOAD"],
+        },
+        use_direct_multi_channel_stream: {
+            cflags: ["-DSUPPORT_DIRECT_MULTI_CHANNEL_STREAM"],
+        },
+        use_mmap_hw_volume_control: {
+            cflags: ["-DSUPPORT_MMAP_HW_VOLUME_CONTROL"],
+        },
+        use_soundtrigger_hal: {
+            cflags: ["-DSUPPORT_STHAL_INTERFACE"],
+        },
+        use_usb_offload: {
+            cflags: ["-DSUPPORT_USB_OFFLOAD"],
         },
     },
 
