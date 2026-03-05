@@ -23,25 +23,25 @@ audio_cc_library_shared {
         "-Wno-unused-parameter",
         "-Wno-unused-variable",
         "-Wno-unused-function",
-    ] + select(soong_config_variable("exynos_audio", "PREDEFINED_LOW_CAPTURE_DURATION"), {
+    ] + select(soong_config_variable("exynos_audio", "predefined_low_capture_duration"), {
         any @ flag_val: ["-DPREDEFINED_LOW_CAPTURE_DURATION=" + flag_val],
         default: [],
-    }) + select(soong_config_variable("exynos_audio", "SUPPORT_BTA2DP_OFFLOAD"), {
+    }) + select(soong_config_variable("exynos_audio", "use_bta2dp_offload"), {
         true: ["-DSUPPORT_BTA2DP_OFFLOAD"],
         default: [],
-    }) + select(soong_config_variable("exynos_audio", "SUPPORT_STHAL_INTERFACE"), {
+    }) + select(soong_config_variable("exynos_audio", "use_soundtrigger_hal"), {
         true: ["-DSUPPORT_STHAL_INTERFACE"],
         default: [],
-    }) + select(soong_config_variable("exynos_audio", "SUPPORT_USB_OFFLOAD"), {
+    }) + select(soong_config_variable("exynos_audio", "use_usb_offload"), {
         true: ["-DSUPPORT_USB_OFFLOAD"],
         default: [],
-    }) + select(soong_config_variable("exynos_audio", "SUPPORT_MMAP_HW_VOLUME_CONTROL"), {
+    }) + select(soong_config_variable("exynos_audio", "support_mmap_hw_volume_control"), {
         true: ["-DSUPPORT_MMAP_HW_VOLUME_CONTROL"],
         default: [],
-    }) + select(soong_config_variable("exynos_audio", "SUPPORT_DIRECT_MULTI_CHANNEL_STREAM"), {
+    }) + select(soong_config_variable("exynos_audio", "support_direct_multi_channel_stream"), {
         true: ["-DSUPPORT_DIRECT_MULTI_CHANNEL_STREAM"],
         default: [],
-    }) + select(soong_config_variable("exynos_audio", "PREDEFINED_USB_PLAYBACK_DURATION"), {
+    }) + select(soong_config_variable("exynos_audio", "predefined_usb_playback_duration"), {
         any @ flag_val: ["-DPREDEFINED_USB_PLAYBACK_DURATION=" + flag_val],
         default: [],
     }),
@@ -87,5 +87,4 @@ audio_cc_library_shared {
             },
         },
     },
-
 }
