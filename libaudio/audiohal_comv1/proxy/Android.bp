@@ -23,6 +23,7 @@ soong_config_module_type {
         "use_bta2dp_offload",
         "use_camcorder_quad_mic",
         "use_direct_rcvspk_path",
+        "use_dual_spk_hack",
         "use_sec_audio_dump",
         "use_sec_audio_dynamic_nrec",
         "use_sec_audio_param_update",
@@ -62,6 +63,9 @@ audioproxy {
         },
         use_direct_rcvspk_path: {
             cflags: ["-DSUPPORT_DIRECT_RCVSPK_PATH"],
+        },
+        use_dual_spk_hack: {
+            cflags: ["-DUSE_DUAL_SPK_HACK"],
         },
         use_sec_audio_dump: {
             cflags: ["-DSEC_AUDIO_DUMP"],
