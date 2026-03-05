@@ -33,7 +33,7 @@
 #include "audio_devices.h"
 #include "audio_offload.h"
 
-#include "audio_pcm.h"
+#include <audio_pcm.h>
 #include "audio_mixer.h"
 #include "audio_abox.h"
 #include "audio_streamconfig.h"
