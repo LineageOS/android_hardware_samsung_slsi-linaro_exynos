@@ -28,7 +28,6 @@ soong_config_module_type {
         "use_sec_audio_param_update",
         "use_sec_audio_resampler",
         "use_sec_audio_samsungrecord",
-        "use_sec_audio_sound_trigger_enabled",
         "use_sec_audio_support_gamechat_spk_aec",
         "use_sec_audio_support_listenback_dspeffect",
         "use_soundtrigger_hal",
@@ -82,9 +81,6 @@ audioproxy {
         use_sec_audio_samsungrecord: {
             cflags: ["-DSEC_AUDIO_SAMSUNGRECORD"],
         },
-        use_sec_audio_sound_trigger_enabled: {
-            cflags: ["-DSEC_AUDIO_SOUND_TRIGGER_ENABLED"],
-        },
         use_sec_audio_support_gamechat_spk_aec: {
             cflags: ["-DSEC_AUDIO_SUPPORT_GAMECHAT_SPK_AEC"],
         },
@@ -94,6 +90,7 @@ audioproxy {
         use_soundtrigger_hal: {
             cflags: [
                 "-DSUPPORT_STHAL_INTERFACE",
+                "-DSEC_AUDIO_SOUND_TRIGGER_ENABLED",
                 "-DTARGET_SOC_NAME=exynos9830",
             ],
         },
