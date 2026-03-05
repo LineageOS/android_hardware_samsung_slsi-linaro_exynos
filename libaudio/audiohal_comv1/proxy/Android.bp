@@ -89,7 +89,6 @@ audioproxy {
             cflags: [
                 "-DSUPPORT_STHAL_INTERFACE",
                 "-DSEC_AUDIO_SOUND_TRIGGER_ENABLED",
-                "-DTARGET_SOC_NAME=exynos9830",
             ],
         },
         use_usb_offload: {
@@ -134,6 +133,7 @@ cc_library_shared {
         "libaudioroute",
         "libalsautils",
         "libexpat",
+        "libhardware",
     ],
     cflags: [
         "-Wno-unused-parameter",
