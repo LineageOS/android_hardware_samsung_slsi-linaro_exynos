@@ -6312,9 +6312,10 @@ void * proxy_init(void)
     /* dualspk */
     aproxy->spk_ampL_powerOn = false;
 
+#ifdef FORCE_DUAL_SPK_PATH
     /* Force dual speaker */
     aproxy->support_dualspk = true;
-
+#endif
 
 #ifdef SEC_AUDIO_DUMP
     aproxy->input_cnt = 0;
