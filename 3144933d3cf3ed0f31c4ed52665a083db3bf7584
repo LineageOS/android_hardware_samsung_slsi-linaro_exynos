@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a71aebf5_5a750125",
+        "filename": "libaudio/audiohal_comv1/proxy/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 34207
+      },
+      "writtenOn": "2026-03-06T10:29:46Z",
+      "side": 1,
+      "message": "Maybe let\u0027s name this something like force_dual_speaker, i think that would be more descriptive.",
+      "range": {
+        "startLine": 26,
+        "startChar": 9,
+        "endLine": 26,
+        "endChar": 26
+      },
+      "revId": "3144933d3cf3ed0f31c4ed52665a083db3bf7584",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
