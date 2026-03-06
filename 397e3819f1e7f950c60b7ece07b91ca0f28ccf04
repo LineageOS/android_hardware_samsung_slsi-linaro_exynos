@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fa4a6c98_005ef720",
+        "filename": "libaudio/audiohal_comv1/proxy/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 34207
+      },
+      "writtenOn": "2026-03-06T10:27:01Z",
+      "side": 1,
+      "message": "if all other configs are lowercase, make this one as well.",
+      "range": {
+        "startLine": 129,
+        "startChar": 54,
+        "endLine": 129,
+        "endChar": 66
+      },
+      "revId": "397e3819f1e7f950c60b7ece07b91ca0f28ccf04",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
