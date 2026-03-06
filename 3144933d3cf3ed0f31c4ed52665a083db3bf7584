@@ -22,6 +22,30 @@
       },
       "revId": "3144933d3cf3ed0f31c4ed52665a083db3bf7584",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "526677dc_7a7c2e87",
+        "filename": "libaudio/audiohal_comv1/proxy/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 35850
+      },
+      "writtenOn": "2026-03-06T13:11:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a71aebf5_5a750125",
+      "range": {
+        "startLine": 26,
+        "startChar": 9,
+        "endLine": 26,
+        "endChar": 26
+      },
+      "revId": "3144933d3cf3ed0f31c4ed52665a083db3bf7584",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
