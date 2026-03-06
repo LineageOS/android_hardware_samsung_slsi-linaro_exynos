@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eae5a5c5_640b5930",
+        "filename": "libaudio/audiohal_comv1/proxy/audio_proxy.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 6329,
+      "author": {
+        "id": 34207
+      },
+      "writtenOn": "2026-03-06T10:31:44Z",
+      "side": 1,
+      "message": "All of these guards are unnecessary, as a failed dlopen will just have those values set to NULL as well.",
+      "range": {
+        "startLine": 6329,
+        "startChar": 7,
+        "endLine": 6329,
+        "endChar": 34
+      },
+      "revId": "09db3032e9118a32befe1c4063213871b5d86244",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
