@@ -393,8 +393,7 @@ static int get_pcm_device_number(void *proxy, void *proxy_stream)
                 break;
 
             case ASTREAM_PLAYBACK_DEEP_BUFFER:
-                pcm_device_number = ((apstream->pcmconfig.rate > DEFAULT_MEDIA_SAMPLING_RATE) ?
-                                    DEEP_PLAYBACK_DIRECT_DEVICE : DEEP_PLAYBACK_DEVICE);
+                pcm_device_number = DEEP_PLAYBACK_DEVICE;
                 break;
 
             case ASTREAM_PLAYBACK_COMPR_OFFLOAD:
@@ -3247,11 +3246,6 @@ int proxy_open_playback_stream(void *proxy_stream, int32_t min_size_frames, void
     } else {
         if (apstream->pcm == NULL) {
             struct pcm_config *ppcmconfig = &apstream->pcmconfig;
-            /* Deep playback pcm nodes are selected based on sample rate
-             * - VPCMDAI node (Busy-Domain path) can support upto 48Khz
-             * - RDMA0 node (direct access path) for rate above 48KHz
-             * therefore before opening deep stream pcm node should be updated
-             */
             if (apstream->stream_type == ASTREAM_PLAYBACK_DEEP_BUFFER) {
                 /* Make RDMA0 match deep buffer stream */
                 unsigned char bw = (apstream->pcmconfig.format == PCM_FORMAT_S24_LE) ? 24 : 32;
@@ -3260,7 +3254,6 @@ int proxy_open_playback_stream(void *proxy_stream, int32_t min_size_frames, void
                 proxy_set_mixer_value_int(aproxy, "ABOX RDMA0 Width", bw);
                 ALOGI("proxy-%s: RDMA0 configured SR(%d) period-sz(%d) BW(%d)",
                       __func__, ppcmconfig->rate, ppcmconfig->period_size, bw);
-                sound_device = apstream->sound_device = get_pcm_device_number(aproxy, apstream);
             }
 
             if (apstream->stream_type == ASTREAM_PLAYBACK_MMAP) {
