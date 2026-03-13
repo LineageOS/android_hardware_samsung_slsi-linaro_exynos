@@ -129,9 +129,6 @@ struct audio_proxy_usb
     unsigned int active_playback_picked_rate;
     unsigned int active_playback_picked_channels;
     enum pcm_format active_playback_picked_format;
-
-    bool usb_out_directpath_sup;
-    bool usb_in_directpath_sup;
 };
 
 /* Default values for Media PCM Configuration */

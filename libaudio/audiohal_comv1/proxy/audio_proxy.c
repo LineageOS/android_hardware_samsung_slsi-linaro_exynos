@@ -1738,60 +1738,22 @@ static void make_gain(char *path_name, char *gain_name)
     return ;
 }
 
-static void add_usb_path_extn(
-    void *proxy,
-    audio_usage ausage,
-    char *path_name,
-    device_type device)
+static void add_usb_path_extn(char *path_name, device_type device)
 {
 #ifdef SUPPORT_USB_OFFLOAD
-    struct audio_proxy *aproxy = proxy;
-    char tempStr[MAX_PATH_NAME_LEN] = {0};
-    char* szDump = NULL;
+    if ((is_usb_play_device(device) && usb_out_async) ||
+        (is_usb_mic_device(device) && usb_in_async)) {
+        char* szDump = strstr(path_name, "usb");
+        char tempStr[MAX_PATH_NAME_LEN];
+        char tempRet[MAX_PATH_NAME_LEN];
 
-    /* check whether routing is for USB Headset Out or In
-     * USB-IN: default path is direct i.e usb_incom -> VPCMIN_DAI
-     * USB_out: default path is loop i.e BDMixer -> SIFS0 -> WDMA3-> usb_outcom
-     * Extension are required are
-     * USB-IN case if direct path is not supported and AP/CP call case then
-     * 'loop' extension is added
-     * - usb_incom -> RDMA10 -> SIFS3 -> WDMA4 -> VPCMIN_DAI
-     * USB-OUT case if direct path is supported and CP call case then
-     * 'direct' extension is added
-     * - BDMixer -> Damper -> usb_outcom
-     */
-    if (device == DEVICE_USB_HEADSET_MIC &&
-        !proxy_is_usb_capture_directpath_supported(aproxy->usb_aproxy) &&
-        (is_usage_CPCall(ausage) || is_usage_APCall(ausage))) {
-        szDump = strstr(path_name, "usb");
-
-        if (szDump != NULL) {
-            char tempRet[MAX_PATH_NAME_LEN] = {0};
-            strncpy(tempStr, path_name, szDump - path_name);
-            sprintf(tempRet, "%s%s%s", tempStr, "loop-", szDump);
-            strncpy(path_name, tempRet, MAX_PATH_NAME_LEN);
-            ALOGI("proxy-%s: path: %s", __func__, path_name);
-        }
-    }
-
-    if (device == DEVICE_USB_HEADSET &&
-        proxy_is_usb_playback_directpath_supported(aproxy->usb_aproxy) &&
-        is_usage_CPCall(ausage)) {
-        char tempStr[MAX_PATH_NAME_LEN] = {0};
-        char* szDump;
-        szDump = strstr(path_name, "usb");
-
-        if (szDump != NULL) {
-            char tempRet[MAX_PATH_NAME_LEN] = {0};
-            strncpy(tempStr, path_name, szDump - path_name);
-            sprintf(tempRet, "%s%s%s", tempStr, "direct-", szDump);
-            strncpy(path_name, tempRet, MAX_PATH_NAME_LEN);
-            ALOGI("proxy-%s: path: %s", __func__, path_name);
-        }
+        strncpy(tempStr, path_name, szDump - path_name);
+        sprintf(tempRet, "%s%s%s", tempStr, "async-", szDump);
+        strncpy(path_name, tempRet, MAX_PATH_NAME_LEN);
+        ALOGI("proxy-%s: path: %s", __func__, path_name);
     }
 #endif /* SUPPORT_USB_OFFLOAD */
-
-    return;
+    return ;
 }
 
 static void add_dual_path(void *proxy, char *path_name)
@@ -1919,7 +1881,7 @@ static void set_route(void *proxy, audio_usage ausage, device_type device, int m
 
     make_path(ausage, device, path_name);
     add_dual_path(aproxy, path_name);
-    add_usb_path_extn(aproxy, ausage, path_name, device);
+    add_usb_path_extn(path_name, device);
     audio_route_apply_and_update_path(aproxy->aroute, path_name);
     ALOGI("proxy-%s: routed to %s", __func__, path_name);
 
@@ -1950,7 +1912,7 @@ static void set_reroute(void *proxy, audio_usage old_ausage, device_type old_dev
     // 1. Unset Active Route
     make_path(old_ausage, old_device, path_name);
     add_dual_path(aproxy, path_name);
-    add_usb_path_extn(aproxy, old_ausage, path_name, old_device);
+    add_usb_path_extn(path_name, old_device);
     /* Updated to reset_and_update to match Q audio-route changes
      * otherwise noise issue happened in alarm/ringtone scenarios
      */
@@ -1991,7 +1953,7 @@ static void set_reroute(void *proxy, audio_usage old_ausage, device_type old_dev
     if (new_device != DEVICE_AUX_DIGITAL) {
         make_path(new_ausage, new_device, path_name);
         add_dual_path(aproxy, path_name);
-        add_usb_path_extn(aproxy, new_ausage, path_name, new_device);
+        add_usb_path_extn(path_name, new_device);
         audio_route_apply_and_update_path(aproxy->aroute, path_name);
         ALOGI("proxy-%s: routed %s", __func__, path_name);
 
@@ -2019,7 +1981,7 @@ static void reset_route(void *proxy, audio_usage ausage, device_type device)
 
     make_path(ausage, device, path_name);
     add_dual_path(aproxy, path_name);
-    add_usb_path_extn(aproxy, ausage, path_name, device);
+    add_usb_path_extn(path_name, device);
     audio_route_reset_and_update_path(aproxy->aroute, path_name);
     ALOGI("proxy-%s: unrouted %s", __func__, path_name);
 

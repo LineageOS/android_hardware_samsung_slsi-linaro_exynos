@@ -1121,22 +1121,10 @@ int proxy_is_usb_playback_device_connected(void *proxy_usb)
     return aproxy_usb->usb_out_connected;
 }
 
-int proxy_is_usb_playback_directpath_supported(void *proxy_usb)
-{
-    struct audio_proxy_usb *aproxy_usb = (struct audio_proxy_usb *)proxy_usb;
-    return aproxy_usb->usb_out_directpath_sup;
-}
-
 int proxy_is_usb_capture_device_connected(void *proxy_usb)
 {
     struct audio_proxy_usb *aproxy_usb = (struct audio_proxy_usb *)proxy_usb;
     return aproxy_usb->usb_in_connected;
-}
-
-int proxy_is_usb_capture_directpath_supported(void *proxy_usb)
-{
-    struct audio_proxy_usb *aproxy_usb = (struct audio_proxy_usb *)proxy_usb;
-    return aproxy_usb->usb_in_directpath_sup;
 }
 
 unsigned int proxy_usb_get_capture_samplerate(void *proxy_usb)
@@ -1634,23 +1622,7 @@ int proxy_usb_set_parameters(void *proxy_usb, void *parameters)
                     aproxy_usb->active_playback_picked_channels,
                     aproxy_usb->active_playback_picked_rate,
                     &aproxy_usb->usb_out_active_pcmconfig);
-                /* check and update whether Busy-Domain to USB-OUTCOM direct path
-                 * can be supported or not
-                 * Direct path can be support only when connect USB Headset supports
-                 * below mention configs
-                 * Rate : 48KHz
-                 * Formt: 16bit (Damper component supports 24bit padded to 16bit)
-                 * Channels : Stereo
-                 */
-                if (aproxy_usb->usb_out_active_pcmconfig.rate == DEFAULT_USB_MEDIA_SAMPLING_RATE &&
-                    aproxy_usb->usb_out_active_pcmconfig.format == DEFAULT_USB_MEDIA_FORMAT &&
-                    aproxy_usb->usb_out_active_pcmconfig.channels == DEFAULT_USB_MEDIA_CHANNELS) {
-                    ALOGI("proxy-%s: USB-Out direct path supported", __func__);
-                    aproxy_usb->usb_out_directpath_sup = true;
-                } else {
-                    ALOGI("proxy-%s: USB-Out direct path not supported", __func__);
-                    aproxy_usb->usb_out_directpath_sup = false;
-                }
+
                 //check and enable gain-control for connected USB-Device
                 usb_audio_gain_control_enable(aproxy_usb);
                 pthread_mutex_unlock(&aproxy_usb->usb_lock);
@@ -1688,18 +1660,6 @@ int proxy_usb_set_parameters(void *proxy_usb, void *parameters)
                     DEFAULT_USB_MEDIA_CHANNELS,
                     DEFAULT_USB_MEDIA_SAMPLING_RATE,
                     &aproxy_usb->usb_in_active_pcmconfig);
-                // check and update whether USB IN can be used directly or not
-                if (aproxy_usb->usb_in_active_pcmconfig.rate == DEFAULT_USB_MEDIA_SAMPLING_RATE &&
-                    aproxy_usb->usb_in_active_pcmconfig.format == DEFAULT_USB_MEDIA_FORMAT &&
-                    (aproxy_usb->usb_in_active_pcmconfig.channels == DEFAULT_USB_MEDIA_CHANNELS ||
-                    aproxy_usb->usb_in_active_pcmconfig.channels == DEFAULT_USB_MONO_CHANNEL)) {
-                    ALOGI("proxy-%s: USB-In direct path supported CH[%d]",
-                        __func__, aproxy_usb->usb_in_active_pcmconfig.channels);
-                    aproxy_usb->usb_in_directpath_sup = true;
-                } else {
-                    ALOGI("proxy-%s: USB-In direct path not supported", __func__);
-                    aproxy_usb->usb_in_directpath_sup = false;
-                }
                 //check and enable gain-control for connected USB-Device
                 usb_audio_gain_control_enable(aproxy_usb);
                 pthread_mutex_unlock(&aproxy_usb->usb_lock);
@@ -1725,7 +1685,6 @@ int proxy_usb_set_parameters(void *proxy_usb, void *parameters)
                 usb_close_out_proxy(aproxy_usb);
                 usb_remove_device_info(proxy_usb, USB_OUT);
 
-                aproxy_usb->usb_out_directpath_sup = false;
                 aproxy_usb->usb_out_pcm_card = -1;
                 aproxy_usb->usb_out_pcm_device = -1;
                 aproxy_usb->usb_out_connected = false;
@@ -1747,7 +1706,6 @@ int proxy_usb_set_parameters(void *proxy_usb, void *parameters)
                 usb_close_in_proxy(aproxy_usb);
                 usb_remove_device_info(proxy_usb, USB_IN);
 
-                aproxy_usb->usb_in_directpath_sup = false;
                 aproxy_usb->usb_in_pcm_card = -1;
                 aproxy_usb->usb_in_pcm_device = -1;
                 aproxy_usb->usb_in_connected = false;
@@ -1807,9 +1765,6 @@ void * proxy_usb_init(void)
     aproxy_usb->active_playback_picked_rate = DEFAULT_USB_MEDIA_SAMPLING_RATE;
     aproxy_usb->active_playback_picked_channels = DEFAULT_USB_MEDIA_CHANNELS;
     aproxy_usb->active_playback_picked_format = DEFAULT_USB_MEDIA_FORMAT;
-
-    aproxy_usb->usb_out_directpath_sup = false;
-    aproxy_usb->usb_in_directpath_sup = false;
 
     list_init(&aproxy_usb->usbplayback_devlist);
     list_init(&aproxy_usb->usbcapture_devlist);
