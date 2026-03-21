@@ -46,6 +46,30 @@
       },
       "revId": "3144933d3cf3ed0f31c4ed52665a083db3bf7584",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "21a8d267_a306c370",
+        "filename": "libaudio/audiohal_comv1/proxy/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 32712
+      },
+      "writtenOn": "2026-03-21T14:00:49Z",
+      "side": 1,
+      "message": "I think something like use_dual_spk_path would be more appropriate.\nThe reason we have this on older platforms is that dual speakers mixer paths are separate, for example \"media-dual-speaker\", compared to normal \"media-speaker\". This is simplified on newer platforms where normal paths are directly route to dual speakers.\nThe possibly hacky side of this is that we don\u0027t have logic to enable or disable dual speakers dynamically, but it\u0027s the same case on newer platforms anyways. A variable like use_dual_spk_path can better represent how the code will act when enabled.",
+      "parentUuid": "526677dc_7a7c2e87",
+      "range": {
+        "startLine": 26,
+        "startChar": 9,
+        "endLine": 26,
+        "endChar": 26
+      },
+      "revId": "3144933d3cf3ed0f31c4ed52665a083db3bf7584",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
