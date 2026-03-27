@@ -236,6 +236,10 @@ struct audio_proxy
     bool is_dp_connected;
 };
 
+#ifdef SUPPORT_USB_OFFLOAD
+bool usb_out_async;
+bool usb_in_async;
+#endif
 
 #define MIXER_UPDATE_TIMEOUT    5  // 5 seconds
 
