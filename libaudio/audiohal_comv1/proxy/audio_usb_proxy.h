@@ -26,8 +26,6 @@
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
 
 #define DEFAULT_USB_PERIOD_COUNT        4
-#define DEFAULT_USB_PLAYBACK_DURATION   10 //10ms
-#define DEFAULT_USB_CAPTURE_DURATION    10 //10ms
 
 // Supported formats
 int supported_usb_formats[] = {PCM_FORMAT_S32_LE, PCM_FORMAT_S24_3LE, PCM_FORMAT_S24_LE, PCM_FORMAT_S16_LE, PCM_FORMAT_S8};
@@ -129,9 +127,6 @@ struct audio_proxy_usb
     unsigned int active_playback_picked_rate;
     unsigned int active_playback_picked_channels;
     enum pcm_format active_playback_picked_format;
-
-    bool usb_out_directpath_sup;
-    bool usb_in_directpath_sup;
 };
 
 /* Default values for Media PCM Configuration */
@@ -158,8 +153,10 @@ struct audio_proxy_usb
 #define USB_BUNDLE_GRAY_GAIN_XML_MIXER_PATH     "/vendor/etc/mixer_usb_gray.xml"
 #define USB_BUNDLE_DEFAULT_GAIN_XML_MIXER_PATH     "/vendor/etc/mixer_usb_default.xml"
 
-extern void update_usb_clksource_info(bool flag);
-extern bool is_usb_single_clksource();
+void update_usb_clksource_info(bool flag);
+bool is_usb_single_clksource();
+int get_usb_playback_duration();
+int get_usb_capture_duration();
 
 /* PCM format in increasing preference order */
 static const int pcm_format_order_weight[] = {
