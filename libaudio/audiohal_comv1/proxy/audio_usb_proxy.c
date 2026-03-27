@@ -939,7 +939,7 @@ static void usb_open_out_proxy(struct audio_proxy_usb *aproxy_usb)
         if (aproxy_usb->usb_out_status == false) {
             /* Update period-size using updated config rate */
             ppcmconfig->period_count = DEFAULT_USB_PERIOD_COUNT;
-            ppcmconfig->period_size = (ppcmconfig->rate * DEFAULT_USB_PLAYBACK_DURATION) / 1000;
+            ppcmconfig->period_size = (ppcmconfig->rate * get_usb_playback_duration()) / 1000;
             ppcmconfig->stop_threshold = ULONG_MAX;
             aproxy_usb->usb_out_pcm = pcm_open(aproxy_usb->usb_out_pcm_card,
                                                 aproxy_usb->usb_out_pcm_device,
@@ -1018,7 +1018,7 @@ static void usb_open_in_proxy(struct audio_proxy_usb *aproxy_usb)
     if (aproxy_usb && aproxy_usb->usb_in_connected) {
         /* Update period-size using updated config rate */
         ppcmconfig->period_count = DEFAULT_USB_PERIOD_COUNT;
-        ppcmconfig->period_size = (ppcmconfig->rate * DEFAULT_USB_CAPTURE_DURATION) / 1000;
+        ppcmconfig->period_size = (ppcmconfig->rate * get_usb_capture_duration()) / 1000;
         aproxy_usb->usb_in_pcm = pcm_open(aproxy_usb->usb_in_pcm_card,
                                             aproxy_usb->usb_in_pcm_device,
                                             flags, ppcmconfig);

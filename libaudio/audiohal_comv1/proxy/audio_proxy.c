@@ -222,6 +222,20 @@ bool is_usb_single_clksource()
 
     return aproxy->is_usb_single_clksrc;
 }
+
+int get_usb_playback_duration()
+{
+    if (usb_out_async)
+        return PREDEFINED_USB_ASYNC_PLAYBACK_DURATION;
+    return PREDEFINED_USB_PLAYBACK_DURATION;
+}
+
+int get_usb_capture_duration()
+{
+    if (usb_in_async)
+        return PREDEFINED_USB_ASYNC_CAPTURE_DURATION;
+    return PREDEFINED_USB_CAPTURE_DURATION;
+}
 #endif
 
 /******************************************************************************/
@@ -579,6 +593,29 @@ static void set_usb_playback_modifier(void *proxy)
     struct audio_proxy *aproxy = proxy;
     struct mixer_ctl *ctrl = NULL;
     int ret, val = 0;
+    char *dma;
+    char *sample_rate_name;
+    char *period_size_name;
+    char *channels_name;
+    char *bit_width_name;
+
+#ifdef ABOX_CHANNELS_UDMA_WR0_NAME
+    if (usb_out_async) {
+#endif
+        dma = "WDMA3";
+        sample_rate_name = ABOX_SAMPLE_RATE_WDMA3_NAME;
+        period_size_name = ABOX_PERIOD_SIZE_WDMA3_NAME;
+        channels_name = ABOX_CHANNELS_WDMA3_NAME;
+        bit_width_name = ABOX_BIT_WIDTH_WDMA3_NAME;
+#ifdef ABOX_CHANNELS_UDMA_WR0_NAME
+    }  else {
+        dma = "UDMA WR0";
+        sample_rate_name = ABOX_SAMPLE_RATE_UDMA_WR0_NAME;
+        period_size_name = ABOX_PERIOD_SIZE_UDMA_WR0_NAME;
+        channels_name = ABOX_CHANNELS_UDMA_WR0_NAME;
+        bit_width_name = ABOX_BIT_WIDTH_UDMA_WR0_NAME;
+    }
+#endif
 
     pthread_rwlock_rdlock(&aproxy->mixer_update_lock);
 
@@ -626,64 +663,80 @@ static void set_usb_playback_modifier(void *proxy)
     }
 
     /* USB Playback internal loop sample rate configuration */
-    ctrl = mixer_get_ctl_by_name(aproxy->mixer, ABOX_SAMPLE_RATE_WDMA3_NAME);
+    ctrl = mixer_get_ctl_by_name(aproxy->mixer, sample_rate_name);
     if (ctrl) {
         val = proxy_usb_get_playback_samplerate(aproxy->usb_aproxy);
-        ALOGI("proxy-%s: WDMA3 configured SR(%d)", __func__, val);
+        ALOGI("proxy-%s: %s configured SR(%d)", __func__, dma, val);
         ret = mixer_ctl_set_value(ctrl, 0, val);
         if (ret != 0)
-            ALOGE("proxy-%s: failed to set %s", __func__, ABOX_SAMPLE_RATE_WDMA3_NAME);
+            ALOGE("proxy-%s: failed to set %s", __func__, sample_rate_name);
     } else {
-        ALOGE("proxy-%s: cannot find %s Mixer Control", __func__, ABOX_SAMPLE_RATE_WDMA3_NAME);
+        ALOGE("proxy-%s: cannot find %s Mixer Control", __func__, sample_rate_name);
     }
 
     /* USB Playback internal loop period size configuration */
-    ctrl = mixer_get_ctl_by_name(aproxy->mixer, ABOX_PERIOD_SIZE_WDMA3_NAME);
+    ctrl = mixer_get_ctl_by_name(aproxy->mixer, period_size_name);
     if (ctrl) {
         val = proxy_usb_get_playback_samplerate(aproxy->usb_aproxy);
         /* A-Box limitation all DMA buffer size should be multiple of 16
          * therefore Period Size(Frame Count) is rounded of to nearest 4 multiple
          */
-        val = ((val * PREDEFINED_USB_PLAYBACK_DURATION) / 1000) & ~0x3;
+        val = ((val * get_usb_playback_duration()) / 1000) & ~0x3;
 
-        ALOGI("proxy-%s: WDMA3 configured period-sz(%d)", __func__, val);
+        ALOGI("proxy-%s: %s configured period-sz(%d)", __func__, dma, val);
         ret = mixer_ctl_set_value(ctrl, 0, val);
         if (ret != 0)
-            ALOGE("proxy-%s: failed to set %s", __func__, ABOX_PERIOD_SIZE_WDMA3_NAME);
+            ALOGE("proxy-%s: failed to set %s", __func__, period_size_name);
     } else {
-        ALOGE("proxy-%s: cannot find %s Mixer Control", __func__, ABOX_PERIOD_SIZE_WDMA3_NAME);
+        ALOGE("proxy-%s: cannot find %s Mixer Control", __func__, period_size_name);
     }
 
     /* USB Playback internal loop channels configuration */
-    ctrl = mixer_get_ctl_by_name(aproxy->mixer, ABOX_CHANNELS_WDMA3_NAME);
+    ctrl = mixer_get_ctl_by_name(aproxy->mixer, channels_name);
     if (ctrl) {
         val = proxy_usb_get_playback_channels(aproxy->usb_aproxy);
         /* check if connected USB headset's highest channel count is 6, then forcelly
           * change it to 8 channels as A-Box HW cannot support 6 channel conversion */
         if (val == ABOX_UNSUPPORTED_CHANNELS) {
-            ALOGI("proxy-%s: WDMA3 supported CH is(%d) Changed to (%d)", __func__, val,
+            ALOGI("proxy-%s: %s supported CH is(%d) Changed to (%d)", __func__, dma, val,
                 ABOX_SUPPORTED_MAX_CHANNELS);
             val = ABOX_SUPPORTED_MAX_CHANNELS;
         }
-        ALOGI("proxy-%s: WDMA3 configured CH(%d)", __func__, val);
+        ALOGI("proxy-%s: %s configured CH(%d)", __func__, dma, val);
         ret = mixer_ctl_set_value(ctrl, 0, val);
         if (ret != 0)
-            ALOGE("proxy-%s: failed to set %s", __func__, ABOX_CHANNELS_WDMA3_NAME);
+            ALOGE("proxy-%s: failed to set %s", __func__, channels_name);
     } else {
-        ALOGE("proxy-%s: cannot find %s Mixer Control", __func__, ABOX_CHANNELS_WDMA3_NAME);
+        ALOGE("proxy-%s: cannot find %s Mixer Control", __func__, channels_name);
     }
 
     /* USB Playback internal loop bit width configuration */
-    ctrl = mixer_get_ctl_by_name(aproxy->mixer, ABOX_BIT_WIDTH_WDMA3_NAME);
+    ctrl = mixer_get_ctl_by_name(aproxy->mixer, bit_width_name);
     if (ctrl) {
         val = proxy_usb_get_playback_bitwidth(aproxy->usb_aproxy);
-        ALOGI("proxy-%s: WDMA3 configured BW(%d)", __func__, val);
+        ALOGI("proxy-%s: %s configured BW(%d)", __func__, dma, val);
         ret = mixer_ctl_set_value(ctrl, 0, val);
         if (ret != 0)
-            ALOGE("proxy-%s: failed to set %s", __func__, ABOX_BIT_WIDTH_WDMA3_NAME);
+            ALOGE("proxy-%s: failed to set %s", __func__, bit_width_name);
     } else {
-        ALOGE("proxy-%s: cannot find %s Mixer Control", __func__, ABOX_BIT_WIDTH_WDMA3_NAME);
+        ALOGE("proxy-%s: cannot find %s Mixer Control", __func__, bit_width_name);
     }
+
+#ifdef ABOX_PACKED_UDMA_WR0_NAME
+    /* USB Playback internal loop packed configuration */
+    if (!usb_out_async) {
+        ctrl = mixer_get_ctl_by_name(aproxy->mixer, ABOX_PACKED_UDMA_WR0_NAME);
+        if (ctrl) {
+            val = proxy_usb_get_playback_format(aproxy->usb_aproxy) == PCM_FORMAT_S24_3LE;
+            ALOGI("proxy-%s: UDMA WR0 configured Packed(%d)", __func__, val);
+            ret = mixer_ctl_set_value(ctrl, 0, val);
+            if (ret != 0)
+                ALOGE("proxy-%s: failed to set %s", __func__, ABOX_PACKED_UDMA_WR0_NAME);
+        } else {
+            ALOGE("proxy-%s: cannot find %s Mixer Control", __func__, ABOX_PACKED_UDMA_WR0_NAME);
+        }
+    }
+#endif
 
     pthread_rwlock_unlock(&aproxy->mixer_update_lock);
 
@@ -696,6 +749,29 @@ static void reset_playback_modifier(void *proxy)
     struct audio_proxy *aproxy = proxy;
     struct mixer_ctl *ctrl = NULL;
     int ret, val = 0;
+    char *dma;
+    char *sample_rate_name;
+    char *period_size_name;
+    char *channels_name;
+    char *bit_width_name;
+
+#ifdef ABOX_CHANNELS_UDMA_WR0_NAME
+    if (usb_out_async) {
+#endif
+        dma = "WDMA3";
+        sample_rate_name = ABOX_SAMPLE_RATE_WDMA3_NAME;
+        period_size_name = ABOX_PERIOD_SIZE_WDMA3_NAME;
+        channels_name = ABOX_CHANNELS_WDMA3_NAME;
+        bit_width_name = ABOX_BIT_WIDTH_WDMA3_NAME;
+#ifdef ABOX_CHANNELS_UDMA_WR0_NAME
+    }  else {
+        dma = "UDMA WR0";
+        sample_rate_name = ABOX_SAMPLE_RATE_UDMA_WR0_NAME;
+        period_size_name = ABOX_PERIOD_SIZE_UDMA_WR0_NAME;
+        channels_name = ABOX_CHANNELS_UDMA_WR0_NAME;
+        bit_width_name = ABOX_BIT_WIDTH_UDMA_WR0_NAME;
+    }
+#endif
 
     pthread_rwlock_rdlock(&aproxy->mixer_update_lock);
 
@@ -736,55 +812,55 @@ static void reset_playback_modifier(void *proxy)
     }
 
     /* USB Playback internal loop sample rate configuration */
-    ctrl = mixer_get_ctl_by_name(aproxy->mixer, ABOX_SAMPLE_RATE_WDMA3_NAME);
+    ctrl = mixer_get_ctl_by_name(aproxy->mixer, sample_rate_name);
     if (ctrl) {
         val = DEFAULT_MEDIA_SAMPLING_RATE;
-        ALOGI("proxy-%s: WDMA3 configured SR(%d)", __func__, val);
+        ALOGI("proxy-%s: %s configured SR(%d)", __func__, dma, val);
         ret = mixer_ctl_set_value(ctrl, 0, val);
         if (ret != 0)
-            ALOGE("proxy-%s: failed to set %s", __func__, ABOX_SAMPLE_RATE_WDMA3_NAME);
+            ALOGE("proxy-%s: failed to set %s", __func__, sample_rate_name);
     } else {
-        ALOGE("proxy-%s: cannot find %s Mixer Control", __func__, ABOX_SAMPLE_RATE_WDMA3_NAME);
+        ALOGE("proxy-%s: cannot find %s Mixer Control", __func__, sample_rate_name);
     }
 
     /* USB Playback internal loop period size configuration */
-    ctrl = mixer_get_ctl_by_name(aproxy->mixer, ABOX_PERIOD_SIZE_WDMA3_NAME);
+    ctrl = mixer_get_ctl_by_name(aproxy->mixer, period_size_name);
     if (ctrl) {
         /* A-Box limitation all DMA buffer size should be multiple of 16
          * therefore Period Size(Frame Count) is rounded of to nearest 4 multiple
          */
         val = ((DEFAULT_MEDIA_SAMPLING_RATE * PREDEFINED_DEFAULT_PLAYBACK_DURATION) / 1000) & ~0x3;
 
-        ALOGI("proxy-%s: WDMA3 configured period-sz(%d)", __func__, val);
+        ALOGI("proxy-%s: %s configured period-sz(%d)", __func__, dma, val);
         ret = mixer_ctl_set_value(ctrl, 0, val);
         if (ret != 0)
-            ALOGE("proxy-%s: failed to set %s", __func__, ABOX_PERIOD_SIZE_WDMA3_NAME);
+            ALOGE("proxy-%s: failed to set %s", __func__, period_size_name);
     } else {
-        ALOGE("proxy-%s: cannot find %s Mixer Control", __func__, ABOX_PERIOD_SIZE_WDMA3_NAME);
+        ALOGE("proxy-%s: cannot find %s Mixer Control", __func__, period_size_name);
     }
 
     /* USB Playback internal loop channels configuration */
-    ctrl = mixer_get_ctl_by_name(aproxy->mixer, ABOX_CHANNELS_WDMA3_NAME);
+    ctrl = mixer_get_ctl_by_name(aproxy->mixer, channels_name);
     if (ctrl) {
         val = DEFAULT_MEDIA_CHANNELS;
-        ALOGI("proxy-%s: WDMA3 configured CH(%d)", __func__, val);
+        ALOGI("proxy-%s: %s configured CH(%d)", __func__, dma, val);
         ret = mixer_ctl_set_value(ctrl, 0, val);
         if (ret != 0)
-            ALOGE("proxy-%s: failed to set %s", __func__, ABOX_CHANNELS_WDMA3_NAME);
+            ALOGE("proxy-%s: failed to set %s", __func__, channels_name);
     } else {
-        ALOGE("proxy-%s: cannot find %s Mixer Control", __func__, ABOX_CHANNELS_WDMA3_NAME);
+        ALOGE("proxy-%s: cannot find %s Mixer Control", __func__, channels_name);
     }
 
     /* USB Playback internal loop bit width configuration */
-    ctrl = mixer_get_ctl_by_name(aproxy->mixer, ABOX_BIT_WIDTH_WDMA3_NAME);
+    ctrl = mixer_get_ctl_by_name(aproxy->mixer, bit_width_name);
     if (ctrl) {
         val = DEFAULT_WDMA3_MEDIA_BITWIDTH;
-        ALOGI("proxy-%s: WDMA3 configured BW(%d)", __func__, val);
+        ALOGI("proxy-%s: %s configured BW(%d)", __func__, dma, val);
         ret = mixer_ctl_set_value(ctrl, 0, val);
         if (ret != 0)
-            ALOGE("proxy-%s: failed to set %s", __func__, ABOX_BIT_WIDTH_WDMA3_NAME);
+            ALOGE("proxy-%s: failed to set %s", __func__, bit_width_name);
     } else {
-        ALOGE("proxy-%s: cannot find %s Mixer Control", __func__, ABOX_BIT_WIDTH_WDMA3_NAME);
+        ALOGE("proxy-%s: cannot find %s Mixer Control", __func__, bit_width_name);
     }
 
     pthread_rwlock_unlock(&aproxy->mixer_update_lock);
@@ -831,7 +907,7 @@ static void enable_usb_in_loopback(void *proxy)
             pcmconfig.channels = proxy_usb_get_capture_channels(aproxy->usb_aproxy);
             /* A-Box limitation all DMA buffer size should be multiple of 16
                therefore Period Size(Frame Count) is rounded of to nearest 4 multiple */
-            pcmconfig.period_size = ((pcmconfig.rate * PREDEFINED_USB_CAPTURE_DURATION) / 1000) & ~0x3;
+            pcmconfig.period_size = ((pcmconfig.rate * get_usb_capture_duration()) / 1000) & ~0x3;
             pcmconfig.format = proxy_usb_get_capture_format(aproxy->usb_aproxy);
 
             /* check if connected USB headset's channel count is 6, then forcelly
@@ -1245,11 +1321,7 @@ static void enable_internal_path(void *proxy, int ausage, device_type target_dev
     } else if (is_usb_mic_device(target_device)) {
         if (aproxy->usb_aproxy)
             proxy_usb_open_in_proxy(aproxy->usb_aproxy);
-        if ((is_usage_CPCall(ausage) || is_usage_APCall(ausage))
-#ifdef SEC_AUDIO_SUPPORT_LISTENBACK_DSPEFFECT
-            || ausage == AUSAGE_LISTENBACK
-#endif
-        ) {
+        if (usb_in_async) {
 
             /* Open USB-Headset MIC patch loopback node */
             enable_usb_in_loopback(proxy);
@@ -1329,11 +1401,7 @@ static void disable_internal_path(void *proxy, int ausage, device_type target_de
         /* reset Mixp configuration to default values when path is disabled */
         reset_playback_modifier(aproxy);
     } else if (is_usb_mic_device(target_device)) {
-        if ((is_usage_CPCall(ausage) || is_usage_APCall(ausage))
-#ifdef SEC_AUDIO_SUPPORT_LISTENBACK_DSPEFFECT
-            || ausage == AUSAGE_LISTENBACK
-#endif
-            ) {
+        if (usb_in_async) {
             /* Close USB-Headset MIC patch loopback node */
             disable_usb_in_loopback(proxy);
         }
@@ -2274,7 +2342,7 @@ static int check_direct_config_support(struct audio_proxy_stream *apstream)
             if (apstream->requested_sample_rate != apstream->pcmconfig.rate) {
                 apstream->pcmconfig.rate = apstream->requested_sample_rate;
             }
-            apstream->pcmconfig.period_size = (apstream->pcmconfig.rate * PREDEFINED_USB_PLAYBACK_DURATION) / 1000;
+            apstream->pcmconfig.period_size = (apstream->pcmconfig.rate * get_usb_playback_duration()) / 1000;
 
             // DMA in A-Box is 128-bit aligned, so period_size has to be multiple of 4 frames
             apstream->pcmconfig.period_size &= 0xFFFFFFFC;
@@ -5759,6 +5827,20 @@ int proxy_set_parameters(void *proxy, void *parameters)
 #ifdef SUPPORT_USB_OFFLOAD
     /* Check USB parameters */
     status = proxy_usb_set_parameters((void *)aproxy->usb_aproxy, parameters);
+
+    if(proxy_is_usb_playback_device_connected(aproxy->usb_aproxy)) {
+#ifdef MIXER_CTL_ABOX_USB_OUT_ASYNC
+        struct mixer_ctl *ctrl = mixer_get_ctl_by_name(aproxy->mixer, MIXER_CTL_ABOX_USB_OUT_ASYNC);
+        usb_out_async = mixer_ctl_get_value(ctrl, 0);
+#endif
+    }
+
+    if(proxy_is_usb_capture_device_connected(aproxy->usb_aproxy)) {
+#ifdef MIXER_CTL_ABOX_USB_IN_ASYNC
+        struct mixer_ctl *ctrl = mixer_get_ctl_by_name(aproxy->mixer, MIXER_CTL_ABOX_USB_IN_ASYNC);
+        usb_in_async = mixer_ctl_get_value(ctrl, 0);
+#endif
+    }
 #endif
 
     return status;
