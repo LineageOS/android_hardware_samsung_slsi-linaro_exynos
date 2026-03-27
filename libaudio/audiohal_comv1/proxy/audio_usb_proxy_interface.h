@@ -20,9 +20,7 @@
 /* USB Proxy interface function prototypes */
 int proxy_is_usb_playback_CPCall_prepared(void *proxy_usb);
 int proxy_is_usb_playback_device_connected(void *proxy_usb);
-int proxy_is_usb_playback_directpath_supported(void *proxy_usb);
 int proxy_is_usb_capture_device_connected(void *proxy_usb);
-int proxy_is_usb_capture_directpath_supported(void *proxy_usb);
 unsigned int proxy_usb_get_capture_samplerate(void *proxy_usb);
 unsigned int proxy_usb_get_capture_channels(void *proxy_usb);
 int proxy_usb_get_capture_format(void *proxy_usb);
