@@ -880,6 +880,94 @@ err_open:
     disable_usb_in_loopback(proxy);
     return ;
 }
+
+// select best pcmconfig among requested two configs
+bool proxy_select_best_playback_pcmconfig(
+    void *proxy,
+    void *cur_proxy_stream,
+    int compr_upscaler)
+{
+    struct audio_proxy *aproxy = proxy;
+    struct audio_proxy_stream *cur_apstream = (struct audio_proxy_stream *)cur_proxy_stream;
+
+    /* need to update compress stream's dummy pcmconfig based upon upscaler value
+     * before selecting best pcmconfig
+     * compress offload-upscaler values are defined as shown
+     * 0: 48KHz, 16bit
+     * 1: 192KHz, 24bit
+     * 2: 48KHz, 24bit
+     */
+    if (cur_apstream->stream_type == ASTREAM_PLAYBACK_COMPR_OFFLOAD) {
+        if (compr_upscaler == 2)
+            cur_apstream->pcmconfig = pcm_config_deep_playback;
+        else if (compr_upscaler == 1)
+            cur_apstream->pcmconfig = pcm_config_deep_playback_uhqa;
+        else
+            cur_apstream->pcmconfig = pcm_config_primary_playback;
+
+        ALOGI("%s-%s: upscaler: %d pcmconfig rate[%d] format[%d]",
+            stream_table[cur_apstream->stream_type], __func__, compr_upscaler,
+            cur_apstream->pcmconfig.rate, cur_apstream->pcmconfig.format);
+    }
+
+    return proxy_usb_out_pick_best_pcmconfig(aproxy->usb_aproxy, cur_apstream->pcmconfig);
+}
+
+/* selecting best playback pcm config to configure USB device */
+void proxy_set_best_playback_pcmconfig(
+    void *proxy,
+    void *proxy_stream)
+{
+    struct audio_proxy *aproxy = proxy;
+    struct audio_proxy_stream *apstream = (struct audio_proxy_stream *)proxy_stream;
+    bool reprepare_needed = false;
+
+    if (!aproxy->usb_aproxy) {
+        ALOGI("%s-%s: USB audio offload is not initialized",
+            stream_table[apstream->stream_type], __func__);
+        return;
+    }
+
+    /* update & check whether USB device re-configuraiton is required for best config */
+    reprepare_needed = proxy_usb_out_reconfig_needed(aproxy->usb_aproxy);
+
+    if (is_usb_play_device(aproxy->active_playback_device)
+        && !aproxy->is_usb_single_clksrc && !is_usage_CPCall(aproxy->active_playback_ausage)
+        && reprepare_needed) {
+        /* steps for re-configuring USB device configuration
+         * - Close usb out pcm,
+         * - prepare usb for new config,
+         * - modify sifs0 setting to new selected PCM config
+         * - open usb out pcm
+         */
+        /* close loopback and USB pcm nodes */
+        proxy_usb_close_out_proxy(aproxy->usb_aproxy);
+
+        /* Prepare USB device for new configuraiton */
+        proxy_usb_playback_prepare(aproxy->usb_aproxy, true);
+        /*
+         * SIFS0 switch control is required to reconfigure all running
+         * DMA ASRCs to match new settings
+         */
+        proxy_set_mixer_value_int(aproxy, MIXER_CTL_ABOX_SIFS0_SWITCH, MIXER_OFF);
+        set_usb_playback_modifier(aproxy);
+        proxy_set_mixer_value_int(aproxy, MIXER_CTL_ABOX_SIFS0_SWITCH, MIXER_ON);
+
+        /* re-open loopback and USB pcm nodes */
+        proxy_usb_open_out_proxy(aproxy->usb_aproxy);
+        ALOGI("%s-%s: USB Device re-configured",
+            stream_table[apstream->stream_type], __func__);
+    }
+}
+
+/* reset playback pcm config for USB device default */
+void proxy_reset_playback_pcmconfig(void *proxy)
+{
+    struct audio_proxy *aproxy = proxy;
+
+    /* reset USB playback config to default values */
+    proxy_usb_out_reset_config(aproxy->usb_aproxy);
+}
 #endif
 
 #ifdef SUPPORT_BTA2DP_OFFLOAD
@@ -1105,6 +1193,7 @@ static void prepare_routing_device_config(void *proxy, int ausage, device_type t
             } else if (!is_usage_CPCall(ausage) && !is_usage_Loopback(ausage) &&
                 proxy_is_usb_playback_CPCall_prepared(aproxy->usb_aproxy)) {
                 /* prepare for playback with default configuration */
+                proxy_reset_playback_pcmconfig(aproxy);
                 proxy_usb_playback_prepare(aproxy->usb_aproxy, true);
             }
             /* set USB playback modifier controls */
@@ -3007,12 +3096,11 @@ void *proxy_create_playback_stream(void *proxy, int type, void *config, char *ad
 
     /* Sets basic configuration from Stream Type. */
     switch (apstream->stream_type) {
-        // For VTS
+        // For HiFi Playback over USB
         case ASTREAM_PLAYBACK_NO_ATTRIBUTE:
-            apstream->sound_card = PRIMARY_PLAYBACK_CARD;
-            apstream->sound_device = PRIMARY_PLAYBACK_DEVICE;
-            apstream->pcmconfig = pcm_config_primary_playback;
-
+            apstream->sound_card = DIRECT_PLAYBACK_CARD;
+            apstream->sound_device = DIRECT_PLAYBACK_DEVICE;
+            apstream->pcmconfig = pcm_config_deep_playback_suhqa;
             break;
 
         case ASTREAM_PLAYBACK_PRIMARY:
@@ -3216,6 +3304,14 @@ int proxy_open_playback_stream(void *proxy_stream, int32_t min_size_frames, void
     unsigned int flags;
     int ret = 0;
     char pcm_path[MAX_PCM_PATH_LEN];
+
+#ifdef SUPPORT_USB_OFFLOAD
+    /* Sync USB Config with Stream */
+    if (is_usb_play_device(aproxy->active_playback_device)) {
+        proxy_select_best_playback_pcmconfig(aproxy, apstream, 0);
+        proxy_set_best_playback_pcmconfig(aproxy, apstream);
+    }
+#endif
 
     /* Get PCM/Compress Device */
     sound_card = apstream->sound_card;
@@ -3887,104 +3983,6 @@ uint32_t proxy_get_playback_latency(void *proxy_stream)
     }
 
     return latency;
-}
-
-// select best pcmconfig among requested two configs
-bool proxy_select_best_playback_pcmconfig(
-    void *proxy __unused,
-    void *cur_proxy_stream __unused,
-    int compr_upscaler __unused)
-{
-#ifdef SUPPORT_USB_OFFLOAD
-    struct audio_proxy *aproxy = proxy;
-    struct audio_proxy_stream *cur_apstream = (struct audio_proxy_stream *)cur_proxy_stream;
-
-    /* need to update compress stream's dummy pcmconfig based upon upscaler value
-     * before selecting best pcmconfig
-     * compress offload-upscaler values are defined as shown
-     * 0: 48KHz, 16bit
-     * 1: 192KHz, 24bit
-     * 2: 48KHz, 24bit
-     */
-    if (cur_apstream->stream_type == ASTREAM_PLAYBACK_COMPR_OFFLOAD) {
-        if (compr_upscaler == 2)
-            cur_apstream->pcmconfig = pcm_config_deep_playback;
-        else if (compr_upscaler == 1)
-            cur_apstream->pcmconfig = pcm_config_deep_playback_uhqa;
-        else
-            cur_apstream->pcmconfig = pcm_config_primary_playback;
-
-        ALOGI("%s-%s: upscaler: %d pcmconfig rate[%d] format[%d]",
-            stream_table[cur_apstream->stream_type], __func__, compr_upscaler,
-            cur_apstream->pcmconfig.rate, cur_apstream->pcmconfig.format);
-    }
-
-    return proxy_usb_out_pick_best_pcmconfig(aproxy->usb_aproxy, cur_apstream->pcmconfig);
-#else
-    return false;
-#endif
-}
-
-/* selecting best playback pcm config to configure USB device */
-void proxy_set_best_playback_pcmconfig(
-    void *proxy __unused,
-    void *proxy_stream __unused)
-{
-#ifdef SUPPORT_USB_OFFLOAD
-    struct audio_proxy *aproxy = proxy;
-    struct audio_proxy_stream *apstream = (struct audio_proxy_stream *)proxy_stream;
-    bool reprepare_needed = false;
-
-    if (!aproxy->usb_aproxy) {
-        ALOGI("%s-%s: USB audio offload is not initialized",
-            stream_table[apstream->stream_type], __func__);
-        return;
-    }
-
-    /* update & check whether USB device re-configuraiton is required for best config */
-    reprepare_needed = proxy_usb_out_reconfig_needed(aproxy->usb_aproxy);
-
-    if (is_usb_play_device(aproxy->active_playback_device)
-        && !aproxy->is_usb_single_clksrc && !is_usage_CPCall(aproxy->active_playback_ausage)
-        && reprepare_needed) {
-        /* steps for re-configuring USB device configuration
-         * - Close usb out pcm,
-         * - prepare usb for new config,
-         * - modify sifs0 setting to new selected PCM config
-         * - open usb out pcm
-         */
-        /* close loopback and USB pcm nodes */
-        proxy_usb_close_out_proxy(aproxy->usb_aproxy);
-
-        /* Prepare USB device for new configuraiton */
-        proxy_usb_playback_prepare(aproxy->usb_aproxy, true);
-        /*
-         * SIFS0 switch control is required to reconfigure all running
-         * DMA ASRCs to match new settings
-         */
-        proxy_set_mixer_value_int(aproxy, MIXER_CTL_ABOX_SIFS0_SWITCH, MIXER_OFF);
-        set_usb_playback_modifier(aproxy);
-        proxy_set_mixer_value_int(aproxy, MIXER_CTL_ABOX_SIFS0_SWITCH, MIXER_ON);
-
-        /* re-open loopback and USB pcm nodes */
-        proxy_usb_open_out_proxy(aproxy->usb_aproxy);
-        ALOGI("%s-%s: USB Device re-configured",
-            stream_table[apstream->stream_type], __func__);
-    }
-#endif
-    return;
-}
-
-/* reset playback pcm config for USB device default */
-void proxy_reset_playback_pcmconfig(void *proxy __unused)
-{
-#ifdef SUPPORT_USB_OFFLOAD
-    struct audio_proxy *aproxy = proxy;
-
-    /* reset USB playback config to default values */
-    proxy_usb_out_reset_config(aproxy->usb_aproxy);
-#endif
-    return;
 }
 
 void proxy_dump_playback_stream(void *proxy_stream, int fd)
