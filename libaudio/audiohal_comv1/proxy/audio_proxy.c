@@ -5412,7 +5412,10 @@ void proxy_set_volume(void *proxy, int volume_type, float left, float right)
     if (ctrl) {
         switch(volume_type) {
             case VOLUME_TYPE_OFFLOAD:
-                ret = mixer_ctl_set_array(ctrl, val, sizeof(val)/sizeof(val[0]));
+                for (int i = 0; i < sizeof(val)/sizeof(val[0]); i++) {
+                    ret = mixer_ctl_set_value(ctrl, i, val[i]);
+                    if (ret) break;
+                }
                 break;
             case VOLUME_TYPE_MMAP:
             case VOLUME_TYPE_CALL:
