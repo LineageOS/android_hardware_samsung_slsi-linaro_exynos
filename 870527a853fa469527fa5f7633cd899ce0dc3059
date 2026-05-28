@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "80c34bf2_086f7c52",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 24387
+      },
+      "writtenOn": "2026-05-28T12:34:51Z",
+      "side": 1,
+      "message": "Although this works, I would wait a little bit for me to fix 464300 and merge all the stuff together since the topic is the same. I can try to do some debugging this weekend as now I think I have a clearer picture of what is the problem with 464300 (I probably need to add few lines of code to initialize dcc_sw_mode to 1 if 4K swizzle is selected, but I want to check where the blob is doing it).",
+      "revId": "870527a853fa469527fa5f7633cd899ce0dc3059",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
