@@ -292,6 +292,7 @@ cc_binary {
     name: "android.hardware.neuralnetworks@1.3-service.eden-drv",
     defaults: ["NeuralNetworksEdenDriver_server_defaults"],
     init_rc: ["android.hardware.neuralnetworks@1.3-service.eden-drv.rc"],
+    vintf_fragments: ["android.hardware.neuralnetworks@1.3-service.eden-drv.xml"],
     srcs: ["EdenDriverLib.cpp"],
     target: {
         android_x86_64: {
