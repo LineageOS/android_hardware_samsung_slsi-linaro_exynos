@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3d47b519_9645ce50",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 34512
+      },
+      "writtenOn": "2026-06-24T18:15:38Z",
+      "side": 1,
+      "message": "https://android.googlesource.com/platform/hardware/interfaces/+/97e6692fa81fd6a5e610e91cd85fc8ff7ac54b19",
+      "revId": "1520f72bbf9cf99378841f201b062b5c7f57af16",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
