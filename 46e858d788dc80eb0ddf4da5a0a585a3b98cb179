@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "732599c0_1ee663e4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 36705
+      },
+      "writtenOn": "2026-06-24T09:43:02Z",
+      "side": 1,
+      "message": "Topic seems to be working fine on a25x (s5e8825)",
+      "revId": "46e858d788dc80eb0ddf4da5a0a585a3b98cb179",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
