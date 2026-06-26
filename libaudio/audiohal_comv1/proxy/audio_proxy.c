@@ -348,6 +348,9 @@ static bool is_usb_mic_device(device_type device)
                 device == DEVICE_USB_FULL_MIC ||
                 device == DEVICE_USB_HCO_MIC);
 }
+#else
+static inline bool is_usb_play_device(device_type device __unused) { return false; }
+static inline bool is_usb_mic_device(device_type device __unused) { return false; }
 #endif
 
 #ifdef SUPPORT_QUAD_MIC
@@ -1649,6 +1652,7 @@ static void add_usb_path_extn(
     char *path_name,
     device_type device)
 {
+#ifdef SUPPORT_USB_OFFLOAD
     struct audio_proxy *aproxy = proxy;
     char tempStr[MAX_PATH_NAME_LEN] = {0};
     char* szDump = NULL;
@@ -1693,6 +1697,7 @@ static void add_usb_path_extn(
             ALOGI("proxy-%s: path: %s", __func__, path_name);
         }
     }
+#endif /* SUPPORT_USB_OFFLOAD */
 
     return;
 }
@@ -3702,12 +3707,11 @@ int proxy_getparam_playback_stream(void *proxy_stream, void *query_params, void 
     struct audio_proxy_stream *apstream = (struct audio_proxy_stream *)proxy_stream;
     struct str_parms *query = (struct str_parms *)query_params;
     struct str_parms *reply = (struct str_parms *)reply_params;
+    struct audio_proxy *aproxy = getInstance();
     int val = -1;
     bool str_updated = false;
 
 #ifdef SUPPORT_USB_OFFLOAD
-    struct audio_proxy *aproxy = getInstance();
-
     if (apstream->stream_type == ASTREAM_PLAYBACK_NO_ATTRIBUTE &&
         proxy_is_usb_playback_device_connected(aproxy->usb_aproxy)) {
         // get USB playback param information
