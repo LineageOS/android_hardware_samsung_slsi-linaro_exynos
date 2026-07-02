@@ -1,6 +1,0 @@
-service vendor.keymint-1-0_strongbox /vendor/bin/hw/android.hardware.security.keymint@1.0_strongbox-service
-    interface aidl android.hardware.security.keymint.IKeyMintDevice/strongbox
-    interface aidl android.hardware.security.sharedsecret.ISharedSecret/strongbox
-    class early_hal
-    user system
-    group system drmrpc
