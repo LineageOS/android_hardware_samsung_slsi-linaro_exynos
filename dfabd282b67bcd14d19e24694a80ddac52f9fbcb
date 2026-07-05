@@ -16,6 +16,24 @@
       "message": "Could you keep the HIDL implementation as well?\n\nExynos2100\u0027s libGLES_mali.so still depends on the HIDL version",
       "revId": "dfabd282b67bcd14d19e24694a80ddac52f9fbcb",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "83393c28_809884e9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 35850
+      },
+      "writtenOn": "2026-07-05T21:26:04Z",
+      "side": 1,
+      "message": "Ack, can you test if this works with HIDL? Pick 493322 and 493298 as well please.",
+      "parentUuid": "e576f3a9_2b2fa133",
+      "revId": "dfabd282b67bcd14d19e24694a80ddac52f9fbcb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
