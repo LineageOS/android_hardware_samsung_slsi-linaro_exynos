@@ -25,7 +25,6 @@ cc_library_shared {
     ],
 
     static_libs: [
-        "vendor.samsung_slsi.hardware.SbwcDecompService@1.0",
         "libsbwc",
         "libarect",
     ],
@@ -37,7 +36,6 @@ cc_library_shared {
     shared_libs: [
         "libcutils",
         "libutils",
-        "libhidlbase",
         "liblog",
         "libnativewindow",
         "libbase",
