@@ -29,7 +29,7 @@ cc_library_shared {
         "libhidlbase",
     ],
     static_libs: [
-        "vendor.samsung_slsi.hardware.SbwcDecompService@1.0",
+        "vendor.samsung_slsi.hardware.SbwcDecompService",
     ],
 
     export_include_dirs: ["include"],
