@@ -46,6 +46,10 @@ cc_library_headers {
         "libhardware_headers",
     ],
 
+    defaults: [
+        "libexynos_headers_c2_defaults",
+    ],
+
     export_include_dirs: ["include"],
     proprietary: true,
 }
