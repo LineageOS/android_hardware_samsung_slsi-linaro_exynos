@@ -16,23 +16,26 @@
 
 #include <utility>
 #include <unordered_map>
-
 #include <log/log.h>
 #include <sys/mman.h>
 #include <utils/Trace.h>
 #include <utils/StrongPointer.h>
 #include <vndk/hardware_buffer.h>
 #include <android-base/properties.h>
+#include <android/binder_manager.h>
+#include <android/binder_auto_utils.h>
+#include <aidlcommonsupport/NativeHandle.h>
 
 #include <VendorVideoAPI.h>
 #include <hardware/exynos/sbwcdecoder.h>
+
 #include <vendor/samsung_slsi/hardware/SbwcDecompService/1.0/ISbwcDecompService.h>
+#include <aidl/vendor/samsung_slsi/hardware/SbwcDecompService/ISbwcDecompService.h>
 
 #include "SBWCHelper.h"
 #include "exynos_format.h"
 #include "ExynosGraphicBufferCore.h"
 
-using namespace vendor::samsung_slsi::hardware::SbwcDecompService::V1_0;
 using namespace vendor::graphics;
 
 namespace SBWCHelper
@@ -593,13 +596,11 @@ static uint32_t getAttr(const native_handle_t *handle)
 
 static bool requestDecompress(AHardwareBuffer *inYuvAHB, AHardwareBuffer *inSbwcAHB)
 {
+	namespace aidl_sbwc = aidl::vendor::samsung_slsi::hardware::SbwcDecompService;
+	namespace hidl_sbwc = vendor::samsung_slsi::hardware::SbwcDecompService::V1_0;
+
 	const native_handle_t *yuvHandle = AHardwareBuffer_getNativeHandle(inYuvAHB);
 	const native_handle_t *sbwcHandle = AHardwareBuffer_getNativeHandle(inSbwcAHB);
-
-	android::hardware::hidl_handle yuvHidlHandle(yuvHandle);
-	android::hardware::hidl_handle sbwcHidlHandle(sbwcHandle);
-
-	static android::sp<ISbwcDecompService> sbwcDecompService = nullptr;
 
 	if ((lastSrc == yuvHandle) && (lastDst == sbwcHandle)) {
 		if (debugEnabled) {
@@ -608,26 +609,62 @@ static bool requestDecompress(AHardwareBuffer *inYuvAHB, AHardwareBuffer *inSbwc
 		return true;
 	}
 
-	if (sbwcDecompService == nullptr)
+	static std::shared_ptr<aidl_sbwc::ISbwcDecompService> aidlService = nullptr;
+	static android::sp<hidl_sbwc::ISbwcDecompService> hidlService = nullptr;
+	static bool checkedAIDL = false;
+
+	if (!checkedAIDL) {
+		checkedAIDL = true;
+		const std::string instance = std::string() + aidl_sbwc::ISbwcDecompService::descriptor + "/default";
+		aidlService = aidl_sbwc::ISbwcDecompService::fromBinder(ndk::SpAIBinder(AServiceManager_checkService(instance.c_str())));
+		if (aidlService == nullptr) {
+			ALOGI("[SBWC] %s: \"AIDL SbwcDecompService not found, falling back to HIDL\" %s:%d",
+					__func__, __FILE__, __LINE__);
+		}
+	}
+
+	int32_t attr = getAttr(yuvHandle);
+	int32_t result = android::NO_ERROR;
+
+	if (aidlService != nullptr)
 	{
-		sbwcDecompService = ISbwcDecompService::getService();
-		if (sbwcDecompService == nullptr)
+		aidl::android::hardware::common::NativeHandle sbwcAidlHandle = ::android::makeToAidl(sbwcHandle);
+    	aidl::android::hardware::common::NativeHandle yuvAidlHandle = ::android::makeToAidl(yuvHandle);
+
+		ndk::ScopedAStatus status = aidlService->decode(sbwcAidlHandle, yuvAidlHandle, attr, &result);
+
+		if (!status.isOk() || result != android::NO_ERROR)
+		{
+			ALOGE("[SBWC] %s: \"SbwcDecompService decompression failed\" %s:%d",
+						__func__, __FILE__, __LINE__);
+			lastSrc = lastDst = 0;
+			return false;
+		}
+	}
+	else {
+		android::hardware::hidl_handle yuvHidlHandle(yuvHandle);
+		android::hardware::hidl_handle sbwcHidlHandle(sbwcHandle);
+
+		if (hidlService == nullptr) {
+			hidlService = hidl_sbwc::ISbwcDecompService::getService();
+		}
+
+		if (hidlService == nullptr)
 		{
 			ALOGE("[SBWC] %s: \"SbwcDecompService getting failed\" %s:%d",
 					__func__, __FILE__, __LINE__);
 			return false;
 		}
-	}
 
-	uint32_t attr = getAttr(yuvHandle);
-	uint32_t result = sbwcDecompService->decode(sbwcHidlHandle, yuvHidlHandle, attr);
+		result = hidlService->decode(sbwcHidlHandle, yuvHidlHandle, attr);
 
-	if (result != android::NO_ERROR)
-	{
-		ALOGE("[SBWC] %s: \"SbwcDecompService decompression failed\" %s:%d",
-					__func__, __FILE__, __LINE__);
-		lastSrc = lastDst = 0;
-		return false;
+		if (result != android::NO_ERROR)
+		{
+			ALOGE("[SBWC] %s: \"SbwcDecompService decompression failed\" %s:%d",
+						__func__, __FILE__, __LINE__);
+			lastSrc = lastDst = 0;
+			return false;
+		}
 	}
 
 	lastSrc = yuvHandle;
