@@ -16,23 +16,24 @@
 
 #include <utility>
 #include <unordered_map>
-
+#include <android/binder_manager.h>
+#include <android/binder_auto_utils.h>
+#include <aidlcommonsupport/NativeHandle.h>
 #include <log/log.h>
 #include <sys/mman.h>
 #include <utils/Trace.h>
-#include <utils/StrongPointer.h>
 #include <vndk/hardware_buffer.h>
 #include <android-base/properties.h>
 
 #include <VendorVideoAPI.h>
 #include <hardware/exynos/sbwcdecoder.h>
-#include <vendor/samsung_slsi/hardware/SbwcDecompService/1.0/ISbwcDecompService.h>
+#include <aidl/vendor/samsung_slsi/hardware/SbwcDecompService/ISbwcDecompService.h>
 
 #include "SBWCHelper.h"
 #include "exynos_format.h"
 #include "ExynosGraphicBufferCore.h"
 
-using namespace vendor::samsung_slsi::hardware::SbwcDecompService::V1_0;
+using namespace aidl::vendor::samsung_slsi::hardware::SbwcDecompService;
 using namespace vendor::graphics;
 
 namespace SBWCHelper
@@ -547,7 +548,7 @@ static bool is10Bit(uint32_t format)
 			return true;
 		default:
 			return false;
-        }
+		}
 }
 
 static int64_t allocAHB(AHardwareBuffer *inSbwcAHB, AHardwareBuffer **outYuvAHB)
@@ -596,10 +597,7 @@ static bool requestDecompress(AHardwareBuffer *inYuvAHB, AHardwareBuffer *inSbwc
 	const native_handle_t *yuvHandle = AHardwareBuffer_getNativeHandle(inYuvAHB);
 	const native_handle_t *sbwcHandle = AHardwareBuffer_getNativeHandle(inSbwcAHB);
 
-	android::hardware::hidl_handle yuvHidlHandle(yuvHandle);
-	android::hardware::hidl_handle sbwcHidlHandle(sbwcHandle);
-
-	static android::sp<ISbwcDecompService> sbwcDecompService = nullptr;
+	static std::shared_ptr<ISbwcDecompService> sbwcDecompService = nullptr; 
 
 	if ((lastSrc == yuvHandle) && (lastDst == sbwcHandle)) {
 		if (debugEnabled) {
@@ -610,7 +608,8 @@ static bool requestDecompress(AHardwareBuffer *inYuvAHB, AHardwareBuffer *inSbwc
 
 	if (sbwcDecompService == nullptr)
 	{
-		sbwcDecompService = ISbwcDecompService::getService();
+		const std::string instance = std::string() + ISbwcDecompService::descriptor + "/default";
+		sbwcDecompService = ISbwcDecompService::fromBinder(ndk::SpAIBinder(AServiceManager_waitForService(instance.c_str())));
 		if (sbwcDecompService == nullptr)
 		{
 			ALOGE("[SBWC] %s: \"SbwcDecompService getting failed\" %s:%d",
@@ -619,10 +618,17 @@ static bool requestDecompress(AHardwareBuffer *inYuvAHB, AHardwareBuffer *inSbwc
 		}
 	}
 
-	uint32_t attr = getAttr(yuvHandle);
-	uint32_t result = sbwcDecompService->decode(sbwcHidlHandle, yuvHidlHandle, attr);
+	aidl::android::hardware::common::NativeHandle sbwcAidlHandle =
+			::android::dupToAidl(sbwcHandle);
 
-	if (result != android::NO_ERROR)
+	aidl::android::hardware::common::NativeHandle yuvAidlHandle =
+			::android::dupToAidl(yuvHandle);
+
+	int32_t attr = getAttr(yuvHandle);
+	int32_t result = android::NO_ERROR;
+	ndk::ScopedAStatus status = sbwcDecompService->decode(sbwcAidlHandle, yuvAidlHandle, attr, &result);
+
+	if (!status.isOk() || result != android::NO_ERROR)
 	{
 		ALOGE("[SBWC] %s: \"SbwcDecompService decompression failed\" %s:%d",
 					__func__, __FILE__, __LINE__);
