@@ -34,6 +34,24 @@
       "parentUuid": "e576f3a9_2b2fa133",
       "revId": "dfabd282b67bcd14d19e24694a80ddac52f9fbcb",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c05b9f9b_6a3a1e49",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 34219
+      },
+      "writtenOn": "2026-07-06T06:02:02Z",
+      "side": 1,
+      "message": "Honestly, exynos2100 doesn\u0027t even build this wrapper.\n\nWe only use the HIDL SbwcDecompService, so you can convert the wrapper to full AIDL 🙏",
+      "parentUuid": "83393c28_809884e9",
+      "revId": "dfabd282b67bcd14d19e24694a80ddac52f9fbcb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
