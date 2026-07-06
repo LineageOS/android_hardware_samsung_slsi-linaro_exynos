@@ -16,6 +16,24 @@
       "message": "Isn\u0027t the config completely useless now?",
       "revId": "dd7566e4679a0158e147d46da90ca25075682707",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "73f421c5_ce09684e",
+        "filename": "libaudio/audiohal_comv1/proxy/Android.bp",
+        "patchSetId": 5
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 35850
+      },
+      "writtenOn": "2026-07-06T10:54:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4c167b1b_ff3d68e6",
+      "revId": "dd7566e4679a0158e147d46da90ca25075682707",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
