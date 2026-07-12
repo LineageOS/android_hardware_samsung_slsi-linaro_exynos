@@ -3313,8 +3313,7 @@ int proxy_open_playback_stream(void *proxy_stream, int32_t min_size_frames, void
                         info->buffer_size_frames *= -1;
                     }
 
-                    memset(info->shared_memory_address, 0,
-                           pcm_frames_to_bytes(apstream->pcm, info->buffer_size_frames));
+                    memset(info->shared_memory_address, 0, buf_size);
 
                     ret = pcm_mmap_commit(apstream->pcm, 0, MMAP_PERIOD_SIZE);
                     if (ret < 0) {
