@@ -2171,8 +2171,8 @@ static int out_set_volume(struct audio_stream_out *stream, float left, float rig
         }
 #endif
     } else{
-        ALOGE("%s-%s: Don't support volume control for this stream",
-              stream_table[out->common.stream_type], __func__);
+        ALOGVV("%s-%s: Don't support volume control for this stream",
+               stream_table[out->common.stream_type], __func__);
         ret = -ENOSYS;
     }
 
