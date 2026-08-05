@@ -33,6 +33,7 @@ typedef enum {
     ASTREAM_PLAYBACK_AUX_DIGITAL,       // For HDMI/DP Profile
     ASTREAM_PLAYBACK_INCALL_MUSIC,      // For music uplink during Call
     ASTREAM_PLAYBACK_DIRECT,            // For Direct Output(5.1, 6.1, 7.1channel) Profile
+    ASTREAM_PLAYBACK_VOIP_RX,           // For VoIP RX Output Profile
 
     ASTREAM_CAPTURE_NO_ATTRIBUTE,       // For No Attributes Input Profile
     ASTREAM_CAPTURE_PRIMARY,            // For Primary Input Profile
