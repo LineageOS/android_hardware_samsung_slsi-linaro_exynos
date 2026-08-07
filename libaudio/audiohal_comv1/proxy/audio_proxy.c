@@ -546,10 +546,13 @@ void proxy_set_mixercontrol(struct audio_proxy *aproxy, erap_trigger type, int v
 
     pthread_rwlock_rdlock(&aproxy->mixer_update_lock);
 
+#if defined(ABOX_MUTE_CONTROL_NAME) && defined(ABOX_MUTE_CNT_FOR_PATH_CHANGE)
     if (type == MUTE_CONTROL) {
         ctrl = mixer_get_ctl_by_name(aproxy->mixer, ABOX_MUTE_CONTROL_NAME);
         snprintf(mixer_name, sizeof(mixer_name), ABOX_MUTE_CONTROL_NAME);
-    } else if (type == TICKLE_CONTROL) {
+    } else
+#endif
+    if (type == TICKLE_CONTROL) {
         ctrl = mixer_get_ctl_by_name(aproxy->mixer, ABOX_TICKLE_CONTROL_NAME);
         snprintf(mixer_name, sizeof(mixer_name), ABOX_TICKLE_CONTROL_NAME);
     }
@@ -1955,11 +1958,12 @@ static void do_operations_by_playback_route_set(struct audio_proxy *aproxy,
         fmradio_capture_stop(aproxy);
     }
 
+#if defined(ABOX_MUTE_CONTROL_NAME) && defined(ABOX_MUTE_CNT_FOR_PATH_CHANGE)
     /* Set Mute during APCall Path Change */
     if ((aproxy->active_playback_device != routed_device) &&
         (is_active_usage_APCall(aproxy) || is_usage_APCall(routed_ausage)))
         proxy_set_mixercontrol(aproxy, MUTE_CONTROL, ABOX_MUTE_CNT_FOR_PATH_CHANGE);
-
+#endif
     return ;
 }
 
@@ -5889,6 +5893,7 @@ bool proxy_get_spk_ampL_power(void* proxy)
 
 void proxy_set_primary_mute(void* proxy, int count)
 {
+#if defined(ABOX_MUTE_CONTROL_NAME) && defined(ABOX_MUTE_CNT_FOR_PATH_CHANGE)
     struct audio_proxy *aproxy = proxy;
     struct mixer_ctl *ctrl = NULL;
     char mixer_name[MAX_MIXER_NAME_LEN];
@@ -5910,7 +5915,7 @@ void proxy_set_primary_mute(void* proxy, int count)
     }
 
     pthread_rwlock_unlock(&aproxy->mixer_update_lock);
-
+#endif
     return ;
 }
 
