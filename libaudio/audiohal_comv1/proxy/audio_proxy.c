@@ -1815,8 +1815,10 @@ static void add_usb_path_extn(
 #ifdef SUPPORT_USB_OFFLOAD
     struct audio_proxy *aproxy = proxy;
     char tempStr[MAX_PATH_NAME_LEN] = {0};
+    char tempRet[MAX_PATH_NAME_LEN] = {0};
     char* szDump = NULL;
 
+#ifndef ABOX_PACKED_UDMA_WR0_NAME
     /* check whether routing is for USB Headset Out or In
      * USB-IN: default path is direct i.e usb_incom -> VPCMIN_DAI
      * USB_out: default path is loop i.e BDMixer -> SIFS0 -> WDMA3-> usb_outcom
@@ -1834,7 +1836,7 @@ static void add_usb_path_extn(
         szDump = strstr(path_name, "usb");
 
         if (szDump != NULL) {
-            char tempRet[MAX_PATH_NAME_LEN] = {0};
+
             strncpy(tempStr, path_name, szDump - path_name);
             sprintf(tempRet, "%s%s%s", tempStr, "loop-", szDump);
             strncpy(path_name, tempRet, MAX_PATH_NAME_LEN);
@@ -1857,6 +1859,12 @@ static void add_usb_path_extn(
             ALOGI("proxy-%s: path: %s", __func__, path_name);
         }
     }
+#else /* ifndef ABOX_PACKED_UDMA_WR0_NAME */
+    strncpy(tempStr, path_name, szDump - path_name);
+    sprintf(tempRet, "%s%s%s", tempStr, "async-", szDump);
+    strncpy(path_name, tempRet, MAX_PATH_NAME_LEN);
+    ALOGI("proxy-%s: path: %s", __func__, path_name);
+#endif /* ifndef ABOX_PACKED_UDMA_WR0_NAME */
 #endif /* SUPPORT_USB_OFFLOAD */
 
     return;
