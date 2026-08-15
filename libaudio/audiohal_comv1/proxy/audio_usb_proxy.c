@@ -1634,6 +1634,7 @@ int proxy_usb_set_parameters(void *proxy_usb, void *parameters)
                     aproxy_usb->active_playback_picked_channels,
                     aproxy_usb->active_playback_picked_rate,
                     &aproxy_usb->usb_out_active_pcmconfig);
+#ifndef ABOX_PACKED_UDMA_WR0_NAME
                 /* check and update whether Busy-Domain to USB-OUTCOM direct path
                  * can be supported or not
                  * Direct path can be support only when connect USB Headset supports
@@ -1651,6 +1652,7 @@ int proxy_usb_set_parameters(void *proxy_usb, void *parameters)
                     ALOGI("proxy-%s: USB-Out direct path not supported", __func__);
                     aproxy_usb->usb_out_directpath_sup = false;
                 }
+#endif /* ifndef ABOX_PACKED_UDMA_WR0_NAME */
                 //check and enable gain-control for connected USB-Device
                 usb_audio_gain_control_enable(aproxy_usb);
                 pthread_mutex_unlock(&aproxy_usb->usb_lock);
@@ -1688,6 +1690,7 @@ int proxy_usb_set_parameters(void *proxy_usb, void *parameters)
                     DEFAULT_USB_MEDIA_CHANNELS,
                     DEFAULT_USB_MEDIA_SAMPLING_RATE,
                     &aproxy_usb->usb_in_active_pcmconfig);
+#ifndef ABOX_PACKED_UDMA_WR0_NAME
                 // check and update whether USB IN can be used directly or not
                 if (aproxy_usb->usb_in_active_pcmconfig.rate == DEFAULT_USB_MEDIA_SAMPLING_RATE &&
                     aproxy_usb->usb_in_active_pcmconfig.format == DEFAULT_USB_MEDIA_FORMAT &&
@@ -1700,6 +1703,7 @@ int proxy_usb_set_parameters(void *proxy_usb, void *parameters)
                     ALOGI("proxy-%s: USB-In direct path not supported", __func__);
                     aproxy_usb->usb_in_directpath_sup = false;
                 }
+#endif /* ifndef ABOX_PACKED_UDMA_WR0_NAME */
                 //check and enable gain-control for connected USB-Device
                 usb_audio_gain_control_enable(aproxy_usb);
                 pthread_mutex_unlock(&aproxy_usb->usb_lock);
