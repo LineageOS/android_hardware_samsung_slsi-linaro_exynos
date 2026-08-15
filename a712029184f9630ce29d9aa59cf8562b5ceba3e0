@@ -16,6 +16,24 @@
       "message": "The custom module type can be dropped entirely.",
       "revId": "a712029184f9630ce29d9aa59cf8562b5ceba3e0",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "da8e4a8d_4bcbec10",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 35850
+      },
+      "writtenOn": "2026-08-15T21:18:38Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "f4c7adb7_977628bb",
+      "revId": "a712029184f9630ce29d9aa59cf8562b5ceba3e0",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
