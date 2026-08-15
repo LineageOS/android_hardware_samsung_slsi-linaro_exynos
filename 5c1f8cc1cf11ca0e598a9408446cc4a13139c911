@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2d72f5a5_74031fac",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 35850
+      },
+      "writtenOn": "2026-08-15T21:14:28Z",
+      "side": 1,
+      "message": "After external verification with a s5e9945 developer, this chain has been deemed stable and ready to merge.\n\nPlatforms verified using this chain:\n- s5e9945 (unofficial as of now)\n- s5e9925 (official; to be shipped after submitting)\n- universal9830 (official, shipped)\n\nIn case a future platform requires extra changes, they will be pushed on top.",
+      "revId": "5c1f8cc1cf11ca0e598a9408446cc4a13139c911",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
