@@ -463,68 +463,77 @@ static int get_pcm_device_number(void *proxy, void *proxy_stream)
 /*
  * Internal Path Control Functions for A-Box
  */
+static void disable_loop_pcmnode(struct pcm **pcm, int card, int device, char *name, char mode)
+{
+    char pcm_path[MAX_PCM_PATH_LEN];
+
+    if (*pcm) {
+        snprintf(pcm_path, sizeof(pcm_path), "/dev/snd/pcmC%uD%u%c", card, device, mode);
+
+        pcm_stop(*pcm);
+        pcm_close(*pcm);
+        *pcm = NULL;
+        ALOGI("proxy-%s: %s PCM Device(%s) is stopped & closed!", __func__, name, pcm_path);
+    }
+}
+
+static int enable_loop_pcmnode(struct pcm **pcm, int card, int device, char *name, char mode, int flags, struct pcm_config *pcmconfig)
+{
+    char pcm_path[MAX_PCM_PATH_LEN];
+
+    if (*pcm == NULL) {
+        snprintf(pcm_path, sizeof(pcm_path), "/dev/snd/pcmC%uD%u%c", card, device, mode);
+
+        *pcm = pcm_open(card, device, flags, pcmconfig);
+        if (*pcm && !pcm_is_ready(*pcm)) {
+            /* pcm_open does always return pcm structure, not NULL */
+            ALOGE("proxy-%s: %s PCM Device(%s) with SR(%u) PF(%d) CC(%d) is not ready as error(%s)",
+                  __func__, name, pcm_path, pcmconfig->rate, pcmconfig->format, pcmconfig->channels,
+                  pcm_get_error(*pcm));
+            goto err_open;
+        }
+        ALOGVV("proxy-%s: %s PCM Device(%s) with SR(%u) PF(%d) CC(%d) is opened",
+              __func__, name, pcm_path, pcmconfig->rate, pcmconfig->format, pcmconfig->channels);
+
+        if (pcm_start(*pcm) == 0) {
+            ALOGI("proxy-%s: %s PCM Device(%s) with SR(%u) PF(%d) CC(%d) is opened & started",
+                  __func__, name, pcm_path, pcmconfig->rate, pcmconfig->format, pcmconfig->channels);
+        } else {
+            ALOGE("proxy-%s: %s PCM Device(%s) with SR(%u) PF(%d) CC(%d) cannot be started as error(%s)",
+                  __func__, name, pcm_path, pcmconfig->rate, pcmconfig->format, pcmconfig->channels,
+                  pcm_get_error(*pcm));
+            goto err_open;
+        }
+    }
+    return 0;
+
+err_open:
+    disable_loop_pcmnode(pcm, card, device, name, mode);
+    return -1;
+}
+
 static void disable_voice_tx_direct_in(void *proxy)
 {
     struct audio_proxy *aproxy = proxy;
-    char pcm_path[MAX_PCM_PATH_LEN];
-
-    if (aproxy->call_tx_direct) {
-        snprintf(pcm_path, sizeof(pcm_path), "/dev/snd/pcmC%uD%u%c",
-                 VC_FMRADIO_CAPTURE_CARD, VC_FMRADIO_CAPTURE_DEVICE, 'c');
-
-        pcm_stop(aproxy->call_tx_direct);
-        pcm_close(aproxy->call_tx_direct);
-        aproxy->call_tx_direct= NULL;
-        ALOGI("proxy-%s: Voice Call TX Direct PCM Device(%s) is stopped & closed!", __func__, pcm_path);
-    }
-
-    return;
+    disable_loop_pcmnode(&aproxy->call_tx_direct, VC_FMRADIO_CAPTURE_CARD, VC_FMRADIO_CAPTURE_DEVICE,
+                         "Voice Call TX Direct", 'c');
 }
 
 static void enable_voice_tx_direct_in(void *proxy, device_type target_device __unused)
 {
     struct audio_proxy *aproxy = proxy;
-    struct pcm_config pcmconfig;
-    char pcm_path[MAX_PCM_PATH_LEN];
+    struct pcm_config *pcmconfig;
 
-    if (aproxy->call_tx_direct== NULL) {
 #ifdef SUPPORT_QUAD_MIC
-        if (is_quad_mic_device(target_device) && is_active_usage_CPCall(aproxy)) {
-            pcmconfig = pcm_config_vc_quad_mic_capture;
-            ALOGI("proxy-%s: Quad-Mic config for Voice Call TX Direct ", __func__);
-        } else
+    if (is_quad_mic_device(target_device) && is_active_usage_CPCall(aproxy)) {
+        pcmconfig = &pcm_config_vc_quad_mic_capture;
+        ALOGI("proxy-%s: Quad-Mic config for Voice Call TX Direct ", __func__);
+    } else
 #endif
-            pcmconfig = pcm_config_vc_fmradio_capture;
-        snprintf(pcm_path, sizeof(pcm_path), "/dev/snd/pcmC%uD%u%c",
-                 VC_FMRADIO_CAPTURE_CARD, VC_FMRADIO_CAPTURE_DEVICE, 'c');
+        pcmconfig = &pcm_config_vc_fmradio_capture;
 
-        aproxy->call_tx_direct = pcm_open(VC_FMRADIO_CAPTURE_CARD,
-                                        VC_FMRADIO_CAPTURE_DEVICE,
-                                        PCM_IN | PCM_MONOTONIC, &pcmconfig);
-        if (aproxy->call_tx_direct && !pcm_is_ready(aproxy->call_tx_direct)) {
-            /* pcm_open does always return pcm structure, not NULL */
-            ALOGE("proxy-%s: Voice Call TX Direct PCM Device(%s) with SR(%u) PF(%d) CC(%d) is not ready as error(%s)",
-                  __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels,
-                  pcm_get_error(aproxy->call_tx_direct));
-            goto err_open;
-        }
-        ALOGVV("proxy-%s: Voice Call TX Direct PCM Device(%s) with SR(%u) PF(%d) CC(%d) is opened",
-              __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels);
-
-        if (pcm_start(aproxy->call_tx_direct) == 0) {
-            ALOGI("proxy-%s: Voice Call TX Direct PCM Device(%s) with SR(%u) PF(%d) CC(%d) is opened & started",
-                  __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels);
-        } else {
-            ALOGE("proxy-%s: Voice Call TX Direct PCM Device(%s) with SR(%u) PF(%d) CC(%d) cannot be started as error(%s)",
-                  __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels,
-                  pcm_get_error(aproxy->call_tx_direct));
-            goto err_open;
-        }
-    }
-
-    return;
-err_open:
-    disable_voice_tx_direct_in(proxy);
+    enable_loop_pcmnode(&aproxy->call_tx_direct, VC_FMRADIO_CAPTURE_CARD, VC_FMRADIO_CAPTURE_DEVICE,
+                        "Voice Call TX Direct", 'c', PCM_IN | PCM_MONOTONIC, pcmconfig);
 }
 
 #ifdef SUPPORT_BTA2DP_OFFLOAD
@@ -874,90 +883,47 @@ static void reset_playback_modifier(void *proxy)
 static void disable_usb_in_loopback(void *proxy)
 {
     struct audio_proxy *aproxy = proxy;
-    char pcm_path[MAX_PCM_PATH_LEN];
 
     if (aproxy->support_usb_in_loopback) {
-        snprintf(pcm_path, sizeof(pcm_path), "/dev/snd/pcmC%uD%u%c",
-                 USBIN_LOOPBACK_CARD, USBIN_LOOPBACK_DEVICE, 'p');
-
         /* Disables USB In Loopback Path */
-        if (aproxy->usb_in_loopback) {
-            pcm_stop(aproxy->usb_in_loopback);
-            pcm_close(aproxy->usb_in_loopback);
-            aproxy->usb_in_loopback = NULL;
-
-            ALOGI("proxy-%s: USBIn Loopback PCM Device(%s) is stopped & closed!", __func__, pcm_path);
-        }
+        disable_loop_pcmnode(&aproxy->usb_in_loopback, USBIN_LOOPBACK_CARD, USBIN_LOOPBACK_DEVICE,
+                             "USBIn Loopback", 'p');
     }
-
-    return ;
 }
 
 static void enable_usb_in_loopback(void *proxy)
 {
     struct audio_proxy *aproxy = proxy;
     struct pcm_config pcmconfig = pcm_config_usb_in_loopback;
-    char pcm_path[MAX_PCM_PATH_LEN];
 
     if (aproxy->support_usb_in_loopback) {
-        snprintf(pcm_path, sizeof(pcm_path), "/dev/snd/pcmC%uD%u%c",
-                 USBIN_LOOPBACK_CARD, USBIN_LOOPBACK_DEVICE, 'p');
+        // Updates PCM Configuration same as USB PCM Configuration
+        pcmconfig.rate = proxy_usb_get_capture_samplerate(aproxy->usb_aproxy);
+        pcmconfig.channels = proxy_usb_get_capture_channels(aproxy->usb_aproxy);
+        /* A-Box limitation all DMA buffer size should be multiple of 16
+           therefore Period Size(Frame Count) is rounded of to nearest 4 multiple */
+        pcmconfig.period_size = ((pcmconfig.rate * get_usb_capture_duration()) / 1000) & ~0x3;
+        pcmconfig.format = proxy_usb_get_capture_format(aproxy->usb_aproxy);
+
+        /* check if connected USB headset's channel count is 6, then forcelly
+         * change it to 8 channels as A-Box HW cannot support 6 channel conversion */
+        if (pcmconfig.channels == ABOX_UNSUPPORTED_CHANNELS) {
+            ALOGI("proxy-%s: supported CH is(%d) Changed to (%d)", __func__, pcmconfig.channels,
+                  ABOX_SUPPORTED_MAX_CHANNELS);
+            pcmconfig.channels = ABOX_SUPPORTED_MAX_CHANNELS;
+        }
+
+        /* PCM_FORMAT_S24_3LE (24bit packed) format is not supported by A-Box hardware
+         * therefore forcefully change the format to PCM_FORMAT_S24_LE */
+        if (pcmconfig.format == PCM_FORMAT_S24_3LE) {
+            ALOGI("proxy-%s: USB Format is forcefully changed from 24bit packed -> 24bit padded", __func__);
+            pcmconfig.format = PCM_FORMAT_S24_LE;
+        }
 
         /* Enables USB In Loopback path */
-        if (aproxy->usb_in_loopback == NULL) {
-            // Updates PCM Configuration same as USB PCM Configuration
-            pcmconfig.rate = proxy_usb_get_capture_samplerate(aproxy->usb_aproxy);
-            pcmconfig.channels = proxy_usb_get_capture_channels(aproxy->usb_aproxy);
-            /* A-Box limitation all DMA buffer size should be multiple of 16
-               therefore Period Size(Frame Count) is rounded of to nearest 4 multiple */
-            pcmconfig.period_size = ((pcmconfig.rate * get_usb_capture_duration()) / 1000) & ~0x3;
-            pcmconfig.format = proxy_usb_get_capture_format(aproxy->usb_aproxy);
-
-            /* check if connected USB headset's channel count is 6, then forcelly
-              * change it to 8 channels as A-Box HW cannot support 6 channel conversion */
-            if (pcmconfig.channels == ABOX_UNSUPPORTED_CHANNELS) {
-                ALOGI("proxy-%s: supported CH is(%d) Changed to (%d)", __func__, pcmconfig.channels,
-                    ABOX_SUPPORTED_MAX_CHANNELS);
-                pcmconfig.channels = ABOX_SUPPORTED_MAX_CHANNELS;
-            }
-
-            /* PCM_FORMAT_S24_3LE (24bit packed) format is not supported by A-Box hardware
-             * therefore forcefully change the format to PCM_FORMAT_S24_LE */
-            if (pcmconfig.format == PCM_FORMAT_S24_3LE) {
-                ALOGI("proxy-%s: USB Format is forcefully changed from 24bit packed -> 24bit padded", __func__);
-                pcmconfig.format = PCM_FORMAT_S24_LE;
-            }
-
-            aproxy->usb_in_loopback = pcm_open(USBIN_LOOPBACK_CARD, USBIN_LOOPBACK_DEVICE,
-                                               PCM_OUT | PCM_MONOTONIC, &pcmconfig);
-            if (aproxy->usb_in_loopback && !pcm_is_ready(aproxy->usb_in_loopback)) {
-                /* pcm_open does always return pcm structure, not NULL */
-                ALOGE("proxy-%s: USBIn Loopback PCM Device(%s) with SR(%u) PF(%d) CC(%d) is not ready as error(%s)",
-                      __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels,
-                      pcm_get_error(aproxy->usb_in_loopback));
-                goto err_open;
-            }
-            ALOGI("proxy-%s: USBIn Loopback PCM Device(%s) with SR(%u)PF(%d) CC(%d) PdSz(%d) PdCnt(%d) is opened",
-                  __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels,
-                  pcmconfig.period_size, pcmconfig.period_count);
-
-            if (pcm_start(aproxy->usb_in_loopback) == 0) {
-                ALOGI("proxy-%s: USBIn Loopback PCM Device(%s) with SR(%u) PF(%d) CC(%d) is opened & started",
-                      __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels);
-            } else {
-                ALOGE("proxy-%s: USBIn Loopback PCM Device(%s) with SR(%u) PF(%d) CC(%d) cannot be started as error(%s)",
-                      __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels,
-                      pcm_get_error(aproxy->usb_in_loopback));
-                goto err_open;
-            }
-        }
+        enable_loop_pcmnode(&aproxy->usb_in_loopback, USBIN_LOOPBACK_CARD, USBIN_LOOPBACK_DEVICE,
+                            "USBIn Loopback", 'p', PCM_OUT | PCM_MONOTONIC, &pcmconfig);
     }
-
-    return ;
-
-err_open:
-    disable_usb_in_loopback(proxy);
-    return ;
 }
 
 // select best pcmconfig among requested two configs
@@ -1190,63 +1156,19 @@ static void bta2dp_playback_stop(struct audio_proxy *aproxy)
 static void disable_mute_playback(void *proxy)
 {
     struct audio_proxy *aproxy = proxy;
-    char pcm_path[MAX_PCM_PATH_LEN];
-
-    snprintf(pcm_path, sizeof(pcm_path), "/dev/snd/pcmC%uD%u%c",
-             MUTE_PLAYBACK_CARD, MUTE_PLAYBACK_DEVICE, 'p');
 
     /* Disable Mute playback Path */
-    if (aproxy->mute_playback) {
-        pcm_stop(aproxy->mute_playback);
-        pcm_close(aproxy->mute_playback);
-        aproxy->mute_playback = NULL;
-
-        ALOGI("proxy-%s: Mute playback PCM Device(%s) is stopped & closed!", __func__, pcm_path);
-    }
-
-    return ;
+    disable_loop_pcmnode(&aproxy->mute_playback, MUTE_PLAYBACK_CARD, MUTE_PLAYBACK_DEVICE,
+                         "Mute playback", 'p');
 }
 
 static void enable_mute_playback(void *proxy)
 {
     struct audio_proxy *aproxy = proxy;
-    struct pcm_config pcmconfig = pcm_config_mute_playback;
-    char pcm_path[MAX_PCM_PATH_LEN];
-
-    snprintf(pcm_path, sizeof(pcm_path), "/dev/snd/pcmC%uD%u%c",
-             MUTE_PLAYBACK_CARD, MUTE_PLAYBACK_DEVICE, 'p');
 
     /* Enable Mute playback path */
-    if (aproxy->mute_playback == NULL) {
-        aproxy->mute_playback = pcm_open(MUTE_PLAYBACK_CARD, MUTE_PLAYBACK_DEVICE,
-                                           PCM_OUT | PCM_MONOTONIC, &pcmconfig);
-        if (aproxy->mute_playback && !pcm_is_ready(aproxy->mute_playback)) {
-            /* pcm_open does always return pcm structure, not NULL */
-            ALOGE("proxy-%s: Mute playback PCM Device(%s) with SR(%u) PF(%d) CC(%d) is not ready as error(%s)",
-                  __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels,
-                  pcm_get_error(aproxy->mute_playback));
-            goto err_open;
-        }
-        ALOGI("proxy-%s: Mute playback PCM Device(%s) with SR(%u)PF(%d) CC(%d) PdSz(%d) PdCnt(%d) is opened",
-              __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels,
-              pcmconfig.period_size, pcmconfig.period_count);
-
-        if (pcm_start(aproxy->mute_playback) == 0) {
-            ALOGI("proxy-%s: Mute playback PCM Device(%s) with SR(%u) PF(%d) CC(%d) is opened & started",
-                  __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels);
-        } else {
-            ALOGE("proxy-%s: Mute playback PCM Device(%s) with SR(%u) PF(%d) CC(%d) cannot be started as error(%s)",
-                  __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels,
-                  pcm_get_error(aproxy->mute_playback));
-            goto err_open;
-        }
-    }
-
-    return ;
-
-err_open:
-    disable_mute_playback(proxy);
-    return ;
+    enable_loop_pcmnode(&aproxy->mute_playback, MUTE_PLAYBACK_CARD, MUTE_PLAYBACK_DEVICE,
+                        "Mute playback", 'p', PCM_OUT | PCM_MONOTONIC, &pcm_config_mute_playback);
 }
 
 
@@ -1434,258 +1356,98 @@ static void disable_internal_path(void *proxy, int ausage, device_type target_de
 // Voice Call PCM Handler
 static void voice_rx_stop(struct audio_proxy *aproxy)
 {
-    char pcm_path[MAX_PCM_PATH_LEN];
-
     /* Disables Voice Call RX Playback Stream */
-    if (aproxy->call_rx) {
-        snprintf(pcm_path, sizeof(pcm_path), "/dev/snd/pcmC%uD%u%c",
-                 VRX_PLAYBACK_CARD, VRX_PLAYBACK_DEVICE, 'p');
-
-        pcm_stop(aproxy->call_rx);
-        pcm_close(aproxy->call_rx);
-        aproxy->call_rx = NULL;
-
-        ALOGI("proxy-%s: Voice Call RX PCM Device(%s) is stopped & closed!", __func__, pcm_path);
-    }
+    disable_loop_pcmnode(&aproxy->call_rx, VRX_PLAYBACK_CARD, VRX_PLAYBACK_DEVICE,
+                         "Voice Call RX", 'p');
 }
 
 static int voice_rx_start(struct audio_proxy *aproxy)
 {
-    struct pcm_config pcmconfig = pcm_config_voicerx_playback;
-    char pcm_path[MAX_PCM_PATH_LEN];
-
     /* Enables Voice Call RX Playback Stream */
-    if (aproxy->call_rx == NULL) {
-        snprintf(pcm_path, sizeof(pcm_path), "/dev/snd/pcmC%uD%u%c",
-                 VRX_PLAYBACK_CARD, VRX_PLAYBACK_DEVICE, 'p');
-
-        aproxy->call_rx = pcm_open(VRX_PLAYBACK_CARD, VRX_PLAYBACK_DEVICE,
-                                   PCM_OUT | PCM_MONOTONIC, &pcmconfig);
-        if (aproxy->call_rx && !pcm_is_ready(aproxy->call_rx)) {
-            /* pcm_open does always return pcm structure, not NULL */
-            ALOGE("proxy-%s: Voice Call RX PCM Device(%s) with SR(%u) PF(%d) CC(%d) is not ready as error(%s)",
-                  __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels,
-                  pcm_get_error(aproxy->call_rx));
-            goto err_open;
-        }
-        ALOGVV("proxy-%s: Voice Call RX PCM Device(%s) with SR(%u) PF(%d) CC(%d) is opened",
-              __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels);
-
-        if (pcm_start(aproxy->call_rx) == 0) {
-            ALOGI("proxy-%s: Voice Call RX PCM Device(%s) with SR(%u) PF(%d) CC(%d) is opened & started",
-                  __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels);
-        } else {
-            ALOGE("proxy-%s: Voice Call RX PCM Device(%s) with SR(%u) PF(%d) CC(%d) cannot be started as error(%s)",
-                  __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels,
-                  pcm_get_error(aproxy->call_rx));
-            goto err_open;
-        }
-    }
-    return 0;
-
-err_open:
-    voice_rx_stop(aproxy);
-    return -1;
+    return enable_loop_pcmnode(&aproxy->call_rx, VRX_PLAYBACK_CARD, VRX_PLAYBACK_DEVICE,
+                               "Voice Call RX", 'p', PCM_OUT | PCM_MONOTONIC, &pcm_config_voicerx_playback);
 }
 
 static void voice_tx_stop(struct audio_proxy *aproxy)
 {
-    char pcm_path[MAX_PCM_PATH_LEN];
-
     /* Disables Voice Call TX Capture Stream */
-    if (aproxy->call_tx) {
-        snprintf(pcm_path, sizeof(pcm_path), "/dev/snd/pcmC%uD%u%c",
-                 VTX_CAPTURE_CARD, VTX_CAPTURE_DEVICE, 'c');
-
-        pcm_stop(aproxy->call_tx);
-        pcm_close(aproxy->call_tx);
-        aproxy->call_tx = NULL;
-        ALOGI("proxy-%s: Voice Call TX PCM Device(%s) is stopped & closed!", __func__, pcm_path);
-    }
+    disable_loop_pcmnode(&aproxy->call_tx, VTX_CAPTURE_CARD, VTX_CAPTURE_DEVICE,
+                         "Voice Call TX", 'c');
 }
 
 static int voice_tx_start(struct audio_proxy *aproxy)
 {
-    struct pcm_config pcmconfig;
-    char pcm_path[MAX_PCM_PATH_LEN];
+    int ret;
+    struct pcm_config *pcmconfig;
+
+#ifdef SUPPORT_QUAD_MIC
+    if (is_quad_mic_device(aproxy->active_capture_device) && is_active_usage_CPCall(aproxy)) {
+        pcmconfig = &pcm_config_quad_mic_voicetx_capture;
+        ALOGI("proxy-%s: Quad-Mic config for Voice Call TX", __func__);
+    } else
+#endif
+        pcmconfig = &pcm_config_voicetx_capture;
 
     /* Enables Voice Call TX Capture Stream */
-    if (aproxy->call_tx == NULL) {
-#ifdef SUPPORT_QUAD_MIC
-        if (is_quad_mic_device(aproxy->active_capture_device) && is_active_usage_CPCall(aproxy)) {
-            pcmconfig = pcm_config_quad_mic_voicetx_capture;
-            ALOGI("proxy-%s: Quad-Mic config for Voice Call TX", __func__);
-        } else
-#endif
-            pcmconfig = pcm_config_voicetx_capture;
-        snprintf(pcm_path, sizeof(pcm_path), "/dev/snd/pcmC%uD%u%c",
-                 VTX_CAPTURE_CARD, VTX_CAPTURE_DEVICE, 'c');
-
-        aproxy->call_tx = pcm_open(VTX_CAPTURE_CARD, VTX_CAPTURE_DEVICE,
-                                   PCM_IN | PCM_MONOTONIC, &pcmconfig);
-        if (aproxy->call_tx && !pcm_is_ready(aproxy->call_tx)) {
-            /* pcm_open does always return pcm structure, not NULL */
-            ALOGE("proxy-%s: Voice Call TX PCM Device(%s) with SR(%u) PF(%d) CC(%d) is not ready as error(%s)",
-                  __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels,
-                  pcm_get_error(aproxy->call_tx));
-            goto err_open;
-        }
-        ALOGVV("proxy-%s: Voice Call TX PCM Device(%s) with SR(%u) PF(%d) CC(%d) is opened",
-              __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels);
-
-        if (pcm_start(aproxy->call_tx) == 0) {
-            ALOGI("proxy-%s: Voice Call TX PCM Device(%s) with SR(%u) PF(%d) CC(%d) is opened & started",
-                  __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels);
-        } else {
-            ALOGE("proxy-%s: Voice Call TX PCM Device(%s) with SR(%u) PF(%d) CC(%d) cannot be started as error(%s)",
-                  __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels,
-                  pcm_get_error(aproxy->call_tx));
-            goto err_open;
-        }
-    }
-    return 0;
-
-err_open:
-    voice_tx_stop(aproxy);
-    return -1;
+    return enable_loop_pcmnode(&aproxy->call_tx, VTX_CAPTURE_CARD, VTX_CAPTURE_DEVICE,
+                               "Voice Call TX", 'c', PCM_IN | PCM_MONOTONIC, pcmconfig);
 }
 
 // FM Radio PCM Handler
 static void fmradio_playback_stop(struct audio_proxy *aproxy)
 {
-    char pcm_path[MAX_PCM_PATH_LEN];
-
     /* Disables FM Radio Playback Stream */
-    if (aproxy->fm_playback) {
-        snprintf(pcm_path, sizeof(pcm_path), "/dev/snd/pcmC%uD%u%c",
-                 FMRADIO_PLAYBACK_CARD, FMRADIO_PLAYBACK_DEVICE, 'p');
-
-        pcm_stop(aproxy->fm_playback);
-        pcm_close(aproxy->fm_playback);
-        aproxy->fm_playback = NULL;
-
-        ALOGI("proxy-%s: FM Radio Playback PCM Device(%s) is stopped & closed!", __func__, pcm_path);
-    }
+    disable_loop_pcmnode(&aproxy->fm_playback, FMRADIO_PLAYBACK_CARD, FMRADIO_PLAYBACK_DEVICE,
+                         "FM Radio", 'p');
 }
 
 static int fmradio_playback_start(struct audio_proxy *aproxy)
 {
     struct pcm_config pcmconfig = pcm_config_fmradio_playback;
-    char pcm_path[MAX_PCM_PATH_LEN];
 
-    /* Enables RM Radio Playback Stream */
-    if (aproxy->fm_playback == NULL) {
-        snprintf(pcm_path, sizeof(pcm_path), "/dev/snd/pcmC%uD%u%c",
-                 FMRADIO_PLAYBACK_CARD, FMRADIO_PLAYBACK_DEVICE, 'p');
-
-        /* Remote-Mic case period-size is configured as 20ms to match RMIC-SE solution requirement */
-        if (aproxy->active_playback_ausage == AUSAGE_REMOTE_MIC) {
-            pcmconfig.period_size = (pcmconfig.rate * PREDEFINED_REMOTE_MIC_DURATION)/1000;
-            ALOGI("proxy-%s: Set Remote-Mic Playback PCM Period-size(%d)",
-                  __func__, pcmconfig.period_size);
-        }
-
-        aproxy->fm_playback = pcm_open(FMRADIO_PLAYBACK_CARD, FMRADIO_PLAYBACK_DEVICE,
-                                       PCM_OUT | PCM_MONOTONIC, &pcmconfig);
-        if (aproxy->fm_playback && !pcm_is_ready(aproxy->fm_playback)) {
-            /* pcm_open does always return pcm structure, not NULL */
-            ALOGE("proxy-%s: FM Radio Playback PCM Device(%s) with SR(%u) PF(%d) CC(%d) is not ready as error(%s)",
-                  __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels,
-                  pcm_get_error(aproxy->fm_playback));
-            goto err_open;
-        }
-        ALOGVV("proxy-%s: FM Radio Playback PCM Device(%s) with SR(%u) PF(%d) CC(%d) is opened",
-              __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels);
-
-        if (pcm_start(aproxy->fm_playback) == 0) {
-            ALOGI("proxy-%s: FM Radio Playback PCM Device(%s) with SR(%u) PF(%d) CC(%d) is opened & started",
-                  __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels);
-        } else {
-            ALOGE("proxy-%s: FM Radio Playback PCM Device(%s) with SR(%u) PF(%d) CC(%d) cannot be started as error(%s)",
-                  __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels,
-                  pcm_get_error(aproxy->fm_playback));
-            goto err_open;
-        }
+    /* Remote-Mic case period-size is configured as 20ms to match RMIC-SE solution requirement */
+    if (aproxy->active_playback_ausage == AUSAGE_REMOTE_MIC) {
+        pcmconfig.period_size = (pcmconfig.rate * PREDEFINED_REMOTE_MIC_DURATION)/1000;
+        ALOGI("proxy-%s: Set Remote-Mic Playback PCM Period-size(%d)",
+              __func__, pcmconfig.period_size);
     }
 
-    return 0;
-
-err_open:
-    fmradio_playback_stop(aproxy);
-    return -1;
+    /* Enables RM Radio Playback Stream */
+    return enable_loop_pcmnode(&aproxy->fm_playback, FMRADIO_PLAYBACK_CARD, FMRADIO_PLAYBACK_DEVICE,
+                               "FM Radio", 'p', PCM_OUT | PCM_MONOTONIC, &pcmconfig);
 }
 
 static void fmradio_capture_stop(struct audio_proxy *aproxy)
 {
-    char pcm_path[MAX_PCM_PATH_LEN];
-
     /* Disables FM Radio Capture Stream */
-    if (aproxy->fm_capture) {
-        snprintf(pcm_path, sizeof(pcm_path), "/dev/snd/pcmC%uD%u%c",
-                 VC_FMRADIO_CAPTURE_CARD, VC_FMRADIO_CAPTURE_DEVICE, 'c');
-
-        pcm_stop(aproxy->fm_capture);
-        pcm_close(aproxy->fm_capture);
-        aproxy->fm_capture = NULL;
-
-        ALOGI("proxy-%s: FM Radio Capture PCM Device(%s) is stopped & closed!", __func__, pcm_path);
-    }
+    disable_loop_pcmnode(&aproxy->fm_capture, VC_FMRADIO_CAPTURE_CARD, VC_FMRADIO_CAPTURE_DEVICE,
+                         "FM Radio Capture", 'c');
 }
 
 static int fmradio_capture_start(struct audio_proxy *aproxy)
 {
     struct pcm_config pcmconfig = pcm_config_vc_fmradio_capture;
-    char pcm_path[MAX_PCM_PATH_LEN];
+
+    /* Remote-Mic/Listenback case pcm configuration are updated */
+    if (aproxy->active_playback_ausage == AUSAGE_REMOTE_MIC) {
+        /* Remotic-mic case period-size is configured as 20ms to match RMIC-SE solution requirement and
+         * channels to 8 sync with seriallif Mic channels */
+        pcmconfig.channels = MEDIA_8_CHANNELS; // required to match seriallif channels
+        pcmconfig.period_size = (pcmconfig.rate * PREDEFINED_REMOTE_MIC_DURATION)/1000;
+        ALOGI("proxy-%s: Set Remote-Mic capture PCM Period-size(%d)",
+              __func__, pcmconfig.period_size);
+    }
+#ifdef SEC_AUDIO_SUPPORT_LISTENBACK_DSPEFFECT
+    else if (aproxy->active_capture_ausage == AUSAGE_LISTENBACK &&
+                aproxy->active_capture_device == DEVICE_MAIN_MIC) {
+        /* Listen back Main-Mic case channels set to 8 to match seriallif channels */
+        pcmconfig.channels = MEDIA_8_CHANNELS; // required to match seriallif channels
+    }
+#endif
 
     /* Enables RM Radio Capture Stream */
-    if (aproxy->fm_capture == NULL) {
-        snprintf(pcm_path, sizeof(pcm_path), "/dev/snd/pcmC%uD%u%c",
-                 VC_FMRADIO_CAPTURE_CARD, VC_FMRADIO_CAPTURE_DEVICE, 'c');
-
-        /* Remote-Mic/Listenback case pcm configuration are updated */
-        if (aproxy->active_playback_ausage == AUSAGE_REMOTE_MIC) {
-            /* Remotic-mic case period-size is configured as 20ms to match RMIC-SE solution requirement and
-             * channels to 8 sync with seriallif Mic channels */
-            pcmconfig.channels = MEDIA_8_CHANNELS; // required to match seriallif channels
-            pcmconfig.period_size = (pcmconfig.rate * PREDEFINED_REMOTE_MIC_DURATION)/1000;
-            ALOGI("proxy-%s: Set Remote-Mic capture PCM Period-size(%d)",
-                  __func__, pcmconfig.period_size);
-        }
-#ifdef SEC_AUDIO_SUPPORT_LISTENBACK_DSPEFFECT
-        else if (aproxy->active_capture_ausage == AUSAGE_LISTENBACK &&
-                    aproxy->active_capture_device == DEVICE_MAIN_MIC) {
-            /* Listen back Main-Mic case channels set to 8 to match seriallif channels */
-            pcmconfig.channels = MEDIA_8_CHANNELS; // required to match seriallif channels
-        }
-#endif
-        aproxy->fm_capture = pcm_open(VC_FMRADIO_CAPTURE_CARD, VC_FMRADIO_CAPTURE_DEVICE,
-                                                           PCM_IN | PCM_MONOTONIC, &pcmconfig);
-        if (aproxy->fm_capture && !pcm_is_ready(aproxy->fm_capture)) {
-            /* pcm_open does always return pcm structure, not NULL */
-            ALOGE("proxy-%s: FM Radio Capture PCM Device(%s) with SR(%u) PF(%d) CC(%d) is not ready as error(%s)",
-                  __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels,
-                  pcm_get_error(aproxy->fm_capture));
-            goto err_open;
-        }
-        ALOGVV("proxy-%s: FM Radio Capture PCM Device(%s) with SR(%u) PF(%d) CC(%d) is opened",
-              __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels);
-
-        if (pcm_start(aproxy->fm_capture) == 0) {
-            ALOGI("proxy-%s: FM Radio Capture PCM Device(%s) with SR(%u) PF(%d) CC(%d) is opened & started",
-                  __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels);
-        } else {
-            ALOGE("proxy-%s: FM Radio Capture PCM Device(%s) with SR(%u) PF(%d) CC(%d) cannot be started as error(%s)",
-                  __func__, pcm_path, pcmconfig.rate, pcmconfig.format, pcmconfig.channels,
-                  pcm_get_error(aproxy->fm_capture));
-            goto err_open;
-        }
-    }
-
-    return 0;
-
-err_open:
-    fmradio_capture_stop(aproxy);
-    return -1;
+    return enable_loop_pcmnode(&aproxy->fm_capture, VC_FMRADIO_CAPTURE_CARD, VC_FMRADIO_CAPTURE_DEVICE,
+                               "FM Radio Capture", 'c', PCM_IN | PCM_MONOTONIC, &pcmconfig);
 }
 
 struct mixer {
