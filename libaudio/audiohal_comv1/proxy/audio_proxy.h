@@ -194,9 +194,12 @@ struct audio_proxy
 #endif
 
     /* PCM Devices for Voice Call */
-    struct pcm *call_rx;    // CP to Output Devices
-    struct pcm *call_tx;    // Input Devices to CP
+    struct pcm *call_rx;           // CP to Output Devices
+    struct pcm *call_tx;           // Input Devices to CP
     struct pcm *call_tx_direct;    // Direct routing for Input Devices
+#ifdef VTX_REF_CAPTURE_DEVICE
+    struct pcm *call_tx_ref;       // Reference Input to CP
+#endif
 
     // Call State
     bool call_state;
