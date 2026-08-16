@@ -1373,6 +1373,11 @@ static void voice_tx_stop(struct audio_proxy *aproxy)
     /* Disables Voice Call TX Capture Stream */
     disable_loop_pcmnode(&aproxy->call_tx, VTX_CAPTURE_CARD, VTX_CAPTURE_DEVICE,
                          "Voice Call TX", 'c');
+#ifdef VTX_REF_CAPTURE_DEVICE
+    /* Disables Voice Call Ref TX Capture Stream */
+    disable_loop_pcmnode(&aproxy->call_tx_ref, VTX_REF_CAPTURE_CARD, VTX_REF_CAPTURE_DEVICE,
+                         "Voice Call Ref TX", 'c');
+#endif
 }
 
 static int voice_tx_start(struct audio_proxy *aproxy)
@@ -1389,8 +1394,17 @@ static int voice_tx_start(struct audio_proxy *aproxy)
         pcmconfig = &pcm_config_voicetx_capture;
 
     /* Enables Voice Call TX Capture Stream */
-    return enable_loop_pcmnode(&aproxy->call_tx, VTX_CAPTURE_CARD, VTX_CAPTURE_DEVICE,
-                               "Voice Call TX", 'c', PCM_IN | PCM_MONOTONIC, pcmconfig);
+    ret = enable_loop_pcmnode(&aproxy->call_tx, VTX_CAPTURE_CARD, VTX_CAPTURE_DEVICE,
+                              "Voice Call TX", 'c', PCM_IN | PCM_MONOTONIC, pcmconfig);
+
+#ifdef VTX_REF_CAPTURE_DEVICE
+    if (!ret)
+        /* Enables Voice Call Ref TX Capture Stream */
+        ret = enable_loop_pcmnode(&aproxy->call_tx_ref, VTX_REF_CAPTURE_CARD, VTX_REF_CAPTURE_DEVICE,
+                                  "Voice Call Ref TX", 'c', PCM_IN | PCM_MONOTONIC, &pcm_config_voicetx_capture);
+#endif
+
+    return ret;
 }
 
 // FM Radio PCM Handler
@@ -6113,6 +6127,7 @@ void * proxy_init(void)
     aproxy->call_rx = NULL;
     aproxy->call_tx = NULL;
     aproxy->call_tx_direct = NULL;
+    aproxy->call_tx_ref = NULL;
 
     // FM Radio PCM Devices
     aproxy->fm_playback = NULL;
