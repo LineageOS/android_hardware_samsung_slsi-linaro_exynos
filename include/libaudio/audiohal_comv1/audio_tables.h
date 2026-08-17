@@ -33,7 +33,9 @@ char * stream_table[ASTREAM_CNT] = {
     [ASTREAM_PLAYBACK_AUX_DIGITAL]   = "aux_out",
     [ASTREAM_PLAYBACK_INCALL_MUSIC]  = "incall_music",
     [ASTREAM_PLAYBACK_DIRECT]        = "direct_out",
+#ifdef VOIP_RX_PLAYBACK_DEVICE
     [ASTREAM_PLAYBACK_VOIP_RX]       = "voip_rx_out",
+#endif
 
     [ASTREAM_CAPTURE_NO_ATTRIBUTE]   = "no_attribute_in",
     [ASTREAM_CAPTURE_PRIMARY]        = "primary_in",

@@ -3854,10 +3854,12 @@ static int adev_open_output_stream(
             out->common.stream_type = ASTREAM_PLAYBACK_NO_ATTRIBUTE;
             out->common.stream_usage = AUSAGE_MEDIA;
         }
+#ifdef VOIP_RX_PLAYBACK_DEVICE
     } else if ((flags & AUDIO_OUTPUT_FLAG_VOIP_RX) != 0) {
         ALOGI("device-%s: requested to open VOIP_RX playback stream", __func__);
         out->common.stream_type = ASTREAM_PLAYBACK_VOIP_RX;
         out->common.stream_usage = AUSAGE_COMMUNICATION;
+#endif
     } else if ((flags & AUDIO_OUTPUT_FLAG_DIRECT) != 0) {
         /* Case: Direct Playback Stream */
         if (((flags & AUDIO_OUTPUT_FLAG_COMPRESS_OFFLOAD) != 0) &&
