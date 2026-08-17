@@ -18,6 +18,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a6a03195_6bf056fa",
+        "filename": "libaudio/audiohal_comv1/proxy/audio_proxy.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 37560
+      },
+      "writtenOn": "2026-08-17T14:07:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e366b6ed_5727436a",
+      "revId": "06794b17f370accfae2d3915061292ea5401a104",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7b5179c8_bbc36a6a",
@@ -31,6 +49,24 @@
       "writtenOn": "2026-08-17T13:17:02Z",
       "side": 1,
       "message": "```suggestion\n    struct pcm *call_tx;    // Input Devices to CP\n```",
+      "revId": "06794b17f370accfae2d3915061292ea5401a104",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "47b48193_3cab6fa5",
+        "filename": "libaudio/audiohal_comv1/proxy/audio_proxy.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 37560
+      },
+      "writtenOn": "2026-08-17T14:07:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7b5179c8_bbc36a6a",
       "revId": "06794b17f370accfae2d3915061292ea5401a104",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
