@@ -1199,6 +1199,30 @@ int proxy_usb_get_playback_bitwidth(void *proxy_usb)
     return ret;
 }
 
+int proxy_usb_get_capture_bitwidth(void *proxy_usb)
+{
+    struct audio_proxy_usb *aproxy_usb = (struct audio_proxy_usb *)proxy_usb;
+    int ret = 0;
+    switch (aproxy_usb->usb_in_active_pcmconfig.format) {
+    case PCM_FORMAT_S16_LE:  /* 16-bit signed */
+        ret = 16;
+        break;
+    case PCM_FORMAT_S32_LE:      /* 32-bit signed */
+        ret = 32;
+        break;
+    case PCM_FORMAT_S24_LE:      /* 24-bits in 4-bytes */
+    case PCM_FORMAT_S24_3LE:     /* 24-bits in 3-bytes */
+        ret = 24;
+        break;
+    case PCM_FORMAT_S8:          /* 8-bit signed */
+    default:
+        ret = 16;
+        break;
+    }
+
+    return ret;
+}
+
 int proxy_usb_get_playback_highest_supported_channels(void *proxy_usb)
 {
     struct audio_proxy_usb *aproxy_usb = (struct audio_proxy_usb *)proxy_usb;

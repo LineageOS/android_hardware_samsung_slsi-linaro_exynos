@@ -26,6 +26,7 @@ int proxy_is_usb_capture_directpath_supported(void *proxy_usb);
 unsigned int proxy_usb_get_capture_samplerate(void *proxy_usb);
 unsigned int proxy_usb_get_capture_channels(void *proxy_usb);
 int proxy_usb_get_capture_format(void *proxy_usb);
+int proxy_usb_get_capture_bitwidth(void* proxy_usb);
 int proxy_usb_get_playback_samplerate(void *proxy_usb);
 int proxy_usb_get_playback_channels(void *proxy_usb);
 int proxy_usb_get_playback_format(void *proxy_usb);
