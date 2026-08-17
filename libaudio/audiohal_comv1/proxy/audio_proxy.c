@@ -1173,6 +1173,26 @@ static void enable_mute_playback(void *proxy)
                         "Mute playback", 'p', PCM_OUT | PCM_MONOTONIC, &pcm_config_mute_playback);
 }
 
+#ifdef SPKAMP_REFERENCE_DEVICE
+static void disable_spkamp_reference(void *proxy)
+{
+    struct audio_proxy *aproxy = proxy;
+
+    /* Disable Speaker AMP Reference Capture */
+    disable_loop_pcmnode(&aproxy->spkamp_reference, SPKAMP_REFERENCE_CARD, SPKAMP_REFERENCE_DEVICE,
+                         "SPKAMP Reference", 'c');
+}
+
+static void enable_spkamp_reference(void *proxy)
+{
+    struct audio_proxy *aproxy = proxy;
+
+    /* Enable Speaker AMP Reference Capture */
+    enable_loop_pcmnode(&aproxy->spkamp_reference, SPKAMP_REFERENCE_CARD, SPKAMP_REFERENCE_DEVICE,
+                        "SPKAMP Reference", 'c', PCM_IN | PCM_MONOTONIC, &pcm_config_spkamp_reference);
+}
+#endif
+
 
 /* Prepare loopback node pcm configs before actual routing is started
  * to sync automatic loopback node opening sequence and pcm configs used
@@ -1238,6 +1258,13 @@ static void enable_internal_path(void *proxy, int ausage, device_type target_dev
         ALOGI("proxy-%s: skip enabling internal path", __func__);
         return;
     }
+
+    if (is_device_speaker(target_device)) {
+#ifdef SPKAMP_REFERENCE_DEVICE
+        enable_spkamp_reference(aproxy);
+#endif
+    }
+
 #ifdef SUPPORT_USB_OFFLOAD
     if (is_usb_play_device(target_device)) {
         if (aproxy->usb_aproxy)
@@ -1309,6 +1336,13 @@ static void disable_internal_path(void *proxy, int ausage, device_type target_de
         ALOGI("proxy-%s: skip disabling internal path", __func__);
         return;
     }
+
+    if (is_device_speaker(target_device)) {
+#ifdef SPKAMP_REFERENCE_DEVICE
+        disable_spkamp_reference(aproxy);
+#endif
+    }
+
 #ifdef SUPPORT_USB_OFFLOAD
     /* disable usb_fm_radio loopback pcm node */
     if (ausage == AUSAGE_USB_FM_RADIO && target_device < DEVICE_MAIN_MIC
@@ -6133,6 +6167,11 @@ void * proxy_init(void)
     aproxy->call_tx_direct = NULL;
 #ifdef VTX_REF_CAPTURE_DEVICE
     aproxy->call_tx_ref = NULL;
+#endif
+
+    // Speaker AMP PCM Devices
+#ifdef SPKAMP_REFERENCE_DEVICE
+    aproxy->spkamp_reference = NULL;
 #endif
 
     // FM Radio PCM Devices

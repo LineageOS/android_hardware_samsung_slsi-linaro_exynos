@@ -201,6 +201,11 @@ struct audio_proxy
     struct pcm *call_tx_ref;       // Reference Input to CP
 #endif
 
+    /* PCM Devices for Speaker AMP */
+#ifdef SPKAMP_REFERENCE_DEVICE
+    struct pcm *spkamp_reference;  // Speaker AMP Reference Capture
+#endif
+
     // Call State
     bool call_state;
     struct call_param call_param_idx;
