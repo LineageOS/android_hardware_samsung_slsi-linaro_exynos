@@ -757,6 +757,106 @@ static void set_usb_playback_modifier(void *proxy)
     return ;
 }
 
+#ifdef ABOX_PACKED_UDMA_RD0_NAME
+/* Enable usb capture new Modifier */
+static void set_usb_capture_modifier(void *proxy)
+{
+    struct audio_proxy *aproxy = proxy;
+    struct mixer_ctl *ctrl = NULL;
+    int ret, val = 0;
+
+    pthread_rwlock_rdlock(&aproxy->mixer_update_lock);
+
+    /* USB Capture internal loop sample rate configuration */
+    ctrl = mixer_get_ctl_by_name(aproxy->mixer, ABOX_SAMPLE_RATE_UDMA_RD0_NAME);
+    if (ctrl) {
+        val = proxy_usb_get_capture_samplerate(aproxy->usb_aproxy);
+        ALOGI("proxy-%s: UDMA RD0 configured SR(%d)", __func__, val);
+        ret = mixer_ctl_set_value(ctrl, 0, val);
+        if (ret != 0)
+            ALOGE("proxy-%s: failed to set %s", __func__, ABOX_SAMPLE_RATE_UDMA_RD0_NAME);
+    } else {
+        ALOGE("proxy-%s: cannot find %s Mixer Control", __func__, ABOX_SAMPLE_RATE_UDMA_RD0_NAME);
+    }
+
+    /* USB Capture internal loop period size configuration */
+    ctrl = mixer_get_ctl_by_name(aproxy->mixer, ABOX_PERIOD_SIZE_UDMA_RD0_NAME);
+    if (ctrl) {
+        val = proxy_usb_get_capture_samplerate(aproxy->usb_aproxy);
+        /* A-Box limitation all DMA buffer size should be multiple of 16
+         * therefore Period Size(Frame Count) is rounded of to nearest 4 multiple
+         */
+        val = (val / 1000) & ~0x3;
+
+        ALOGI("proxy-%s: UDMA RD0 configured period-sz(%d)", __func__, val);
+        ret = mixer_ctl_set_value(ctrl, 0, val);
+        if (ret != 0)
+            ALOGE("proxy-%s: failed to set %s", __func__, ABOX_PERIOD_SIZE_UDMA_RD0_NAME);
+    } else {
+        ALOGE("proxy-%s: cannot find %s Mixer Control", __func__, ABOX_PERIOD_SIZE_UDMA_RD0_NAME);
+    }
+
+    /* USB Capture internal loop channels configuration */
+    ctrl = mixer_get_ctl_by_name(aproxy->mixer, ABOX_CHANNELS_UDMA_RD0_NAME);
+    if (ctrl) {
+        val = proxy_usb_get_capture_channels(aproxy->usb_aproxy);
+        /* check if connected USB headset's highest channel count is 6, then forcelly
+          * change it to 8 channels as A-Box HW cannot support 6 channel conversion */
+        if (val == ABOX_UNSUPPORTED_CHANNELS) {
+            ALOGI("proxy-%s: UDMA RD0 supported CH is(%d) Changed to (%d)", __func__, val,
+                ABOX_SUPPORTED_MAX_CHANNELS);
+            val = ABOX_SUPPORTED_MAX_CHANNELS;
+        }
+        ALOGI("proxy-%s: UDMA RD0 configured CH(%d)", __func__, val);
+        ret = mixer_ctl_set_value(ctrl, 0, val);
+        if (ret != 0)
+            ALOGE("proxy-%s: failed to set %s", __func__, ABOX_CHANNELS_UDMA_RD0_NAME);
+    } else {
+        ALOGE("proxy-%s: cannot find %s Mixer Control", __func__, ABOX_CHANNELS_UDMA_RD0_NAME);
+    }
+
+    /* USB Capture internal loop bit width configuration */
+    ctrl = mixer_get_ctl_by_name(aproxy->mixer, ABOX_BIT_WIDTH_UDMA_RD0_NAME);
+    if (ctrl) {
+        val = proxy_usb_get_capture_bitwidth(aproxy->usb_aproxy);
+        ALOGI("proxy-%s: UDMA RD0 configured BW(%d)", __func__, val);
+        ret = mixer_ctl_set_value(ctrl, 0, val);
+        if (ret != 0)
+            ALOGE("proxy-%s: failed to set %s", __func__, ABOX_BIT_WIDTH_UDMA_RD0_NAME);
+    } else {
+        ALOGE("proxy-%s: cannot find %s Mixer Control", __func__, ABOX_BIT_WIDTH_UDMA_RD0_NAME);
+    }
+
+    /* USB Capture internal loop packed configuration */
+    ctrl = mixer_get_ctl_by_name(aproxy->mixer, ABOX_PACKED_UDMA_RD0_NAME);
+    if (ctrl) {
+        val = proxy_usb_get_capture_format(aproxy->usb_aproxy) == PCM_FORMAT_S24_3LE;
+        ALOGI("proxy-%s: UDMA RD0 configured Packed(%d)", __func__, val);
+        ret = mixer_ctl_set_value(ctrl, 0, val);
+        if (ret != 0)
+            ALOGE("proxy-%s: failed to set %s", __func__, ABOX_PACKED_UDMA_RD0_NAME);
+    } else {
+        ALOGE("proxy-%s: cannot find %s Mixer Control", __func__, ABOX_PACKED_UDMA_RD0_NAME);
+    }
+
+    /* USB Capture internal loop expand configuration */
+    ctrl = mixer_get_ctl_by_name(aproxy->mixer, ABOX_EXPAND_UDMA_RD0_NAME);
+    if (ctrl) {
+        val = proxy_usb_get_capture_channels(aproxy->usb_aproxy) == 1;
+        ALOGI("proxy-%s: UDMA RD0 configured Expand(%d)", __func__, val);
+        ret = mixer_ctl_set_value(ctrl, 0, val);
+        if (ret != 0)
+            ALOGE("proxy-%s: failed to set %s", __func__, ABOX_EXPAND_UDMA_RD0_NAME);
+    } else {
+        ALOGE("proxy-%s: cannot find %s Mixer Control", __func__, ABOX_EXPAND_UDMA_RD0_NAME);
+    }
+
+    pthread_rwlock_unlock(&aproxy->mixer_update_lock);
+
+    return ;
+}
+#endif
+
 /* Resset Modifier to default values */
 static void reset_playback_modifier(void *proxy)
 {
@@ -1225,8 +1325,11 @@ static void prepare_routing_device_config(void *proxy, int ausage, device_type t
     } else if (is_usb_mic_device(target_device)) {
         // Check whether USB device is single clocksource, and match samplerate
         // with playback
-        if (aproxy->is_usb_single_clksrc)
-            proxy_usb_capture_prepare(aproxy->usb_aproxy, true);
+        if (aproxy->is_usb_single_clksrc) proxy_usb_capture_prepare(aproxy->usb_aproxy, true);
+        /* set USB capture modifier controls */
+#ifdef ABOX_PACKED_UDMA_RD0_NAME
+        if (!usb_in_async) set_usb_capture_modifier(aproxy);
+#endif
     }
 
     /* enable usb_fm_radio loopback pcm node
@@ -1238,6 +1341,9 @@ static void prepare_routing_device_config(void *proxy, int ausage, device_type t
         // with playback
         if (aproxy->is_usb_single_clksrc)
             proxy_usb_capture_prepare(aproxy->usb_aproxy, true);
+#ifdef ABOX_PACKED_UDMA_RD0_NAME
+            if (!usb_in_async) set_usb_capture_modifier(aproxy);
+#endif
     }
 #endif
 
