@@ -51,6 +51,24 @@
       "parentUuid": "c0b1fa12_ef906e97",
       "revId": "63a45da53b269147a92c691b5d0e5dc8d130e9c8",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6ef73929_0959a8ce",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 35850
+      },
+      "writtenOn": "2026-08-18T14:25:40Z",
+      "side": 1,
+      "message": "Please check on Stock ROM.",
+      "parentUuid": "98d242a5_5a872d91",
+      "revId": "63a45da53b269147a92c691b5d0e5dc8d130e9c8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
