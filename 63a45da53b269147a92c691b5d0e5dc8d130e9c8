@@ -33,6 +33,24 @@
       "message": "Deep buffer streams are not supposed to be 16bit. Fix your PCM/APC configuration.",
       "revId": "63a45da53b269147a92c691b5d0e5dc8d130e9c8",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "98d242a5_5a872d91",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 36980
+      },
+      "writtenOn": "2026-08-18T13:28:24Z",
+      "side": 1,
+      "message": "stock audio hal also uses deep playback as 16bit pcm on s5e8535 \nSome logs from stock hal:\n\n08-17 21:57:25.083   704  3729 I audio_hw_proxy2: proxy-proxy_set_route: device(none) -\u003e device(speaker) SIFS1_SWITCH ON\n08-17 21:57:25.083   704  3729 I audio_hw_proxy2: proxy-proxy_open_playback_stream: Deep RDMA configured as SR(48000) pdsz(960) CH(2) BW(16)\n08-17 21:57:25.084   704  3729 I audio_hw_proxy2: deep_out-proxy_open_playback_stream: The opened PCM Device is /dev/snd/pcmC0D103p with Sampling_Rate(48000) PCM_Format(0)  PCM_start-threshold(960) PCM_stop-threshold(3840), use_mmap(false)",
+      "parentUuid": "c0b1fa12_ef906e97",
+      "revId": "63a45da53b269147a92c691b5d0e5dc8d130e9c8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
