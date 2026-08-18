@@ -3355,7 +3355,18 @@ int proxy_open_playback_stream(void *proxy_stream, int32_t min_size_frames, void
             struct pcm_config *ppcmconfig = &apstream->pcmconfig;
             if (apstream->stream_type == ASTREAM_PLAYBACK_DEEP_BUFFER) {
                 /* Make RDMA0 match deep buffer stream */
-                unsigned char bw = (apstream->pcmconfig.format == PCM_FORMAT_S24_LE) ? 24 : 32;
+                unsigned char bw;
+                switch(apstream->pcmconfig.format) {
+                case PCM_FORMAT_S24_LE:
+                    bw = 24;
+                    break;
+                case PCM_FORMAT_S32_LE:
+                    bw = 32;
+                    break;
+                default:
+                    bw = 16;
+                    break;
+                }
                 proxy_set_mixer_value_int(aproxy, "ABOX RDMA0 Rate", ppcmconfig->rate);
                 proxy_set_mixer_value_int(aproxy, "ABOX RDMA0 Period", ppcmconfig->period_size);
                 proxy_set_mixer_value_int(aproxy, "ABOX RDMA0 Width", bw);
