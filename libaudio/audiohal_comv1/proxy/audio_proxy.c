@@ -405,11 +405,9 @@ static int get_pcm_device_number(void *proxy, void *proxy_stream)
                 pcm_device_number = LOW_PLAYBACK_DEVICE;
                 break;
 
-#ifdef VOIP_RX_PLAYBACK_DEVICE
             case ASTREAM_PLAYBACK_VOIP_RX:
                 pcm_device_number = VOIP_RX_PLAYBACK_DEVICE;
                 break;
-#endif
 
             case ASTREAM_PLAYBACK_DEEP_BUFFER:
                 pcm_device_number = DEEP_PLAYBACK_DEVICE;
@@ -2995,13 +2993,11 @@ void *proxy_create_playback_stream(void *proxy, int type, void *config, char *ad
             apstream->pcmconfig = pcm_config_low_playback;
             break;
 
-#ifdef VOIP_RX_PLAYBACK_DEVICE
         case ASTREAM_PLAYBACK_VOIP_RX:
             apstream->sound_card = VOIP_RX_PLAYBACK_CARD;
             apstream->sound_device = get_pcm_device_number(aproxy, apstream);
             apstream->pcmconfig = pcm_config_voip_rx_playback;
             break;
-#endif
 
         case ASTREAM_PLAYBACK_COMPR_OFFLOAD:
             apstream->sound_card = OFFLOAD_PLAYBACK_CARD;
