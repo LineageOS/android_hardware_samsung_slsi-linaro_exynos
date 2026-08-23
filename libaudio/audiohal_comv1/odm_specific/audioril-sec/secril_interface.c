@@ -106,6 +106,15 @@ static int map_incall_device(struct rilclient_intf *voice, audio_devices_t devic
                 device_type = SOUND_AUDIO_PATH_VOLTE_STEREO_BLUETOOTH;
             break;
 
+        case AUDIO_DEVICE_OUT_USB_HEADSET:
+        case AUDIO_DEVICE_OUT_USB_DEVICE:
+        case AUDIO_DEVICE_OUT_USB_ACCESSORY:
+            if (voice->volte_status == VOLTE_OFF)
+                device_type = SOUND_AUDIO_PATH_USB_HEADSET;
+            else
+                device_type = SOUND_AUDIO_PATH_VOLTE_USB_HEADSET;
+            break;
+
         default:
             if (voice->volte_status == VOLTE_OFF)
                 device_type = SOUND_AUDIO_PATH_HANDSET;
