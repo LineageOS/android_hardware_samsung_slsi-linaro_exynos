@@ -44,6 +44,15 @@ typedef enum {
     CALL_PATH_SET,
 } call_path_state;
 
+/*
+ * RX device index for the CP call-path parameter (struct call_param.device).
+ * These values are defined by the CP firmware, not by AOSP audio_devices_t.
+ * Only the two we need are listed; 0 is what the CP expects for the built-in
+ * devices (handset/speaker), 9 selects the USB path.
+ */
+#define CALL_PATH_DEVICE_DEFAULT 0
+#define CALL_PATH_DEVICE_USB     9
+
 // VoIP App Info, WeChat: 0, QQ: 1, Skype: 2, Line: 3, Google Duo: 4
 #define AUDIO_PARAMETER_VOIP_APP_INFO "voip_app_state"
 #define VOIP_GAME_MODE_INFO           5

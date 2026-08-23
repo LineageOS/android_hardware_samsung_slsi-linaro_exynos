@@ -988,6 +988,15 @@ void update_call_stream(struct stream_out *out, audio_devices_t current_devices,
     /* Do actual routing */
     if (isCallMode(adev)) {
         adev_set_route((void *)out, AUSAGE_PLAYBACK, ROUTE, CALL_DRIVE);
+        /*
+         * Populate the RX device field of the CP call-path parameter.
+         * It must be set on every route, not only for USB: the field is
+         * sticky in the cached bit-field, so leaving a stale USB value
+         * behind breaks the handset/speaker uplink on the next route.
+         */
+        proxy_set_call_path_param(CALL_PATH_NONE, RX_DEVICE,
+                                  audio_is_usb_out_device(new_devices) ?
+                                  CALL_PATH_DEVICE_USB : CALL_PATH_DEVICE_DEFAULT);
         proxy_set_call_path_param(CALL_PATH_SET, PARAM_NONE, 0);
     } else if (out->common.stream_status == STATUS_STANDBY) {
         adev_set_route((void *)out, AUSAGE_PLAYBACK, UNROUTE, CALL_DRIVE); // to disable call rx/tx path
