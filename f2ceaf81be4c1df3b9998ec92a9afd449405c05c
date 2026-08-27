@@ -16,6 +16,23 @@
       "message": "Samsung stock hal does some hack to use deep playback as pcm 16 bit. I decided to use primary playback as default because i can\u0027t see any difference there.",
       "revId": "f2ceaf81be4c1df3b9998ec92a9afd449405c05c",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d52f434c_cd201cfc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 34512
+      },
+      "writtenOn": "2026-08-27T10:56:18Z",
+      "side": 1,
+      "message": "Not too sure yet whether this is an acceptable solution or deep-buffer should be swapped to a different bit rate on config side of things, but thought I would say that this patch worked on my device where stock uses 16 bit buffer.",
+      "revId": "f2ceaf81be4c1df3b9998ec92a9afd449405c05c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ],
   "submitRequirementResults": [
