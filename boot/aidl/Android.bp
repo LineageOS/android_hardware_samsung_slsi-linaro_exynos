@@ -38,6 +38,9 @@ cc_binary {
     defaults: ["android.hardware.boot-service_common"],
     vendor: true,
 
+    init_rc: ["android.hardware.boot-service.default.rc"],
+    vintf_fragments: ["android.hardware.boot-service.default.xml"],
+
     stl: "c++_static",
     shared_libs: [
         "libbinder_ndk",
@@ -49,19 +52,13 @@ cc_binary {
         "libbase",
         "libboot_control",
     ],
-
-    vintf_fragment_modules: [
-        "android.hardware.boot-service.default.xml",
-    ],
-
-    installable: false, // installed in APEX
 }
 
 cc_binary {
     name: "android.hardware.boot-service.default_recovery",
     defaults: ["android.hardware.boot-service_common"],
     init_rc: ["android.hardware.boot-service.default_recovery.rc"],
-    vintf_fragment_modules: ["android.hardware.boot-service.default.xml.recovery"],
+    vintf_fragments: ["android.hardware.boot-service.default.xml"],
     recovery: true,
 
     shared_libs: [
@@ -72,40 +69,5 @@ cc_binary {
     ],
     static_libs: [
         "libboot_control",
-    ],
-}
-
-prebuilt_etc {
-    name: "android.hardware.boot-service.default.rc",
-    src: "android.hardware.boot-service.default.rc",
-    installable: false,
-}
-
-vintf_fragment {
-    name: "android.hardware.boot-service.default.xml.recovery",
-    src: "android.hardware.boot-service.default.xml",
-    recovery: true,
-}
-
-vintf_fragment {
-    name: "android.hardware.boot-service.default.xml",
-    src: "android.hardware.boot-service.default.xml",
-    vendor: true,
-}
-
-apex {
-    name: "com.android.hardware.boot",
-    vendor: true,
-    manifest: "apex_manifest.json",
-    file_contexts: "apex_file_contexts",
-    key: "com.android.hardware.key",
-    certificate: ":com.android.hardware.certificate",
-    updatable: false,
-
-    binaries: [
-        "android.hardware.boot-service.default",
-    ],
-    prebuilts: [
-        "android.hardware.boot-service.default.rc",
     ],
 }
