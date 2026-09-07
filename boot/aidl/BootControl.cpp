@@ -19,7 +19,7 @@
 
 #include <android-base/logging.h>
 
-using HIDLMergeStatus = ::android::bootable::BootControl::MergeStatus;
+using HIDLMergeStatus = ::android::hardware::boot::V1_1::MergeStatus;
 using ndk::ScopedAStatus;
 
 namespace aidl::android::hardware::boot {
@@ -112,7 +112,8 @@ ScopedAStatus BootControl::isSlotMarkedSuccessful(int32_t in_slot, bool* _aidl_r
 }
 
 ScopedAStatus BootControl::markBootSuccessful() {
-    if (!impl_.MarkBootSuccessful()) {
+    uint32_t slot = impl_.GetCurrentSlot();
+    if (!impl_.MarkBootSuccessful(slot)) {
         return ScopedAStatus::fromServiceSpecificErrorWithMessage(COMMAND_FAILED,
                                                                   "Operation failed");
     }
