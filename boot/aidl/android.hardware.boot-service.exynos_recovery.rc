@@ -1,4 +1,4 @@
-service vendor.boot-default /system/bin/hw/android.hardware.boot-service.default_recovery
+service vendor.boot-default /system/bin/hw/android.hardware.boot-service.exynos_recovery
     class early_hal
     user root
     group root
