@@ -17,11 +17,14 @@
 #pragma once
 
 #include <aidl/android/hardware/boot/BnBootControl.h>
-#include <libboot_control/libboot_control.h>
+#include <aidl/android/hardware/boot/MergeStatus.h>
+#include <exynos_bootctrl/exynos_bootctrl.h>
 
 namespace aidl::android::hardware::boot {
 
-class BootControl final : public BnBootControl {
+using ExynosImpl = ::android::hardware::samsung_slsi::boot_control::V1_2::Exynos_BootControl;
+
+class BootControl : public BnBootControl {
   public:
     BootControl();
     ::ndk::ScopedAStatus getActiveBootSlot(int32_t* _aidl_return) override;
@@ -39,7 +42,7 @@ class BootControl final : public BnBootControl {
             ::aidl::android::hardware::boot::MergeStatus in_status) override;
 
   private:
-    ::android::bootable::BootControl impl_;
+    ExynosImpl impl_;
 };
 
 }  // namespace aidl::android::hardware::boot
