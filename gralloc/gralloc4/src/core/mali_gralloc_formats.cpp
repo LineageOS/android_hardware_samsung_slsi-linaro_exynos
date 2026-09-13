@@ -100,6 +100,11 @@ static uint16_t get_consumers(uint64_t usage)
 			consumers |= MALI_GRALLOC_CONSUMER_VPU;
 		}
 
+		if (usage & GRALLOC_USAGE_CURSOR)
+		{
+			consumers |= MALI_GRALLOC_CONSUMER_DPU;
+		}
+
 		/* GRALLOC_USAGE_HW_COMPOSER does not explicitly define whether the
 		 * display processor is producer or consumer. When used in combination
 		 * with GRALLOC_USAGE_HW_TEXTURE, it is assumed to be consumer since the
