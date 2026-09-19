@@ -33,6 +33,24 @@
       "message": "You should move this to 24.0. gtax4ls-common depends on this service and the maintainer (linux4) seems to be \u0027inactive\u0027.",
       "revId": "9ad793d8058dc0e0284aeb1993cb713508646a22",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "014ab59c_43d753ee",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 36705
+      },
+      "writtenOn": "2026-09-19T06:38:43Z",
+      "side": 1,
+      "message": "\u003e You should move this\n\nWhole chain to be exact, I\u0027m pretty sure no one wants blind merges which could potentially break a shipping device.",
+      "parentUuid": "5d90c2db_83ed1ea9",
+      "revId": "9ad793d8058dc0e0284aeb1993cb713508646a22",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
