@@ -35,6 +35,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c33f69fa_23f13e4a",
+        "filename": "gralloc/gralloc4/service/aidl/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 36705
+      },
+      "writtenOn": "2026-09-19T10:05:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b4eefb75_7bcbbea7",
+      "revId": "7eab4071376f6ca94e6f14c7fd3fb1bbb1767cef",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1bebb2d8_c7ac4044",
@@ -48,6 +66,24 @@
       "writtenOn": "2026-09-19T07:05:15Z",
       "side": 1,
       "message": "```suggestion\nusing arm::allocator::GrallocAllocator;\n```",
+      "revId": "7eab4071376f6ca94e6f14c7fd3fb1bbb1767cef",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "830dfa94_4fd124a5",
+        "filename": "gralloc/gralloc4/service/aidl/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 36705
+      },
+      "writtenOn": "2026-09-19T10:05:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1bebb2d8_c7ac4044",
       "revId": "7eab4071376f6ca94e6f14c7fd3fb1bbb1767cef",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
@@ -69,6 +105,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "69ce5cda_30efb1fd",
+        "filename": "gralloc/gralloc4/src/aidl/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 36705
+      },
+      "writtenOn": "2026-09-19T10:05:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d1186f92_ef905aa5",
+      "revId": "7eab4071376f6ca94e6f14c7fd3fb1bbb1767cef",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d97e8c1d_981593ee",
@@ -82,6 +136,24 @@
       "writtenOn": "2026-09-19T07:05:15Z",
       "side": 1,
       "message": "```suggestion\n        \"hardware/samsung_slsi-linaro/exynos/include\",\n```",
+      "revId": "7eab4071376f6ca94e6f14c7fd3fb1bbb1767cef",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9158de48_05917766",
+        "filename": "gralloc/gralloc4/src/aidl/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 36705
+      },
+      "writtenOn": "2026-09-19T10:05:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d97e8c1d_981593ee",
       "revId": "7eab4071376f6ca94e6f14c7fd3fb1bbb1767cef",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
@@ -103,6 +175,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "98a41c8a_444e5f7c",
+        "filename": "gralloc/gralloc4/src/aidl/GrallocAllocator.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 36705
+      },
+      "writtenOn": "2026-09-19T10:05:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dacaa2a0_757408c5",
+      "revId": "7eab4071376f6ca94e6f14c7fd3fb1bbb1767cef",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "59316538_411af3e8",
@@ -116,6 +206,24 @@
       "writtenOn": "2026-09-19T07:05:15Z",
       "side": 1,
       "message": "```suggestion\n} // namespace arm::allocator\n```",
+      "revId": "7eab4071376f6ca94e6f14c7fd3fb1bbb1767cef",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "da4d7e1b_7cac2440",
+        "filename": "gralloc/gralloc4/src/aidl/GrallocAllocator.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 36705
+      },
+      "writtenOn": "2026-09-19T10:05:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "59316538_411af3e8",
       "revId": "7eab4071376f6ca94e6f14c7fd3fb1bbb1767cef",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
@@ -137,6 +245,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e034d46f_7a2cf54f",
+        "filename": "gralloc/gralloc4/src/aidl/GrallocAllocator.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 36705
+      },
+      "writtenOn": "2026-09-19T10:05:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e321e141_a213e5e8",
+      "revId": "7eab4071376f6ca94e6f14c7fd3fb1bbb1767cef",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "892ed60d_f604b664",
@@ -150,6 +276,24 @@
       "writtenOn": "2026-09-19T07:05:15Z",
       "side": 1,
       "message": "```suggestion\n} // namespace arm\n```",
+      "revId": "7eab4071376f6ca94e6f14c7fd3fb1bbb1767cef",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2e77ef81_926f87d9",
+        "filename": "gralloc/gralloc4/src/aidl/GrallocAllocator.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 36705
+      },
+      "writtenOn": "2026-09-19T10:05:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "892ed60d_f604b664",
       "revId": "7eab4071376f6ca94e6f14c7fd3fb1bbb1767cef",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
