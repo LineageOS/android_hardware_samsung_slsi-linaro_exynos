@@ -18,6 +18,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4f49e115_7ee9214c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 36705
+      },
+      "writtenOn": "2026-09-19T16:55:59Z",
+      "side": 1,
+      "message": "I don\u0027t really see any useless thing in the chain tho. I\u0027d keep everything we have right now.",
+      "parentUuid": "ab2b1ee0_2dbe73ae",
+      "revId": "ae5a7f2dd9d9df77622c44cac1fbb768aa8e2535",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c431af61_a4117864",
