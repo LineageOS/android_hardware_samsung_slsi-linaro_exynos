@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ab2b1ee0_2dbe73ae",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 38077
+      },
+      "writtenOn": "2026-09-19T16:34:34Z",
+      "side": 1,
+      "message": "I think it makes more sense to only pick the patches that are actually needed rather than taking the whole chain",
+      "revId": "ae5a7f2dd9d9df77622c44cac1fbb768aa8e2535",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c431af61_a4117864",
