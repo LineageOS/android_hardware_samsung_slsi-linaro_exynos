@@ -1254,8 +1254,6 @@ static void disable_mute_playback(void *proxy)
     struct audio_proxy *aproxy = proxy;
 
     /* Disable Mute playback Path */
-    disable_loop_pcmnode(&aproxy->mute_playback, MUTE_PLAYBACK_CARD, MUTE_PLAYBACK_DEVICE,
-                         "Mute playback", 'p');
 }
 
 static void enable_mute_playback(void *proxy)
@@ -1263,8 +1261,6 @@ static void enable_mute_playback(void *proxy)
     struct audio_proxy *aproxy = proxy;
 
     /* Enable Mute playback path */
-    enable_loop_pcmnode(&aproxy->mute_playback, MUTE_PLAYBACK_CARD, MUTE_PLAYBACK_DEVICE,
-                        "Mute playback", 'p', PCM_OUT | PCM_MONOTONIC, &pcm_config_mute_playback);
 }
 
 #ifdef SPKAMP_REFERENCE_DEVICE
@@ -6089,7 +6085,6 @@ bool proxy_init_route(void *proxy, char *path)
     struct audio_route *ar = NULL;
     bool ret = false;
     char property[PROPERTY_VALUE_MAX] = {'\0'};;
-    int abox_debuglevel = ABOX_DEBUG_LEVEL_HIGH_VALUE;
 
     if (aproxy) {
         aproxy->mixer = mixer_open(MIXER_CARD0);
@@ -6134,21 +6129,6 @@ bool proxy_init_route(void *proxy, char *path)
                 pthread_rwlock_unlock(&aproxy->mixer_update_lock);
 #endif
 
-                /* Check system property for configuring A-Box firmware debug level */
-                memset(property, 0, PROPERTY_VALUE_MAX);
-                if (property_get(DEBUG_LEVEL_SYSTEM_PROPERTY, property, NULL) > 0) {
-                    if (strcmp(property, SYSTEM_DEBUG_LEVEL_LOW_VALUE) == 0)
-                        abox_debuglevel = ABOX_DEBUG_LEVEL_LOW_VALUE;
-                    else if (strcmp(property, SYSTEM_DEBUG_LEVEL_MID_VALUE) == 0)
-                        abox_debuglevel = ABOX_DEBUG_LEVEL_MID_VALUE;
-                    else
-                        abox_debuglevel = ABOX_DEBUG_LEVEL_HIGH_VALUE;
-
-                    ALOGI("proxy-%s: System Debug level = %s A-Box set %d", __func__, property, abox_debuglevel);
-                    proxy_set_mixer_value_int(aproxy, MIXER_CTL_ABOX_DEBUG_LEVEL, abox_debuglevel);
-                } else {
-                    ALOGI("proxy-%s: Unable to read System Debug level property %s", __func__, DEBUG_LEVEL_SYSTEM_PROPERTY);
-                }
             }
         } else
             ALOGE("proxy-%s: failed to open Mixer", __func__);
