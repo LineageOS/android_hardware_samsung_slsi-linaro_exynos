@@ -6,6 +6,12 @@ cc_library_shared {
     srcs: select(soong_config_variable("arm_gralloc", "gralloc_version"), {
         "one": ["gralloc1/GrallocWrapper.cpp"],
         "three": ["gralloc3/GrallocWrapper.cpp"],
+        "four": ["gralloc4/GrallocWrapper.cpp"],
+        default: [],
+    }),
+
+    cflags: select(soong_config_variable("arm_gralloc", "gralloc_version"), {
+        "four": ["-DGRALLOC_WRAPPER_MAPPER_V4=1"],
         default: [],
     }),
 
@@ -16,6 +22,9 @@ cc_library_shared {
             "system/core/libsync/include",
         ],
         "three": [
+            "hardware/samsung_slsi-linaro/exynos/include",
+        ],
+        "four": [
             "hardware/samsung_slsi-linaro/exynos/include",
         ],
         default: [],
@@ -31,5 +40,8 @@ cc_library_shared {
         "libsync",
         "libhardware",
         "libhidlbase",
+        "libgralloctypes",
+        "android.hardware.graphics.common@1.2",
+        "android.hardware.graphics.mapper@4.0",
     ],
 }
