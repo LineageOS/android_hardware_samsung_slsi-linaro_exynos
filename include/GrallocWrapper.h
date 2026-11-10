@@ -21,6 +21,9 @@
 
 #include <android/hardware/graphics/allocator/2.0/IAllocator.h>
 #include <android/hardware/graphics/mapper/2.0/IMapper.h>
+#ifdef GRALLOC_WRAPPER_MAPPER_V4
+#include <android/hardware/graphics/mapper/4.0/IMapper.h>
+#endif
 #include <utils/StrongPointer.h>
 
 namespace android {
@@ -70,7 +73,13 @@ public:
     int unlock(buffer_handle_t bufferHandle) const;
 
 private:
+#ifdef GRALLOC_WRAPPER_MAPPER_V4
+    // The public ABI (used by prebuilt camera HAL) stays on mapper@2.0 types,
+    // the backend is gralloc4 (mapper@4.0). Same object size: one sp<>.
+    sp<hardware::graphics::mapper::V4_0::IMapper> mMapper;
+#else
     sp<IMapper> mMapper;
+#endif
 };
 
 // A wrapper to IAllocator
