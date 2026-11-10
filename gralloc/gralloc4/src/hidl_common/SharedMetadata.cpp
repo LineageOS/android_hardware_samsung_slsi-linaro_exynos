@@ -20,6 +20,12 @@
 #include "mali_gralloc_log.h"
 //#include <VendorVideoAPI.h>
 
+#ifdef GRALLOC_LEGACY_V3_HANDLE
+#define METADATA_BASE(h) ((h)->metadata_base())
+#else
+#define METADATA_BASE(h) ((h)->attr_base)
+#endif
+
 namespace arm
 {
 namespace mapper
@@ -39,19 +45,19 @@ size_t shared_metadata_size()
 
 void get_name(const private_handle_t *hnd, std::string *name)
 {
-	auto *metadata = reinterpret_cast<const shared_metadata *>(hnd->attr_base);
+	auto *metadata = reinterpret_cast<const shared_metadata *>(METADATA_BASE(hnd));
 	*name = metadata->get_name();
 }
 
 void get_crop_rect(const private_handle_t *hnd, std::optional<Rect> *crop)
 {
-	auto *metadata = reinterpret_cast<const shared_metadata *>(hnd->attr_base);
+	auto *metadata = reinterpret_cast<const shared_metadata *>(METADATA_BASE(hnd));
 	*crop = metadata->crop.to_std_optional();
 }
 
 android::status_t set_crop_rect(const private_handle_t *hnd, const Rect &crop)
 {
-	auto *metadata = reinterpret_cast<shared_metadata *>(hnd->attr_base);
+	auto *metadata = reinterpret_cast<shared_metadata *>(METADATA_BASE(hnd));
 
 	if (crop.top < 0 || crop.left < 0 ||
 	    crop.left > crop.right || crop.right > hnd->plane_info[0].alloc_width ||
@@ -69,31 +75,31 @@ android::status_t set_crop_rect(const private_handle_t *hnd, const Rect &crop)
 
 void get_dataspace(const private_handle_t *hnd, std::optional<Dataspace> *dataspace)
 {
-	auto *metadata = reinterpret_cast<const shared_metadata *>(hnd->attr_base);
+	auto *metadata = reinterpret_cast<const shared_metadata *>(METADATA_BASE(hnd));
 	*dataspace = metadata->dataspace.to_std_optional();
 }
 
 void set_dataspace(const private_handle_t *hnd, const Dataspace &dataspace)
 {
-	auto *metadata = reinterpret_cast<shared_metadata *>(hnd->attr_base);
+	auto *metadata = reinterpret_cast<shared_metadata *>(METADATA_BASE(hnd));
 	metadata->dataspace = aligned_optional(dataspace);
 }
 
 void get_blend_mode(const private_handle_t *hnd, std::optional<BlendMode> *blend_mode)
 {
-	auto *metadata = reinterpret_cast<const shared_metadata *>(hnd->attr_base);
+	auto *metadata = reinterpret_cast<const shared_metadata *>(METADATA_BASE(hnd));
 	*blend_mode = metadata->blend_mode.to_std_optional();
 }
 
 void set_blend_mode(const private_handle_t *hnd, const BlendMode &blend_mode)
 {
-	auto *metadata = reinterpret_cast<shared_metadata *>(hnd->attr_base);
+	auto *metadata = reinterpret_cast<shared_metadata *>(METADATA_BASE(hnd));
 	metadata->blend_mode = aligned_optional(blend_mode);
 }
 
 void get_smpte2086(const private_handle_t *hnd, std::optional<Smpte2086> *smpte2086)
 {
-	auto *metadata = reinterpret_cast<const shared_metadata *>(hnd->attr_base);
+	auto *metadata = reinterpret_cast<const shared_metadata *>(METADATA_BASE(hnd));
 	*smpte2086 = metadata->smpte2086.to_std_optional();
 }
 
@@ -104,7 +110,7 @@ android::status_t set_smpte2086(const private_handle_t *hnd, const std::optional
 		return android::BAD_VALUE;
 	}
 
-	auto *metadata = reinterpret_cast<shared_metadata *>(hnd->attr_base);
+	auto *metadata = reinterpret_cast<shared_metadata *>(METADATA_BASE(hnd));
 	metadata->smpte2086 = aligned_optional(smpte2086);
 
 	return android::OK;
@@ -112,7 +118,7 @@ android::status_t set_smpte2086(const private_handle_t *hnd, const std::optional
 
 void get_cta861_3(const private_handle_t *hnd, std::optional<Cta861_3> *cta861_3)
 {
-	auto *metadata = reinterpret_cast<const shared_metadata *>(hnd->attr_base);
+	auto *metadata = reinterpret_cast<const shared_metadata *>(METADATA_BASE(hnd));
 	*cta861_3 = metadata->cta861_3.to_std_optional();
 }
 
@@ -123,7 +129,7 @@ android::status_t set_cta861_3(const private_handle_t *hnd, const std::optional<
 		return android::BAD_VALUE;
 	}
 
-	auto *metadata = reinterpret_cast<shared_metadata *>(hnd->attr_base);
+	auto *metadata = reinterpret_cast<shared_metadata *>(METADATA_BASE(hnd));
 	metadata->cta861_3 = aligned_optional(cta861_3);
 
 	return android::OK;
@@ -131,7 +137,7 @@ android::status_t set_cta861_3(const private_handle_t *hnd, const std::optional<
 
 void get_smpte2094_40(const private_handle_t *hnd, std::optional<std::vector<uint8_t>> *smpte2094_40)
 {
-	auto *metadata = reinterpret_cast<const shared_metadata *>(hnd->attr_base);
+	auto *metadata = reinterpret_cast<const shared_metadata *>(METADATA_BASE(hnd));
 	if (metadata->smpte2094_40.size > 0)
 	{
 		const uint8_t *begin = metadata->smpte2094_40.data();
@@ -146,7 +152,7 @@ void get_smpte2094_40(const private_handle_t *hnd, std::optional<std::vector<uin
 
 android::status_t set_smpte2094_40(const private_handle_t *hnd, const std::optional<std::vector<uint8_t>> &smpte2094_40)
 {
-	auto *metadata = reinterpret_cast<shared_metadata *>(hnd->attr_base);
+	auto *metadata = reinterpret_cast<shared_metadata *>(METADATA_BASE(hnd));
 	const size_t size = smpte2094_40.has_value() ? smpte2094_40->size() : 0;
 	if (size > metadata->smpte2094_40.capacity())
 	{

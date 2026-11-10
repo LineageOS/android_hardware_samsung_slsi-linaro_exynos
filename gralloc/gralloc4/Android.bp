@@ -24,6 +24,7 @@ soong_config_module_type {
         "gralloc_hwc_force_bgra_8888",
         "gralloc_hwc_fb_disable_afbc",
         "gralloc_camera_write_raw16",
+        "gralloc3_compat_handle",
     ],
     properties: [
         "cflags",
@@ -51,6 +52,10 @@ soong_config_bool_variable {
 
 soong_config_bool_variable {
     name: "gralloc_camera_write_raw16",
+}
+
+soong_config_bool_variable {
+    name: "gralloc3_compat_handle",
 }
 
 arm_gralloc_cc_defaults {
@@ -127,6 +132,11 @@ arm_gralloc_cc_defaults {
         gralloc_camera_write_raw16: {
             cflags: [
                 "-DGRALLOC_CAMERA_WRITE_RAW16=1",
+            ],
+        },
+        gralloc3_compat_handle: {
+            cflags: [
+                "-DGRALLOC_LEGACY_V3_HANDLE=1",
             ],
         },
     },

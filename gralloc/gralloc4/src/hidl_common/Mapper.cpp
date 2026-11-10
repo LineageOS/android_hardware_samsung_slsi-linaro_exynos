@@ -265,7 +265,19 @@ void importBuffer(const hidl_handle& rawHandle, IMapper::importBuffer_cb hidl_cb
 		return;
 	}
 
+#ifdef GRALLOC_LEGACY_V3_HANDLE
+	/* The wire format is the gralloc3 layout; rebuild the gralloc4-only
+	 * (process-local) part of the handle while cloning. */
+	if (private_handle_t::validate(rawHandle.getNativeHandle()) < 0)
+	{
+		MALI_GRALLOC_LOGE("Invalid (non gralloc3-layout) buffer handle to import");
+		hidl_cb(Error::BAD_BUFFER, nullptr);
+		return;
+	}
+	native_handle_t* bufferHandle = private_handle_t::clone_from_wire(rawHandle.getNativeHandle());
+#else
 	native_handle_t* bufferHandle = native_handle_clone(rawHandle.getNativeHandle());
+#endif
 	if (!bufferHandle)
 	{
 		MALI_GRALLOC_LOGE("Failed to clone buffer handle");
@@ -747,8 +759,13 @@ void getReservedRegion(void *buffer, IMapper::getReservedRegion_cb hidl_cb)
 		hidl_cb(Error::BAD_BUFFER, 0, 0);
 		return;
 	}
+#ifdef GRALLOC_LEGACY_V3_HANDLE
+	void *reserved_region = static_cast<std::byte *>(handle->metadata_base())
+	    + mapper::common::shared_metadata_size();
+#else
 	void *reserved_region = static_cast<std::byte *>(handle->attr_base)
 	    + mapper::common::shared_metadata_size();
+#endif
 	hidl_cb(Error::NONE, reserved_region, handle->reserved_region_size);
 }
 
