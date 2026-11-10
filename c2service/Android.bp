@@ -71,7 +71,6 @@ cc_binary {
     shared_libs: [
         "libavservices_minijail",
         "libbinder",
-        "libion",
         "libion_exynos",
     ],
     required: ["samsung.hardware.media.c2@1.1-default-seccomp-policy"],
