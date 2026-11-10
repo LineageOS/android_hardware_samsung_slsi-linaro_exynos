@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 #include <unistd.h>
-#include <linux/ion.h>
-#include <ion/ion.h>
 #include <string>
 #include <fcntl.h>
 #include <algorithm>
@@ -25,35 +23,6 @@
 
 #include "hardware/exynos/ion.h"
 
-template<typename T>
-inline std::shared_ptr<T> make_shared_array(int size)
-{
-    return std::shared_ptr<T>(new T[size], [](T *p) { delete[] p; });
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/* graphics/base/libion/ion.c */
-// #define MAX_HEAP_NAME 32
-
-/* graphics/base/libion/ion_uapi.h */
-struct ion_heap_data {
-    char name[ExynosIONUtils::MAX_HEAP_NAME];
-    __u32 type;
-    __u32 heap_id;
-    __u32 size;       /* reserved 0 */
-    __u32 heap_flags; /* reserved 1 */
-    __u32 reserved2;
-};
-
-struct ion_heap_query {
-    __u32 cnt;
-    __u32 reserved0;
-    __u64 heaps;
-    __u32 reserved1;
-    __u32 reserved2;
-};
-///////////////////////////////////////////////////////////////////////////////
-
 #define ION_EXYNOS_HEAP_NAME_SYSTEM "ion_system_heap"
 #define ION_EXYNOS_HEAP_NAME_VIDEO_STREAM "vstream_heap"  /* ion */
 #define DMA_EXYNOS_HEAP_NAME_VIDEO_STREAM_SECURE "system-secure-vstream-secure"  /* dmaheap */
@@ -61,60 +30,11 @@ struct ion_heap_query {
 #define DMA_EXYNOS_HEAP_NAME_SYSTEM_UNCACHED "system-uncached"
 
 static uint32_t getHeapMask(const char *heapName) {
-    uint32_t ret = 0;
-
     if (heapName == nullptr) {
-        return ret;
+        return 0;
     }
 
-    int ionFd = ion_open();
-    if (ionFd < 0) {
-        return ret;
-    }
-
-    if (ion_is_legacy(ionFd)) {
-        ion_close(ionFd);
-
-        return EXYNOS_ION_HEAP_SYSTEM_MASK;
-    }
-
-    int heapCnt = 0;
-    if ((ion_query_heap_cnt(ionFd, &heapCnt) < 0) ||
-        (heapCnt <= 0)) {
-        ion_close(ionFd);
-        return ret;
-    }
-
-    auto ionHeapData = make_shared_array<struct ion_heap_data>(heapCnt);
-    if (ionHeapData.get() == nullptr) {
-        ion_close(ionFd);
-        return ret;
-    }
-    memset(ionHeapData.get(), 0, sizeof(struct ion_heap_data) * heapCnt);
-
-    auto query = std::make_shared<struct ion_heap_query>();
-
-    memset(query.get(), 0, sizeof(struct ion_heap_query));
-    query.get()->cnt    = heapCnt;
-    query.get()->heaps  = reinterpret_cast<__u64>(ionHeapData.get());
-
-    if (ion_query_get_heaps(ionFd, heapCnt, ionHeapData.get()) < 0) {
-        ion_close(ionFd);
-        return ret;
-    }
-
-    for (int i = 0; i < heapCnt; i++) {
-        auto heap = ionHeapData.get()[i];
-
-        if (strncmp(heap.name, heapName, strlen(heapName)) == 0) {
-            ret = (1 << heap.heap_id);
-            break;
-        }
-    }
-
-    ion_close(ionFd);
-
-    return ret;
+    return exynos_ion_get_heap_mask(heapName);
 }
 
 C2R ExynosIONUtils::setIonUsage(C2InterfaceHelper::C2P<C2StoreIonUsageInfo> &me) {
