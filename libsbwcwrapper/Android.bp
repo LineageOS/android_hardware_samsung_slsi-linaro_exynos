@@ -40,7 +40,6 @@ cc_library_shared {
         "libui",
         "libutils",
         "libcutils",
-        "libion",
         "libion_exynos",
         "libsync",
         "libexynosgraphicbuffer",
