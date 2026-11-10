@@ -58,7 +58,6 @@ cc_defaults {
         "libutils",
         "libsync",
         "libhardware",
-        "libion",
     ],
 
     header_libs: ["libhardware_headers"],
