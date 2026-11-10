@@ -27,6 +27,11 @@ cc_defaults {
     export_include_dirs: ["include"],
     defaults: ["libexynos_headers_c2_defaults"],
 
+    cflags: select(soong_config_variable("arm_gralloc", "gralloc3_compat_handle"), {
+        true: ["-DGRALLOC_LEGACY_V3_HANDLE=1"],
+        default: [],
+    }),
+
     srcs: select(soong_config_variable("arm_gralloc", "gralloc_version"), {
         "three": ["gralloc3/exynos_graphicbuffer_meta.cpp"],
         "four": ["gralloc4/exynos_graphicbuffer_meta.cpp"],

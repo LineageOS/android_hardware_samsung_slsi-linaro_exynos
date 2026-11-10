@@ -216,7 +216,11 @@ void *ExynosGraphicBufferMeta::get_video_metadata(buffer_handle_t hnd) {
     if (!gralloc_hnd)
         return nullptr;
 
+#ifdef GRALLOC_LEGACY_V3_HANDLE
+    return gralloc_hnd->metadata_base();
+#else
     return gralloc_hnd->attr_base;
+#endif
 }
 
 void *ExynosGraphicBufferMeta::get_video_metadata_roiinfo(buffer_handle_t hnd) {

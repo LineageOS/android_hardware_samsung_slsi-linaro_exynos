@@ -116,6 +116,11 @@ struct private_handle_t;
 #pragma GCC diagnostic ignored "-Wpedantic"
 #endif
 
+#if defined(GRALLOC_LEGACY_V3_HANDLE) && defined(__cplusplus)
+#include <stdlib.h>
+#include <fcntl.h>
+#include "private_handle_v3.h"
+#else
 #ifdef __cplusplus
 struct private_handle_t : public native_handle
 {
@@ -416,6 +421,8 @@ struct private_handle_t
 	}
 #endif
 };
+#endif /* GRALLOC_LEGACY_V3_HANDLE */
+
 #ifndef __cplusplus
 /* Restore previous diagnostic for pedantic */
 #pragma GCC diagnostic pop

@@ -74,6 +74,9 @@ void allocate(const buffer_descriptor_t &bufferDescriptor, uint32_t count, IAllo
 
 			hnd->reserved_region_size = bufferDescriptor.reserved_size;
 			hnd->attr_size = mapper::common::shared_metadata_size() + hnd->reserved_region_size;
+#ifdef GRALLOC_LEGACY_V3_HANDLE
+			hnd->attr_size += private_handle_t::kAttrPrefix;
+#endif
 
 			if (hnd->get_usage() & GRALLOC_USAGE_ROIINFO)
 			{
@@ -85,6 +88,10 @@ void allocate(const buffer_descriptor_t &bufferDescriptor, uint32_t count, IAllo
 
 				hnd->attr_size += 32768;
 			}
+#ifdef GRALLOC_LEGACY_V3_HANDLE
+			/* attr_size/reserved_region_size travel inside the gralloc3 wire block */
+			hnd->sync_wire_from_ext();
+#endif
 
 			/* TODO: must do error checking */
 			mali_gralloc_ion_allocate_attr(hnd);	
@@ -95,7 +102,13 @@ void allocate(const buffer_descriptor_t &bufferDescriptor, uint32_t count, IAllo
 
 			memset(hnd->attr_base, 0, hnd->attr_size);
 
+#ifdef GRALLOC_LEGACY_V3_HANDLE
+			/* gralloc3 attr_region: all 0xff means "not initialised" (crop/dataspace unset) */
+			memset(hnd->attr_base, 0xff, private_handle_t::kAttrPrefix);
+			mapper::common::shared_metadata_init(hnd->metadata_base(), bufferDescriptor.name);
+#else
 			mapper::common::shared_metadata_init(hnd->attr_base, bufferDescriptor.name);
+#endif
 
 			const uint32_t base_format = bufferDescriptor.alloc_format & MALI_GRALLOC_INTFMT_FMT_MASK;
 			const uint64_t usage = bufferDescriptor.consumer_usage | bufferDescriptor.producer_usage;

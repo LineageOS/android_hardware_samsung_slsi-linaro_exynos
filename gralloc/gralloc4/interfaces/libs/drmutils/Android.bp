@@ -20,7 +20,10 @@ cc_library_static {
     cflags: [
         "-Wall",
         "-Werror",
-    ],
+    ] + select(soong_config_variable("arm_gralloc", "gralloc3_compat_handle"), {
+        true: ["-DGRALLOC_LEGACY_V3_HANDLE=1"],
+        default: [],
+    }),
     srcs: [
         "src/drmutils.cpp",
     ],
