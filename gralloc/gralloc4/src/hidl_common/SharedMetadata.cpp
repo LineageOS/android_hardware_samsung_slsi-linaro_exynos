@@ -71,6 +71,16 @@ android::status_t set_crop_rect(const private_handle_t *hnd, const Rect &crop)
 	}
 
 	metadata->crop = aligned_optional(crop);
+#ifdef GRALLOC_LEGACY_V3_HANDLE
+	/* the vendor blobs read the crop from the gralloc3 attr_region */
+	if (hnd->attr_region() != nullptr)
+	{
+		hnd->attr_region()->crop_top = crop.top;
+		hnd->attr_region()->crop_left = crop.left;
+		hnd->attr_region()->crop_height = crop.bottom - crop.top;
+		hnd->attr_region()->crop_width = crop.right - crop.left;
+	}
+#endif
 	return android::OK;
 }
 
@@ -84,6 +94,13 @@ void set_dataspace(const private_handle_t *hnd, const Dataspace &dataspace)
 {
 	auto *metadata = reinterpret_cast<shared_metadata *>(METADATA_BASE(hnd));
 	metadata->dataspace = aligned_optional(dataspace);
+#ifdef GRALLOC_LEGACY_V3_HANDLE
+	/* the vendor blobs read the dataspace from the gralloc3 attr_region */
+	if (hnd->attr_region() != nullptr)
+	{
+		hnd->attr_region()->dataspace = static_cast<int>(dataspace);
+	}
+#endif
 }
 
 void get_blend_mode(const private_handle_t *hnd, std::optional<BlendMode> *blend_mode)
