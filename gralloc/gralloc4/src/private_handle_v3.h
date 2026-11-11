@@ -41,6 +41,23 @@ typedef struct plane_info_v3 {
 	uint32_t alloc_height;
 } plane_info_v3_t;
 
+/*
+ * gralloc3 attr_region (gralloc3/gralloc_buffer_priv.h), the first part of the
+ * attribute region. The prebuilt blobs read the crop and the dataspace from here.
+ * All fields are 0xff ("not set") until gralloc writes them.
+ */
+typedef struct attr_region_v3 {
+	int crop_top;
+	int crop_left;
+	int crop_height;
+	int crop_width;
+	int use_yuv_transform;
+	int use_sparse_alloc;
+	uint8_t hdr_info[28];  /* mali_hdr_info */
+	int dataspace;
+	int force_dataspace;
+} __attribute__((packed)) attr_region_v3_t;
+
 /* gralloc3 mali_gralloc_yuv_info (values must match gralloc3) */
 typedef enum {
 	MALI_V3_YUV_NO_INFO,
@@ -189,6 +206,11 @@ struct private_handle_t : public native_handle
 	void *metadata_base() const
 	{
 		return attr_base ? static_cast<char *>(attr_base) + kAttrPrefix : nullptr;
+	}
+
+	attr_region_v3_t *attr_region() const
+	{
+		return static_cast<attr_region_v3_t *>(attr_base);
 	}
 
 	private_handle_t(
