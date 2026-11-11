@@ -152,6 +152,10 @@ int ExynosGraphicBufferMeta::set_dataspace(buffer_handle_t hnd, android_dataspac
 
     auto *metadata = reinterpret_cast<shared_metadata *>(static_cast<char *>(map) + kSharedMetadataOffset);
     metadata->dataspace = static_cast<Dataspace>(dataspace);
+#ifdef GRALLOC_LEGACY_V3_HANDLE
+    /* the vendor blobs read the dataspace from the gralloc3 attr_region */
+    static_cast<attr_region_v3_t *>(map)->dataspace = static_cast<int>(dataspace);
+#endif
     munmap(map, mapSize);
 
     return 0;
