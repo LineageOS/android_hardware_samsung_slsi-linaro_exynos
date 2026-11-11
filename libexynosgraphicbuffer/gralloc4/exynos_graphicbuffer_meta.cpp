@@ -101,6 +101,13 @@ int ExynosGraphicBufferMeta::get_video_metadata_fd(buffer_handle_t hnd) {
         return -EINVAL;
 }
 
+#ifdef GRALLOC_LEGACY_V3_HANDLE
+/* shared_metadata lives behind the gralloc3 attr_region that the vendor blobs read */
+static constexpr size_t kSharedMetadataOffset = private_handle_t::kAttrPrefix;
+#else
+static constexpr size_t kSharedMetadataOffset = 0;
+#endif
+
 int ExynosGraphicBufferMeta::get_dataspace(buffer_handle_t hnd) {
     GRALLOC_HND(gralloc_hnd, hnd);
 
@@ -112,12 +119,17 @@ int ExynosGraphicBufferMeta::get_dataspace(buffer_handle_t hnd) {
     if (attr_fd < 0)
         return -1;
 
-    shared_metadata *metadata = (shared_metadata *)mmap(0, sizeof(shared_metadata), PROT_READ, MAP_SHARED, attr_fd, 0);
+    constexpr size_t mapSize = kSharedMetadataOffset + sizeof(shared_metadata);
+    void *map = mmap(0, mapSize, PROT_READ, MAP_SHARED, attr_fd, 0);
+    if (map == MAP_FAILED)
+        return -1;
+
+    auto *metadata = reinterpret_cast<shared_metadata *>(static_cast<char *>(map) + kSharedMetadataOffset);
     std::optional<Dataspace> dataspace = metadata->dataspace.to_std_optional();
 
     int32_t ret = static_cast<int32_t>(dataspace.value_or(Dataspace::UNKNOWN));
 
-    munmap(metadata, sizeof(shared_metadata));
+    munmap(map, mapSize);
 
     return ret;
 }
@@ -133,10 +145,14 @@ int ExynosGraphicBufferMeta::set_dataspace(buffer_handle_t hnd, android_dataspac
     if (attr_fd < 0)
         return -1;
 
-    shared_metadata *metadata =
-        (shared_metadata *)mmap(0, sizeof(shared_metadata), PROT_READ | PROT_WRITE, MAP_SHARED, attr_fd, 0);
+    constexpr size_t mapSize = kSharedMetadataOffset + sizeof(shared_metadata);
+    void *map = mmap(0, mapSize, PROT_READ | PROT_WRITE, MAP_SHARED, attr_fd, 0);
+    if (map == MAP_FAILED)
+        return -1;
+
+    auto *metadata = reinterpret_cast<shared_metadata *>(static_cast<char *>(map) + kSharedMetadataOffset);
     metadata->dataspace = static_cast<Dataspace>(dataspace);
-    munmap(metadata, sizeof(shared_metadata));
+    munmap(map, mapSize);
 
     return 0;
 }
