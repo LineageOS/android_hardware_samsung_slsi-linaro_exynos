@@ -63,17 +63,38 @@ void get_ip_capabilities(void)
 
 	/* Determine DPU IP capabilities */
 	dpu_runtime_caps.caps_mask |= MALI_GRALLOC_FORMAT_CAPABILITY_OPTIONS_PRESENT;
+#if !defined(GRALLOC_DPU_NO_AFBC) || (GRALLOC_DPU_NO_AFBC == 0)
+	/* Not all DPUs can decode AFBC (e.g. none of the exynos3830 DPP channels has
+	 * DPP_ATTR_AFBC); anything the DPU reads must stay linear there. */
 	dpu_runtime_caps.caps_mask |= MALI_GRALLOC_FORMAT_CAPABILITY_AFBC_BASIC;
+#endif
 #if defined(GRALLOC_DPU_SUPPORT_1010102_AFBC) && (GRALLOC_DPU_SUPPORT_1010102_AFBC == 1)
 	dpu_runtime_caps.caps_mask |= MALI_GRALLOC_FORMAT_CAPABILITY_PIXFMT_RGBA1010102;
 #endif
 
-#if defined(MALI_GPU_SUPPORT_AFBC_BASIC) && (MALI_GPU_SUPPORT_AFBC_BASIC == 1)
+	/* Determine GPU IP capabilities. Always declare them: without
+	 * OPTIONS_PRESENT the GPU counts as unconstrained and gets every AFBC
+	 * modifier, even when it does not support AFBC at all. */
 	gpu_runtime_caps.caps_mask |= MALI_GRALLOC_FORMAT_CAPABILITY_OPTIONS_PRESENT;
-	gpu_runtime_caps.caps_mask |= MALI_GRALLOC_FORMAT_CAPABILITY_AFBC_BASIC;
 	gpu_runtime_caps.caps_mask |= MALI_GRALLOC_FORMAT_CAPABILITY_PIXFMT_RGBA1010102;
 	gpu_runtime_caps.caps_mask |= MALI_GRALLOC_FORMAT_CAPABILITY_PIXFMT_RGBA16161616;
+#if defined(MALI_GPU_SUPPORT_AFBC_BASIC) && (MALI_GPU_SUPPORT_AFBC_BASIC == 1)
+	gpu_runtime_caps.caps_mask |= MALI_GRALLOC_FORMAT_CAPABILITY_AFBC_BASIC;
 
+	/* Optional AFBC features, matching what the Mali driver reports through its
+	 * mali_gralloc_format_capabilities symbol (read at runtime by gralloc3). */
+#if defined(MALI_GPU_SUPPORT_AFBC_SPLITBLK) && (MALI_GPU_SUPPORT_AFBC_SPLITBLK == 1)
+	gpu_runtime_caps.caps_mask |= MALI_GRALLOC_FORMAT_CAPABILITY_AFBC_SPLITBLK;
+#endif
+#if defined(MALI_GPU_SUPPORT_AFBC_WIDEBLK) && (MALI_GPU_SUPPORT_AFBC_WIDEBLK == 1)
+	gpu_runtime_caps.caps_mask |= MALI_GRALLOC_FORMAT_CAPABILITY_AFBC_WIDEBLK;
+#endif
+#if defined(MALI_GPU_SUPPORT_AFBC_TILED_HEADERS) && (MALI_GPU_SUPPORT_AFBC_TILED_HEADERS == 1)
+	gpu_runtime_caps.caps_mask |= MALI_GRALLOC_FORMAT_CAPABILITY_AFBC_TILED_HEADERS;
+#endif
+#if defined(MALI_GPU_SUPPORT_AFBC_YUV_WRITE) && (MALI_GPU_SUPPORT_AFBC_YUV_WRITE == 1)
+	gpu_runtime_caps.caps_mask |= MALI_GRALLOC_FORMAT_CAPABILITY_AFBC_YUV_WRITE;
+#endif
 #endif /* defined(MALI_GPU_SUPPORT_AFBC_BASIC) && (MALI_GPU_SUPPORT_AFBC_BASIC == 1) */
 
 	/* Determine VPU IP capabilities */
