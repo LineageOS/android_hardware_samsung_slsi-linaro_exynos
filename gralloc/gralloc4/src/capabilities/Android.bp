@@ -27,6 +27,7 @@ soong_config_module_type {
         "mali_gpu_support_afbc_yuv_write",
         "gralloc_arm_no_external_afbc",
         "dpu_support_1010102_afbc",
+        "dpu_no_afbc",
         "mali_gralloc_api_tests",
     ],
     properties: [
@@ -60,6 +61,10 @@ soong_config_bool_variable {
 
 soong_config_bool_variable {
     name: "dpu_support_1010102_afbc",
+}
+
+soong_config_bool_variable {
+    name: "dpu_no_afbc",
 }
 
 soong_config_bool_variable {
@@ -105,6 +110,11 @@ arm_gralloc_capabilities_cc_defaults {
         dpu_support_1010102_afbc: {
             cflags: [
                 "-DGRALLOC_DPU_SUPPORT_1010102_AFBC=1",
+            ],
+        },
+        dpu_no_afbc: {
+            cflags: [
+                "-DGRALLOC_DPU_NO_AFBC=1",
             ],
         },
         mali_gralloc_api_tests: {
