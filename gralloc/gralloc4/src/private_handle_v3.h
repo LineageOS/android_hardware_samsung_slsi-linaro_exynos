@@ -69,6 +69,23 @@ typedef enum {
 	MALI_V3_YUV_BT2020_WIDE
 } mali_gralloc_v3_yuv_info;
 
+#define MALI_V3_INTFMT_AFBC_V3_MODIFIERS 0x0000007e00000000ULL /* bits 33-38, gralloc3 */
+#define MALI_V3_INTFMT_AFBC_V4_MODIFIERS 0x000000fc00000000ULL /* bits 34-39, gralloc4 */
+
+static inline uint64_t alloc_format_v4_to_v3(uint64_t v4)
+{
+	/* Bits 40/41 are kept as is: gralloc3 never sets them and the blobs do not
+	 * read them, so they survive the round trip to other gralloc4 processes. */
+	return (v4 & ~(MALI_V3_INTFMT_AFBC_V4_MODIFIERS | MALI_V3_INTFMT_AFBC_V3_MODIFIERS)) |
+	       ((v4 & MALI_V3_INTFMT_AFBC_V4_MODIFIERS) >> 1);
+}
+
+static inline uint64_t alloc_format_v3_to_v4(uint64_t v3)
+{
+	return (v3 & ~(MALI_V3_INTFMT_AFBC_V4_MODIFIERS | MALI_V3_INTFMT_AFBC_V3_MODIFIERS)) |
+	       ((v3 & MALI_V3_INTFMT_AFBC_V3_MODIFIERS) << 1);
+}
+
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 
@@ -120,7 +137,7 @@ struct private_handle_t : public native_handle
 		uint32_t format;
 		uint64_t internal_format;
 	};
-	uint64_t alloc_format;
+	uint64_t v3_alloc_format;
 
 	plane_info_v3_t plane_info_v3[MAX_PLANES];
 
@@ -183,6 +200,8 @@ struct private_handle_t : public native_handle
 	/* Number of plane fds (without the attribute fd). */
 	alignas(8) int fd_count;
 	int attr_ion_handle;
+	/* gralloc4 encoding, mirrored to the wire as v3_alloc_format */
+	uint64_t alloc_format;
 	/* gralloc4's persistent, process-local mapping of the attribute region */
 	void *attr_base;
 	uint64_t alloc_sizes[3];
@@ -283,6 +302,7 @@ struct private_handle_t : public native_handle
 		}
 
 		/* gralloc3: internal_format = legacy base format (no AFBC), alloc_format = full. */
+		v3_alloc_format = alloc_format_v4_to_v3(alloc_format);
 		internal_format = alloc_format & 0x00000000ffffffffULL;
 
 		min_pgsz = 0x1000; /* SZ_4K */
@@ -312,6 +332,7 @@ struct private_handle_t : public native_handle
 		attr_size = padding5 & 0xffffffffULL;
 		reserved_region_size = padding5 >> 32;
 		imapper_version = 0;
+		alloc_format = alloc_format_v3_to_v4(v3_alloc_format);
 
 		for (int i = 0; i < MAX_PLANES; i++)
 		{
