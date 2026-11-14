@@ -21,6 +21,19 @@
 
 #include "gralloc_priv.h"
 
+enum tx_direction
+{
+	TX_NONE = 0,
+	TX_TO_DEVICE,
+	TX_FROM_DEVICE,
+	TX_BOTH,
+};
+
+enum tx_direction get_tx_direction(uint64_t usage);
+
+void buffer_sync(private_handle_t* hnd,
+                 enum tx_direction direction);
+
 int mali_gralloc_lock(buffer_handle_t buffer, uint64_t usage, int l, int t, int w, int h,
                       void **vaddr);
 int mali_gralloc_lock_ycbcr(buffer_handle_t buffer, uint64_t usage, int l, int t, int w,
@@ -30,5 +43,9 @@ int mali_gralloc_unlock(buffer_handle_t buffer);
 int mali_gralloc_get_num_flex_planes(buffer_handle_t buffer, uint32_t *num_planes);
 int mali_gralloc_lock_flex(buffer_handle_t buffer, uint64_t usage, int l, int t,
                                  int w, int h, struct android_flex_layout *flex_layout);
+
+int validate_lock_input_parameters(buffer_handle_t buffer, int l,
+                                   int t, int w, int h,
+                                   uint64_t usage);
 
 #endif /* MALI_GRALLOC_BUFFERACCESS_H_ */
