@@ -110,3 +110,28 @@ cc_library_shared {
         "hardware/samsung_slsi-linaro/exynos/include",
     ],
 }
+
+cc_library_shared {
+    name: "libGrallocMapperCamera",
+    defaults: [
+        "arm_gralloc_api_4x_defaults",
+    ],
+    shared_libs: [
+        "android.hardware.graphics.mapper@2.0",
+        "libcutils",
+        "libGLESv1_CM",
+        "libhardware",
+        "libion_exynos",
+        "liblog",
+        "libnativewindow",
+        "libsync",
+        "libutils",
+    ],
+    srcs: [
+        "GrallocMapperCamera.cpp",
+    ],
+    include_dirs: [
+        "hardware/samsung_slsi-linaro/exynos/include",
+        "hardware/samsung_slsi-linaro/exynos/gralloc/gralloc4/src/core",
+    ],
+}
