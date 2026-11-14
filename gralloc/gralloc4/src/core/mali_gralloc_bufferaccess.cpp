@@ -22,23 +22,14 @@
 #include <hardware/gralloc1.h>
 
 #include "mali_gralloc_buffer.h"
+#include "mali_gralloc_bufferaccess.h"
 #include "mali_gralloc_formats.h"
 #include "mali_gralloc_usages.h"
 #include "allocator/mali_gralloc_ion.h"
 #include "gralloc_helper.h"
 #include "format_info.h"
 
-
-enum tx_direction
-{
-	TX_NONE = 0,
-	TX_TO_DEVICE,
-	TX_FROM_DEVICE,
-	TX_BOTH,
-};
-
-
-static enum tx_direction get_tx_direction(const uint64_t usage)
+enum tx_direction get_tx_direction(const uint64_t usage)
 {
 	const bool read = (usage & GRALLOC_USAGE_SW_READ_MASK) ? true : false;
 	const bool write = (usage & GRALLOC_USAGE_SW_WRITE_MASK) ? true : false;
@@ -60,7 +51,7 @@ static enum tx_direction get_tx_direction(const uint64_t usage)
 	return dir;
 }
 
-static void buffer_sync(private_handle_t * const hnd,
+void buffer_sync(private_handle_t * const hnd,
                         const enum tx_direction direction)
 {
 	if (direction != TX_NONE)
