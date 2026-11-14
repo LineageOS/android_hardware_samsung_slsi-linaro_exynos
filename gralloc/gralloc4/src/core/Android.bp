@@ -129,6 +129,7 @@ arm_gralloc_core_cc_defaults {
         android: {
             shared_libs: [
                 "libhardware",
+                "libsync",
             ],
         },
     },

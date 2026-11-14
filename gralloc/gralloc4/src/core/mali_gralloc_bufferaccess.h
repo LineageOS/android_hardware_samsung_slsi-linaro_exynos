@@ -31,4 +31,7 @@ int mali_gralloc_get_num_flex_planes(buffer_handle_t buffer, uint32_t *num_plane
 int mali_gralloc_lock_flex(buffer_handle_t buffer, uint64_t usage, int l, int t,
                                  int w, int h, struct android_flex_layout *flex_layout);
 
+int mali_gralloc_lock_flex_async(buffer_handle_t buffer, uint64_t usage, int l, int t,
+                                 int w, int h, struct android_flex_layout *flex_layout, int32_t fence_fd);
+
 #endif /* MALI_GRALLOC_BUFFERACCESS_H_ */
