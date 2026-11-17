@@ -16,6 +16,24 @@
       "message": "```suggestion\nThis allows the camera HAL to link with gralloc4 on platforms using this blob, such as universal9830.\n```",
       "revId": "cd508f3f88a64d61fe83120622ae69f4610826a1",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a4251610_33f5de3f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 34512
+      },
+      "writtenOn": "2026-11-17T17:52:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "03cf375e_702e7582",
+      "revId": "cd508f3f88a64d61fe83120622ae69f4610826a1",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
