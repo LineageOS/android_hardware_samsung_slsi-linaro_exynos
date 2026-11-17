@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "88c1038e_af68f793",
+        "filename": "gralloc/gralloc4/GrallocWrapper.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 35850
+      },
+      "writtenOn": "2026-11-17T16:26:27Z",
+      "side": 1,
+      "message": "```suggestion\n */\n```\n\nUseless comment",
+      "range": {
+        "startLine": 4,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 3
+      },
+      "revId": "6a7bb144cc7a5f5eb32c6f1b0f03b9c635738554",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
