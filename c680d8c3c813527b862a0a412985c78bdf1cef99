@@ -50,6 +50,24 @@
       "message": "I\u0027m not convinced that those 3 remaining features should be set on devices without AFBC though",
       "revId": "c680d8c3c813527b862a0a412985c78bdf1cef99",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0c472ef6_53816266",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 34512
+      },
+      "writtenOn": "2026-11-17T21:01:18Z",
+      "side": 1,
+      "message": "for other capabilties they seem to be set so maybe it was just a small oversight?",
+      "parentUuid": "fc706b09_521f94ae",
+      "revId": "c680d8c3c813527b862a0a412985c78bdf1cef99",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
