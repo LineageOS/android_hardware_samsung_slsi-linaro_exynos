@@ -15,6 +15,13 @@
  * limitations under the License.
  */
 
+soong_namespace {
+    imports: [
+        "hardware/samsung_slsi-linaro/exynos",
+        "hardware/samsung_slsi-linaro/graphics",
+    ],
+}
+
 soong_config_module_type {
     name: "arm_gralloc_cc_defaults",
     module_type: "cc_defaults",
