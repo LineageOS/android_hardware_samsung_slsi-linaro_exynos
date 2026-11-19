@@ -1,10 +1,12 @@
 soong_namespace {
     imports:[
+        "hardware/samsung_slsi-linaro/exynos/gralloc/gralloc4",
         "hardware/samsung_slsi-linaro/graphics",
         "hardware/samsung_slsi-linaro/interfaces",
         "hardware/samsung_slsi-linaro/openmax"
     ],
 }
+
 
 soong_config_module_type {
     name: "libexynos_headers_c2_cc_defaults",
